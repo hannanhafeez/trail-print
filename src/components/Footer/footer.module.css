@@ -1,0 +1,14 @@
+@import '../../../styles/common.css';
+
+
+.social_img {
+    @apply relative w-[40px] aspect-square overflow-hidden;
+}
+
+.visa_card {
+    @apply relative w-[90px] h-[30px];
+}
+
+.master_card {
+    @apply relative w-[90px] h-[47px];
+}

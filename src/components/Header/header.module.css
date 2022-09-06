@@ -1,0 +1,29 @@
+@import "../../../styles/common.css";
+
+
+.inner_container{
+    @apply flex flex-1 justify-between items-center h-[var(--header-height)] bg-white z-10;
+}
+
+.logo_style {
+    @apply relative -left-2 h-full aspect-square overflow-hidden;
+}
+
+.nav_links {
+    @apply hidden sm:flex gap-[32px] font-quicksand font-semibold text-theme_green;
+}
+
+.dd_container{
+    @apply sm:hidden absolute top-[var(--header-height)] w-full z-[-1];
+}
+
+.nav_links_dd{
+    @apply bg-white h-full py-0 flex flex-col divide-y-[1px] font-quicksand font-semibold text-theme_green;
+}
+
+.nav_links_dd > a {
+    @apply py-4;
+}
+
+
+
