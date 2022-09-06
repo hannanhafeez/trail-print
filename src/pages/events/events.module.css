@@ -33,17 +33,33 @@
 .ans{
   @apply font-mulish  text-[#7D7D7D] text-[20px] md:text-[23px];
 }
+.wrapper{
+  @apply flex flex-col items-center gap-[30px];
+}
 .content_wrapper{
 
   @apply flex flex-col md:flex-row gap-y-2 py-3 my-3 px-1 md:p-7 gap-x-2;
 
 }
+.image_container{
+  @apply  aspect-square self-stretch bg-white;
+  filter: drop-shadow(0px 6px 20px rgba(0,0,0,0.1));
+}
 
+
+.font_wrapper{
+  @apply font-quicksand font-medium text-[#347fca] text-[24px] md:text-[28px] ;
+}
+.font_wrapper_soon{
+  @apply font-quicksand font-medium text-[rgb(195,192,171,0.3)] text-[24px] md:text-[28px] ;
+}
 .country_image{
-  @apply relative w-full aspect-square h-[350px]
+  @apply relative w-full aspect-square  overflow-clip;
 
 }
+
 
 .img_wrapper{
-  @apply shadow-md
+  @apply shadow-md 
 }
+

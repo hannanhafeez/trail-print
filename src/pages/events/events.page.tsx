@@ -52,48 +52,61 @@ const Events: FC = () => {
 			
 			<section className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-y-20 md:gap-x-8 pb-[60px] md:pb-[120px]">
 			
-				<div className="flex flex-col items-center">
-					
-						<div className={css.country_image}>
-							<Image alt='lendon' src={'/assets/png/landon.png'} layout='fill' objectFit='cover'/>
-						</div>
-						<h1 className="font-quicksand font-medium text-[#22588D] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className={css.wrapper}>
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className={css.font_wrapper}>Great British Divide</h1>
 				</div>
-				<div className="flex flex-col items-center">
-					
-						<div className={css.country_image}>
-							<Image alt='lendon' src={'/assets/png/landon.png'} layout='fill' objectFit='cover'/>
-						</div>
-						<h1 className="font-quicksand font-medium text-[#22588D] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className={css.wrapper}>
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className={css.font_wrapper}>Great British Divide</h1>
 				</div>
-				<div className="flex flex-col items-center">
-					
-						<div className={css.country_image}>
-							<Image alt='lendon' src={'/assets/png/landon.png'} layout='fill' objectFit='cover'/>
-						</div>
-						<h1 className="font-quicksand font-medium text-[#22588D] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className={css.wrapper}>
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className={css.font_wrapper}>Great British Divide</h1>
 				</div>
-				<div className="flex flex-col items-center">
-					
-						<div className={css.country_image}>
-							<Image alt='lendon' src={'/assets/png/landon.png'} layout='fill' objectFit='cover'/>
-						</div>
-						<h1 className="font-quicksand font-medium text-[#22588D] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className={css.wrapper}>
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className={css.font_wrapper}>Great British Divide</h1>
 				</div>
-				<div className="flex flex-col items-center">
-					
-						<div className={css.country_image}>
-							<Image alt='lendon' src={'/assets/png/coming.png'} layout='fill' objectFit='cover'/>
-						</div>
-						<h1 className="font-quicksand font-medium text-[rgb(195,192,171,.5)] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className="flex flex-col items-center gap-[30px]">
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className={css.font_wrapper_soon}>Great British Divide</h1>
 				</div>
-				<div className="flex flex-col items-center">
-					
-						<div className={css.img_wrapper}>
-						{/* <Image alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='contain'/> */}
-						</div>
-						<h1 className="font-quicksand font-medium text-[rgb(195,192,171,.5)] text-[24px] md:text-[28px] ">Great British Divide</h1>
+				<div className="flex flex-col items-center gap-[30px]">
+					<div className={css.image_container}>
+						
+							<div className={css.country_image}>
+								<Image alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
+							</div>
+					</div>
+						<h1 className= {css.font_wrapper_soon}>Great British Divide</h1>
 				</div>
+		
 
 			
 			</section>
