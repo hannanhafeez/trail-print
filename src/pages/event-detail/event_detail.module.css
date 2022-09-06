@@ -1,0 +1,43 @@
+@import "../../../styles/common.css";
+.logo_style {
+  @apply relative h-full aspect-square overflow-hidden  ;
+}
+
+.nav_links {
+  @apply flex gap-[32px] font-quicksand font-semibold text-theme_green;
+}
+.my_shadow {
+  box-shadow: 0px 4px 4px rgba(0,0,0,0.1);
+}
+.img {
+  @apply z-[-1] absolute top-[-200px] w-full h-[566px];
+}
+
+.content {
+  @apply flex flex-col  text-[20px] sm:text-[23px]  text-justify mt-[20px] sm:mt-[50px] mb-[100px]  md:p-0  sm:p-12;
+}
+.social_img {
+  @apply relative w-[40px] aspect-square overflow-hidden;
+}
+
+.visa_card {
+  @apply relative  w-[90px] h-[30px];
+}
+
+.master_card {
+  @apply relative  w-[90px] h-[47px];
+}
+.question{
+  @apply font-quicksand text-start  font-bold flex-1 text-[20px] md:text-[23px] text-theme_blue;
+}
+.ans{
+  @apply font-mulish  text-[#7D7D7D] text-[20px] md:text-[23px];
+}
+.content_wrapper{
+
+  @apply flex flex-col md:flex-row gap-y-2 py-3 my-3 px-1 md:p-7 gap-x-2;
+
+}
+.img_center{
+  @apply  relative mx-auto aspect-square w-[50%]  sm:w-[200px] ;
+}

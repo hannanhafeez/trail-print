@@ -1,0 +1,31 @@
+@import "../../../styles/common.css";
+.logo_style {
+  @apply relative h-full aspect-square  overflow-hidden;
+}
+
+.nav_links {
+  @apply flex gap-[32px] font-quicksand font-semibold text-theme_green;
+}
+.my_shadow {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+}
+.img {
+  @apply z-[-1] absolute top-[-200px] w-full h-[566px];
+}
+
+.pargraph_style {
+  @apply flex flex-col gap-12 font-quicksand text-[20px] sm:text-[20px]   text-[#22588D] text-justify md:text-center bg-[rgba(235,235,230,0.3)] mt-[20px] sm:mt-[50px]
+  mb-[100px] p-6  sm:p-[50px];
+}
+
+.social_img {
+  @apply relative w-[40px] aspect-square overflow-hidden;
+}
+
+.visa_card {
+  @apply relative  w-[90px] h-[30px];
+}
+
+.master_card {
+  @apply relative  w-[90px] h-[47px];
+}
