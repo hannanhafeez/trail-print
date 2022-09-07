@@ -1,0 +1,19 @@
+@import "../../../styles/common.css";
+
+.heading_styles{
+@apply  font-mulish font-medium text-center text-[20px]  sm:text-[28px] text-[#22588D] md:text-[32px] lg:text-[36px];
+}
+
+.input_style{
+    @apply font-quicksand text-[18px] text-[rgb(91,91,91)] border-b outline-none bg-transparent;
+}
+.input_wrapper{
+@apply flex flex-col w-full;
+}
+.form_heading{
+
+    @apply font-quicksand font-semibold text-[#22588D] text-[24px];
+}
+.input_style_card{
+    @apply font-quicksand text-[18px] text-[rgb(91,91,91)]  outline-none bg-transparent;
+}

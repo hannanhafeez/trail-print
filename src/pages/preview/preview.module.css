@@ -1,10 +1,15 @@
 @import "../../../styles/common.css";
+
+.heading_top{
+  @apply font-mulish font-medium text-[20px]  md:text-[24px] lg:text-[36px] text-[#22588D] ;
+}
+
 .choise_button{
   @apply flex justify-between items-center w-full md:w-[400px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[20px]  md:text-[24px] ;
 }
 
 .choise_button{
-  @apply flex justify-between items-center w-full md:w-[300px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[20px]  md:text-[24px] ;
+  @apply flex justify-between items-center w-full md:w-[300px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[16px] sm:text-[20px]  md:text-[24px] ;
 }
 .arrow{
 

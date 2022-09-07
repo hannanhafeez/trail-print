@@ -23,11 +23,18 @@ const Preview: FC = () => {
 						1/2
 					</h1>
 
-					<h2 className="font-Mulish font-medium text-[20px]  md:text-[36px] text-[#22588D] md:w-[925px]">
-						Your download will be Digital Print and $20.00.
+					<div className="text-center">
+						<h2 className={css.heading_top}>
+							Your download will be Digital Print and $20.00.
+						
+						</h2>
+						
+						<h2 className={css.heading_top}>
 						Please make sure you’re happy with everything below…
-					</h2>
-					<div className="flex flex-col flex-1 justify-center w-full md:flex-row gap-6 pt-8">
+						</h2>
+					</div>
+					
+					<div className="flex flex-col flex-1 justify-center w-full xs:flex-row gap-6 pt-8">
 
 						<button className={css.choise_button}>
 						<div className={css.arrow}>
