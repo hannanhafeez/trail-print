@@ -5,27 +5,14 @@ import { SETTINGS } from "../../constants/pageLinks";
 import css from "./help.module.css";
 import Image from "next/image";
 import Footer from "../../components/Footer";
+import Header from "../../components/Header";
 
 
 const Help: FC = () => {
 	return (
 		<div className="relative">
 			{/* Header */}
-			<div className={`${css.header_shadow} z-20 bg-white`}>
-				<div className={`${css.my_container}`}>
-
-					<div className="flex flex-1 justify-between items-center h-[85px] px-4">
-						<div className={css.logo_style}>
-							<Image alt='ben' src={'/assets/imgs/logo.png'} layout='fill' objectFit='cover' />
-						</div>
-						<div className={css.nav_links}>
-							<a>CUSTOM PRINTS</a>
-							<a>EVENTS</a>
-							<a>HELP</a>
-						</div>
-					</div>
-				</div>
-			</div>
+			<Header/>
 			{/* Header End */}
 
 			<div className={css.img}>

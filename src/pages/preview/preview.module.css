@@ -1,0 +1,18 @@
+@import "../../../styles/common.css";
+.choise_button{
+  @apply flex justify-between items-center w-full md:w-[400px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[20px]  md:text-[24px] ;
+}
+
+.choise_button{
+  @apply flex justify-between items-center w-full md:w-[300px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[20px]  md:text-[24px] ;
+}
+.arrow{
+
+  @apply relative w-6 h-4;
+
+}
+.arrow_back{
+
+  @apply relative w-6 h-4 rotate-180;
+
+}
