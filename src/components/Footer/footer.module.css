@@ -2,7 +2,7 @@
 
 
 .social_img {
-    @apply relative w-[40px] aspect-square overflow-hidden;
+    @apply relative w-[35px] aspect-square overflow-hidden;
 }
 
 .visa_card {

@@ -49,7 +49,7 @@ const Footer: FC<FooterProps> = ({}) => {
 
                     </div>
                     <div className=" flex flex-col  gap-4 flex-1  pb-8">
-                        <div className="font-mulish font-semibold text-[28px] text-theme_green">
+                        <div className="font-mulish font-semibold text-[20px] md:text-[24px] text-theme_green">
 
                             <p>Custom Prints</p>
                             <p>Events</p>
@@ -81,17 +81,9 @@ const Footer: FC<FooterProps> = ({}) => {
 
                 </div>
 
-                <div className="pb-[30px] flex flex-col gap-3 ">
-                    <ul className="flex flex-col md:flex-row gap-2 font-mulish font-medium  text-14  text-[#848484]">
-                        <li><a href="" className="underline underline-offset-4">Terms & Conditions </a></li>
-                        <li><a href="" className="underline underline-offset-4">• Privacy Policy </a></li>
-                        <li><a href="" className="underline underline-offset-4"> • Cookie Policy</a></li>
-                        <li><a href="" className="underline underline-offset-4"> • Shipping</a></li>
-                        <a href="" >  • All content © Copyright 2022</a>
-                    </ul>
-                    <div className="font-mulish font-medium  text-14  text-[#848484]">
-                        <p>Created by <span>Adam Brewer </span> & <span>Jake Brewer</span></p>
-                    </div>
+                <div className="pb-[30px] flex justify-center ">
+                 
+                        <a  className='font-mulish text-[14px] md:text-[16px]text-[#848484] font-medium   text-[#848484]'>All content © Copyright 2022</a>
                 </div>
 
             </div>
