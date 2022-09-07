@@ -16,10 +16,10 @@ const Footer: FC<FooterProps> = ({}) => {
 
                     <div className="flex flex-col flex-1">
 
-                        <p className="font-quicksand font-semibold text-[24px] text-theme_dark_blue">
+                        <p className="font-quicksand font-semibold text-[20px] text-theme_dark_blue md:text-[24px]">
                             If you have any questions, please get in touch 👍
                         </p>
-                        <p className="font-mulish font-bold text-[21px] italic text-theme_dark_blue">
+                        <p className="font-mulish font-bold text-[20px] italic text-theme_dark_blue md:text-[24px]">
                             contact@trailprints.io
                         </p>
 
