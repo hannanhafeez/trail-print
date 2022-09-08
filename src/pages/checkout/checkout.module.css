@@ -15,5 +15,9 @@
     @apply font-quicksand font-semibold text-[#22588D] text-[24px];
 }
 .input_style_card{
-    @apply font-quicksand text-[18px] text-[rgb(91,91,91)]  outline-none bg-transparent;
+    @apply font-quicksand text-[18px] text-[rgb(91,91,91)]  outline-none bg-transparent w-full ;
+}
+
+.head_common{
+    @apply font-quicksand  text-[18px] ;
 }
