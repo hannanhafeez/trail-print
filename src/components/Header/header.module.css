@@ -13,6 +13,12 @@
     @apply hidden sm:flex gap-[32px] font-quicksand font-semibold text-theme_green;
 }
 
+.nav_links > a {position: relative}
+
+.nav_links > a > span {
+    @apply absolute -bottom-1 h-[3px] bg-theme_green;
+}
+
 .dd_container{
     @apply sm:hidden absolute top-[var(--header-height)] w-full z-[-1];
 }

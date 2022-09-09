@@ -1,0 +1,17 @@
+@import '../../../styles/common.css';
+
+.main_view{
+    @apply flex-1 flex items-center;
+}
+
+.static_sidebar{
+   @apply hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#FAFCF8]; 
+}
+
+.sidebar_accordian_view{
+    @apply flex flex-col gap-5 py-10 pr-4;
+}
+
+.sidebar_label{
+    @apply font-quicksand text-14 text-center text-theme_dark_green pl-2;
+}

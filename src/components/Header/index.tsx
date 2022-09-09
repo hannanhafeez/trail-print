@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Transition } from '@headlessui/react'
 
 import css from './header.module.css';
+import { CREATE, EVENTS, HELP, HOME } from '../../constants/pageLinks';
+import { useRouter } from 'next/router';
 
 export type HeaderProps = {
     
@@ -16,9 +18,11 @@ const Header:FC<HeaderProps> = ({}) => {
     return (
         <header className={`${css.header_shadow} z-20 bg-white sticky top-0`}>
             <div className={[css.my_container, css.inner_container].join(' ')}>
-                <div className={css.logo_style}>
-                    <Image alt='ben' src={'/assets/imgs/logo.png'} layout='fill' objectFit='cover' />
-                </div>
+                <Link href={HOME}>
+                    <a className={css.logo_style}>
+                        <Image alt='Logo' src={'/assets/imgs/logo.png'} layout='fill' objectFit='cover' />
+                    </a>
+                </Link>
                 <div className={css.nav_links}>
                     <NavLinks/>
                 </div>
@@ -34,32 +38,28 @@ const Header:FC<HeaderProps> = ({}) => {
                 {/* Background overlay */}
                 <Transition.Child onClick={() => setIsShowing(old => !old)}
                     className="bg-[#00000066] z-[-1] absolute top-0 left-0 w-full h-screen"
-                    enter="transition-opacity ease-linear duration-300"
+                    enter="transition-opacity ease-linear duration-200"
                     enterFrom="opacity-0"
                     enterTo="opacity-100"
-                    leave="transition-opacity ease-linear duration-300"
+                    leave="transition-opacity ease-linear duration-200"
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className={''}></div>
                 </Transition.Child>
 
                 {/* Sliding sidebar */}
                 <Transition.Child
                     className={[css.dd_container, 'z-10'].join(' ')}
-                    enter="transition ease-in-out duration-300 transform"
+                    enter="transition ease-in-out duration-200 transform"
                     enterFrom="-translate-y-full"
                     enterTo="translate-y-0"
-                    leave="transition ease-in-out duration-300 transform"
+                    leave="transition ease-in-out duration-200 transform"
                     leaveFrom="translate-y-0"
                     leaveTo="-translate-y-full"
                 >
-                    {/* ... */}
                     <div className={[css.my_container, css.nav_links_dd].join(' ')}>
                         <NavLinks/>
                     </div>
-                    {/* <div className={css.dd_container}>
-                    </div> */}
                 </Transition.Child>
             </Transition>
         </header>
@@ -69,19 +69,40 @@ const Header:FC<HeaderProps> = ({}) => {
 export default Header
 
 const NavLinks: FC = () =>{
+    const router = useRouter();
+    // console.log(router.pathname);
     return(
         <>
-            <Link href=''>
-                <a>CUSTOM PRINTS</a>
+            <Link href={CREATE}>
+                <a>
+                    CUSTOM PRINTS
+                    <TransitionSpan isShowing={router.pathname === CREATE} />
+                </a>
             </Link>
 
-            <Link href='/events'>
-                <a>EVENTS</a>
+            <Link href={EVENTS}>
+                <a>
+                    EVENTS
+                    <TransitionSpan isShowing={router.pathname === EVENTS} />
+                </a>
             </Link>
 
-            <Link href='/help'>
-                <a>HELP</a>
+            <Link href={HELP}>
+                <a>
+                    HELP
+                    <TransitionSpan isShowing={router.pathname === HELP} />
+                </a>
             </Link>
         </>
+    )
+}
+
+const TransitionSpan:FC<{isShowing: boolean}> = ({isShowing})=>{
+    return (
+        <Transition appear={true} show={isShowing} as={'span'}
+            enter={'transition-all delay-150 ease-linear duration-200'}
+            enterFrom={'left-[50%] w-0'}
+            enterTo={'left-0 w-full'}
+        />
     )
 }

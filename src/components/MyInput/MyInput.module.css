@@ -1,0 +1,4 @@
+.input_css{
+    @apply pb-1 font-quicksand font-light text-20 text-[#7D7D7D] placeholder:text-gray-300 w-full bg-transparent border-b border-b-[hsla(210,61%,34%,0.4)] border-dashed
+            focus-visible:outline-none focus-visible:border-solid;
+}
