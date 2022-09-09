@@ -2,6 +2,8 @@ import React, { FC } from 'react'
 import Image from 'next/image'
 
 import css from './footer.module.css'
+import Link from 'next/link'
+import { ABOUT, CREATE, EVENTS, HELP } from '../../constants/pageLinks'
 
 export type FooterProps = {
 }
@@ -37,53 +39,44 @@ const Footer: FC<FooterProps> = ({}) => {
 
                         <div className="flex items-center gap-6 pb-20 pt-10">
                             <div className={css.master_card}>
-                                <Image alt='svg' src={'/assets/svg/Strava.svg'} layout='fill' objectFit='contain'
-                                />
+                                <Image alt='svg' src={'/assets/svg/Strava.svg'} layout='fill' objectFit='contain'/>
                             </div>
                             <div className={css.visa_card}>
-                                <Image alt='svg' src={'/assets/svg/map.svg'} layout='fill' objectFit='contain'
-
-                                />
+                                <Image alt='svg' src={'/assets/svg/map.svg'} layout='fill' objectFit='contain'/>
                             </div>
                         </div>
-
                     </div>
-                    <div className=" flex flex-col  gap-4 flex-1  pb-8">
-                        <div className="font-mulish font-semibold text-[20px] md:text-[24px] text-theme_green">
-
-                            <p>Custom Prints</p>
-                            <p>Events</p>
-                            <p>About</p>
-                            <p>Help</p>
+                    <div className=" flex flex-col  gap-5 flex-1  pb-8">
+                        <div className="flex flex-col gap-3 font-mulish font-medium text-[20px] md:text-[24px] text-theme_green">
+                            <Link href={CREATE}><a>Custom Prints</a></Link>
+                            <Link href={EVENTS}><a>Events</a></Link>
+                            <Link href={ABOUT}><a>About</a></Link>
+                            <Link href={HELP}><a>Help</a></Link>
                         </div>
 
                         <div className="flex  gap-3 m-0 p-0">
-
-                            <div className={css.social_img}>
-                                <Image alt='svg' src={'/assets/svg/Group.svg'} layout='fill' objectFit='contain'
-                                />
-                            </div>
-                            <div className={css.social_img}>
-                                <Image alt='svg' src={'/assets/svg/facebook.svg'} layout='fill' objectFit='contain'
-
-                                />
-                            </div>
-                            <div className={css.social_img}>
-                                <Image alt='svg' src={'/assets/svg/twitter.svg'} layout='fill' objectFit='contain'
-
-                                />
-                            </div>
-
+                            <Link href="#">
+                                <a className={css.social_img}>
+                                    <Image alt='svg' src={'/assets/svg/Group.svg'} layout='fill' objectFit='contain'/>
+                                </a>
+                            </Link>
+                            <Link href="#">
+                                <a className={css.social_img}>
+                                    <Image alt='svg' src={'/assets/svg/facebook.svg'} layout='fill' objectFit='contain'/>
+                                </a>
+                            </Link>
+                            <Link href="#">
+                                <a className={css.social_img}>
+                                    <Image alt='svg' src={'/assets/svg/twitter.svg'} layout='fill' objectFit='contain'/>
+                                </a>
+                            </Link>
                         </div>
-
-
                     </div>
 
                 </div>
 
                 <div className="pb-[30px] flex justify-center ">
-                 
-                        <a  className='font-mulish text-[14px] md:text-[16px]text-[#848484] font-medium   text-[#848484]'>All content © Copyright 2022</a>
+                    <a  className='font-mulish text-[14px] md:text-[16px]text-[#848484] font-medium   text-[#848484]'>All content © Copyright 2022</a>
                 </div>
 
             </div>

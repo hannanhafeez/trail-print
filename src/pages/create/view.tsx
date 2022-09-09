@@ -186,15 +186,11 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 					</MyAccordian>
 
 					<div className="flex flex-col gap-8 pt-20 pb-2 pr-4 text-center">
-						<h1 className='font-quicksand font-medium text-[42px] text-theme_blue'>
-							$ 20.00
-						</h1>
+						<h2 className='font-quicksand font-medium text-[42px] text-theme_blue'>
+							Total: $20.00
+						</h2>
 
 						<MyButton title='Preview & Order' className='py-2 text-[22px]'/>
-
-						<p className={[css.sidebar_label, ' py-2'].join(' ')}>
-							This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
-						</p>
 
 					</div>
 
