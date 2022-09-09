@@ -28,7 +28,7 @@ const CheckOut: FC = () => {
 				</div>
 
 				<div className="flex flex-col gap-6">
-					<div className="px-4 sm:px-8 py-8 md:px-[150px] md:py-[100px] text-center bg-[#FAFCF8]">
+					<div className={css.form_wrapper}>
 						<div className="flex flex-col  items-center gap-20">
 							<h1 className={css.form_heading}>YOUR DETAIL</h1>
 							<div className="flex flex-col w-full gap-[30px]">
@@ -117,7 +117,7 @@ const CheckOut: FC = () => {
 						</div>
 					</div>
 
-					<div className="px-4 sm:px-8 py-8 md:px-[150px] md:py-[100px] text-center bg-[#FAFCF8]">
+					<div className={css.form_wrapper}>
 						<h1 className={`${css.form_heading} text-center `}>SUMMARY</h1>
 
 						<div className="flex flex-col items-center gap-3">

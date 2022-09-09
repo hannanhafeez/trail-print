@@ -1,5 +1,9 @@
 @import "../../../styles/common.css";
 
+.form_wrapper{
+    @apply px-4 sm:px-8 py-8 md:px-[150px] md:py-[100px] text-center bg-[#FAFCF8];
+}
+
 .heading_styles{
 @apply  font-mulish font-medium text-center text-[20px]  sm:text-[28px] text-[#22588D] md:text-[32px] lg:text-[36px];
 }
@@ -21,3 +25,4 @@
 .head_common{
     @apply font-quicksand  text-[18px] ;
 }
+
