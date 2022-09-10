@@ -1,11 +1,11 @@
 @import '../../../styles/common.css';
 
 .main_view{
-    @apply flex-1 flex items-center;
+    @apply h-[calc(100vh-80px)] px-20 py-20 flex-1 flex justify-center items-center;
 }
 
 .static_sidebar{
-   @apply hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#FAFCF8]; 
+   @apply h-[calc(100vh-80px)] overflow-y-scroll hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#FAFCF8]; 
 }
 
 .sidebar_accordian_view{

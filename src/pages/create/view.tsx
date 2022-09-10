@@ -9,6 +9,7 @@ import MyInput from '../../components/MyInput'
 
 import { RadioGroup } from '@headlessui/react'
 import { Row, SelectButton, SelectImage } from './components'
+import Image from 'next/image'
 
 
 export type CreatePageViewProps = {
@@ -39,9 +40,11 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 		<div className='flex flex-col min-h-screen'>
 			<Header/>
 			
-			<section className={[css.my_container ,"flex-1 self-stretch flex"].join(' ')}>
+			<section className={[css.my_container, " flex-1 self-stretch flex"].join(' ')}>
 				<div className={css.main_view}>
-
+					<div className='relative w-full lg:h-[80%] aspect-[0.707]'>
+						<Image alt='Pirnt Layout' src='/assets/svg/print-layout.svg' layout='fill' objectFit='contain'  />
+					</div>
 				</div>
 
 				<div className={css.static_sidebar}>

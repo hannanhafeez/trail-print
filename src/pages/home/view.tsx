@@ -55,7 +55,26 @@ const HomeView: FC = () => {
 				</div>
 			</div>
 
-			<div className="pt-32 pb-20 bg-[#1E3561]">
+			<div className="relative pt-32 pb-20 bg-[#1E3561]">
+				<svg className="absolute top-0 scale-[0.4] md:scale-75 left-[50%]  translate-x-[-50%] translate-y-[-50%]"  width="120" height="530" viewBox="0 0 120 513" fill="none">
+					<defs>
+						<marker id="circle" viewBox="0 0 10 10"
+							refX="1" refY="5"
+							markerUnits="strokeWidth"
+							markerWidth="10" markerHeight="10"
+							orient="auto">
+							<svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+								<circle cx="4.32178" cy="4.19037" r="4" fill="#AFD130" />
+							</svg>
+						</marker>
+					</defs>
+					<path 
+						stroke="#A0B454" strokeWidth="2" strokeDasharray="6 6"   markerStart='url(#circle)' markerEnd='url(#circle)'
+						d="M65.2864 8.32483V42.6228C65.2864 94.0304 183.441 139.856 65.2864 199.451C-52.8678 259.045 23.4863 306.616 65.2864 322.952C176.448 366.396 63.0941 415.799 65.2864 474.663V504.272"
+					/>
+				</svg>
+
+
 				<div className={css.my_container}>
 					<div className="flex flex-col gap-16 bg-[#1E3561] py-[50px] md:py-[100px]">
 						<section className={css.section_three}>
