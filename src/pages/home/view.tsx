@@ -1,12 +1,12 @@
 import React, { FC, Fragment, useRef, useState } from "react";
-import Link from "next/link";
-import { SETTINGS } from "../../constants/pageLinks";
+
+
 import css from "./home.module.css";
 import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
-const Home: FC = () => {
+const HomeView: FC = () => {
 	return (
 		<div>
 			{/* Header */}
@@ -14,22 +14,19 @@ const Home: FC = () => {
 			{/* Header End */}
 			<div className=" bg-[rgba(195,192,171,0.5)]">
 				<div className={css.my_container}>
-				<section className={css.content_parent_top}>
+					<section className={css.content_parent_top}>
 						<div className={css.left_content}>
-							<h1>GIFT VOUCHERS</h1>
-							<h2>
-								The easiest way to gift a print to loved ones, which they can personalise.
-							</h2>
-							<h2>
-								Get in touch to purchase and receive one to print and wrap.
-							</h2>
+							<h1>CUSTOM PRINTS</h1>
+							<p>
+								Choose a theme style and add your Strava/GPX data from an event or adventure onto a personalised print — from £15.
+							</p>
 							<button>Get started</button>
 						</div>
 						<div className={css.img_wrapper_top}>
 							<div className={css.img_top}>
-								<Image src={'/assets/png/trailtrack.png'} alt="globe" objectFit="contain" layout="fill" />
+								<Image src={'/assets/png/trailtrack.png'} alt="globe" objectFit="contain" layout="fill" quality={100} />
 							</div>
-							
+
 						</div>
 					</section>
 				</div>
@@ -75,42 +72,42 @@ const Home: FC = () => {
 
 						</section>
 
-					
 
-						<section className={css.content_parent_reverse}>
-						<div className={css.left_content}>
-							<h1>EVENT ORGANIZERS</h1>
-							<h2>
-							We design bespoke, branded prints for your events and/or offer sponsor discounts for your participants.
-							</h2>
-							<button>Email Us</button>
-						</div>
-						<div className={css.img_wrapper_top}>
-							<div className={css.img_top}>
-								<Image src={'/assets/png/yourtrail.png'} alt="globe" objectFit="contain" layout="fill" />
-							</div>
-							
-						</div>
-					</section>
 
-					<section className={css.content_parent}>
-						<div className={css.left_content}>
-							<h1>GIFT VOUCHERS</h1>
-							<h2>
-								The easiest way to gift a print to loved ones, which they can personalise.
-							</h2>
-							<h2>
-								Get in touch to purchase and receive one to print and wrap.
-							</h2>
-							<button>Get started</button>
-						</div>
-						<div className={css.img_wrapper}>
-							<div className={css.img}>
-								<Image src={'/assets/png/logomask.png'} alt="globe" objectFit="contain" layout="fill" />
+						<section className={[css.content_parent_reverse, ''].join(' ')}>
+							<div className={css.left_content}>
+								<h1>EVENT ORGANIZERS</h1>
+								<h2>
+									We design bespoke, branded prints for your events and/or offer sponsor discounts for your participants.
+								</h2>
+								<button>Email Us</button>
 							</div>
-							<h2 className={css.vouch}>GIFT VOUCHERS</h2>
-						</div>
-					</section>
+							<div className={css.img_wrapper_top}>
+								<div className={css.img_top}>
+									<Image src={'/assets/png/yourtrail.png'} alt="globe" objectFit="contain" layout="fill" />
+								</div>
+
+							</div>
+						</section>
+
+						<section className={[css.content_parent, ''].join(' ')}>
+							<div className={css.left_content}>
+								<h1>GIFT VOUCHERS</h1>
+								<h2>
+									The easiest way to gift a print to loved ones, which they can personalise.
+								</h2>
+								<h2>
+									Get in touch to purchase and receive one to print and wrap.
+								</h2>
+								<button>Get started</button>
+							</div>
+							<div className={[css.img_wrapper, 'pb-4'].join(' ')}>
+								<div className={[css.img, 'aspect-square'].join(' ')}>
+									<Image src={'/assets/png/logomask.png'} alt="globe" objectFit="contain" layout="fill" quality={100}/>
+								</div>
+								<h2 className={css.vouch}>GIFT VOUCHERS</h2>
+							</div>
+						</section>
 
 					</div>
 
@@ -118,11 +115,12 @@ const Home: FC = () => {
 
 
 			</div>
-			<div className="bg-[rgb(195,192,171,50)] py-12 md:py-48">
+
+			<div className="bg-[rgb(195,192,171,50)] py-12 md:py-36">
 
 				<div className={css.my_container}>
 					<div className="">
-				<h1>TESTIMONIALS</h1>
+						<h1>TESTIMONIALS</h1>
 
 					</div>
 
@@ -140,46 +138,45 @@ const Home: FC = () => {
 
 					</section>
 				</div>
+			</div>
 
-				<section className="bg-[#162646] py-12 ">
-					<div className={css.my_container}>
+			<section className="bg-[#162646] py-12 ">
+				<div className={css.my_container}>
 
 					<div className={css.testomonial_wrapper}>
 
-					<h1 className={css.testomonial_heading}>OUR CLIENTS</h1>
-					
-					<div className={css.testomonial_img}>
-								
-								<div className={css.img_style}>
-									<Image src={'/assets/png/gravel.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
+						<h1 className={css.testomonial_heading}>OUR CLIENTS</h1>
 
-								<div className={css.img_style}>
-									<Image src={'/assets/png/rhino.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
+						<div className={css.testomonial_img}>
 
-								<div className={css.img_style}>
-									<Image src={'/assets/png/pan2.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
-								
-								<div className={css.img_style}>
-									<Image src={'/assets/png/tribe.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
-								<div className={css.img_style}>
-									<Image src={'/assets/png/peaks.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
-								<div className={css.img_style}>
-									<Image src={'/assets/png/brit.png'} alt="globe" objectFit="contain" layout="fill" />
-								</div>
-
+							<div className={css.img_style}>
+								<Image src={'/assets/png/gravel.png'} alt="globe" objectFit="contain" layout="fill" />
 							</div>
 
-					</div>
-					</div>
+							<div className={css.img_style}>
+								<Image src={'/assets/png/rhino.png'} alt="globe" objectFit="contain" layout="fill" />
+							</div>
 
-				</section>
+							<div className={css.img_style}>
+								<Image src={'/assets/png/pan2.png'} alt="globe" objectFit="contain" layout="fill" />
+							</div>
 
-			</div>
+							<div className={css.img_style}>
+								<Image src={'/assets/png/tribe.png'} alt="globe" objectFit="contain" layout="fill" />
+							</div>
+							<div className={css.img_style}>
+								<Image src={'/assets/png/peaks.png'} alt="globe" objectFit="contain" layout="fill" />
+							</div>
+							<div className={css.img_style}>
+								<Image src={'/assets/png/brit.png'} alt="globe" objectFit="contain" layout="fill" />
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+
+			</section>
 
 
 			{/* Footer */}
@@ -190,4 +187,4 @@ const Home: FC = () => {
 	);
 };
 
-export default Home;
+export default HomeView;

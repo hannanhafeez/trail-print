@@ -1,12 +1,8 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import Home from './home.page';
+import HomeView from './view';
 
-export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-
-    return (
-       <Home/>
-
-    );
+export default function Home({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    return <HomeView/>;
 }
 
 
