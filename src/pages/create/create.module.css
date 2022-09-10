@@ -15,3 +15,33 @@
 .sidebar_label{
     @apply font-quicksand text-14 text-center text-theme_dark_green pl-2;
 }
+
+
+.color_row{
+    @apply flex items-center gap-4 font-quicksand font-light text-17;
+}
+
+.color_row>div{
+    --size: 25px;
+    @apply outline outline-[hsla(52,17%,72%,0.5)];
+    cursor: pointer;
+    border-radius: calc(var(--size)/2);
+    overflow: hidden;
+    width: var(--size);
+    height: var(--size);
+}
+
+.color_row > div > input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    width: var(--size);
+    height: var(--size);
+}
+
+.color_row > div > input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color_row > div > input[type="color"]::-webkit-color-swatch {
+    border: none;
+}

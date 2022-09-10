@@ -1,4 +1,5 @@
-import React, { FC, useReducer, useState } from 'react'
+import { FC, useReducer, useState } from 'react'
+import Image from 'next/image'
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
 
@@ -9,32 +10,16 @@ import MyInput from '../../components/MyInput'
 
 import { RadioGroup } from '@headlessui/react'
 import { Row, SelectButton, SelectImage } from './components'
-import Image from 'next/image'
+import { createReducer, LAYOUT, ORIENTATION, pageState, THEME } from '../../store/slices/createPageSlice'
+import { debounce } from '../../utils/helperFunctions'
 
 
 export type CreatePageViewProps = {
 }
 
-type PageState = {
-	orientation: 'portrait' | 'landscape',
-	layout: '1' | '2' | '3' | '4',
-	theme: '1' | '2' | '3' | '4' | '5' | '6',
-}
-
-const pageState: PageState  = {
-	orientation: 'portrait',
-	layout: '1',
-	theme: '1',
-}
-
 const CreatePageView:FC<CreatePageViewProps> = ({}) => {
-	const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-	const [layout, setLayout] = useState<'1' | '2' | '3' | '4'>('1');
-	const [theme, setTheme] = useState<'1' | '2' | '3' | '4' | '5' | '6'>('1');
-
-	/* const [state, dispatch] = useReducer((state, action)=>{
-
-	}, pageState) */
+	
+	const [state, dispatch] = useReducer(createReducer, pageState)
 
 	return (
 		<div className='flex flex-col min-h-screen'>
@@ -72,8 +57,8 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 					<MyAccordian title='Labels'>
 						<div className={css.sidebar_accordian_view}>
 							<div className='pr-2 flex flex-col gap-y-6'>
-								<MyInput placeholder='Title'/>
-								<MyInput placeholder='Subtitle'/>
+								<MyInput placeholder='Title' type={'text'} onChange={(e)=>dispatch({type:'SET_TITLE', payload: e.target.value})}/>
+								<MyInput placeholder='Subtitle' type={'text'} onChange={(e) => dispatch({ type: 'SET_SUBTITLE', payload: e.target.value })} />
 
 								<div className='flex flex-col gap-y-6'>
 									<Row>
@@ -116,7 +101,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 
 					<MyAccordian title='Layout'>
 						<div className={css.sidebar_accordian_view}>
-							<RadioGroup value={orientation} onChange={setOrientation} className='flex gap-4'>
+							<RadioGroup value={state.orientation} onChange={(v: ORIENTATION)=>dispatch({type:'SET_ORIENTATION', payload:v})}  className='flex gap-4'>
 								<SelectButton title='Portrait' value="portrait" >
 									<svg width="23" height="23" viewBox="0 0 23 23">
 										<rect x="6.25" y="1.32928" width="11" height="20.2411" fill="white" stroke="#4C6CAC" />
@@ -130,7 +115,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 								</SelectButton>
 							</RadioGroup>
 							
-							<RadioGroup value={layout} onChange={setLayout} className='flex gap-4'>
+							<RadioGroup value={state.layout} onChange={(v: LAYOUT)=>dispatch({type:'SET_LAYOUT', payload:v})} className='flex gap-4'>
 								<SelectButton value='1'>
 									<svg width="28" height="28" viewBox="0 0 28 28" fill="none">
 										<path d="M20.7613 6.50446H8.48871C7.38414 6.50446 6.48871 7.39989 6.48871 8.50446V21.3952" stroke="white" />
@@ -165,7 +150,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 
 					<MyAccordian title='Themes'>
 						<div className={css.sidebar_accordian_view}>
-							<RadioGroup value={theme} onChange={setTheme} className='grid grid-cols-2 xl:grid-cols-3 gap-7'>
+							<RadioGroup value={state.theme} onChange={(v:THEME)=>dispatch({type:'SET_THEME', payload:v})} className='grid grid-cols-2 xl:grid-cols-3 gap-7'>
 								<SelectImage value='1' title='Outlines: 1' 	color='#ED4512' src='/assets/theme_imgs/1.png' />
 								<SelectImage value='2' title='Outlines: 2' 	color='#00225C' src='/assets/theme_imgs/2.png' />
 								<SelectImage value='3' title='Heather' 		color='#524F32' src='/assets/theme_imgs/3.png' />
@@ -178,7 +163,26 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 
 					<MyAccordian title='Colors'>
 						<div className={css.sidebar_accordian_view}>
-
+							<div className={css.color_row}>
+								<div><input defaultValue={state.colors.primaryText} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "primaryText", payload: e.target.value}), 20)()}/></div>
+								<span>Primary Text Color</span>
+							</div>
+							<div className={css.color_row}>
+								<div><input defaultValue={state.colors.secondaryText} type={'color'} onChange={(e)=>debounce(()=>dispatch({ type: "secondaryText", payload: e.target.value }), 20)()}/></div>
+								<span>Secondary Text Color</span>
+							</div>
+							<div className={css.color_row}>
+								<div><input defaultValue={state.colors.background} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "background", payload: e.target.value}), 20)()}/></div>
+								<span>Background Color</span>
+							</div>
+							<div className={css.color_row}>
+								<div><input defaultValue={state.colors.activity} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "activity", payload: e.target.value}), 20)()}/></div>
+								<span>Activity Color</span>
+							</div>
+							<div className={css.color_row}>
+								<div><input defaultValue={state.colors.elevation} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "elevation", payload: e.target.value}), 20)()}/></div>
+								<span>Elevation Color</span>
+							</div>
 						</div>
 					</MyAccordian>
 					
