@@ -1,0 +1,42 @@
+.scrollContainer {
+    position: relative;
+    scrollbar-width: thin;
+    /* "auto" or "thin" */
+    scrollbar-color: #162646 #162646;
+    /* scroll thumb and track */
+    @apply overflow-y-auto w-full flex snap-x snap-mandatory;
+}
+
+/* Works on Chrome, Edge, and Safari */
+.scrollContainer::-webkit-scrollbar {
+    height: 5px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+    background: #162646;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+    background-color: #c6c6c6;
+    /* border-radius: 4px; */
+    /* border: 0px solid #00000011; */
+}
+
+.testimonial_card{
+	@apply self-stretch bg-[#162646] text-white text-center p-12 2xl:p-20 min-h-[300px] flex flex-col items-center gap-10 min-w-full snap-center snap-always;
+}
+.testimonial_card > p{
+    @apply font-quicksand font-light text-20 md:text-24px leading-relaxed;
+}
+
+.testimonialInfo{
+    @apply flex flex-col gap-1;
+}
+
+.testimonialInfo > span:first-child{
+    @apply font-mulish font-medium text-26px;
+}
+
+.testimonialInfo > span:last-child{
+    @apply font-mulish font-normal text-18;
+}

@@ -1,10 +1,12 @@
 import React, { FC, Fragment, useRef, useState } from "react";
 
-
 import css from "./home.module.css";
+
 import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
+import Section1Bg from "./components/Section1Bg";
+import TestimonialSection from "./components/TestimonialSection";
 
 const HomeView: FC = () => {
 	return (
@@ -12,7 +14,28 @@ const HomeView: FC = () => {
 			{/* Header */}
 			<Header />
 			{/* Header End */}
-			<div className=" bg-[rgba(195,192,171,0.5)]">
+
+			<section className="relative min-h-[480px] sm:min-h-[660px] 2xl:min-h-[800px]">
+				<Section1Bg/>
+				<div className={css.section1_greenbg}></div>
+				<div className="absolute inset-0">
+					<div className={[css.my_container, css.text_container].join(' ')}>
+						<div className={css.section1_greenbg_inner}>
+							<h1>
+								Print your “Trials” printed easier than ever
+							</h1>
+							
+							<p>
+								Custom prints of your adventures and events.
+								Art prints to get you motivated.
+								Running, cycling, hiking and more…
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<div className="py-24 lg:pt-32 bg-[rgba(195,192,171,0.5)]">
 				<div className={css.my_container}>
 					<section className={css.content_parent_top}>
 						<div className={css.left_content}>
@@ -31,10 +54,10 @@ const HomeView: FC = () => {
 					</section>
 				</div>
 			</div>
-			<div className="bg-[#1E3561]">
-				<div className={css.my_container}>
 
-					<div className="flex flex-col gap-12 bg-[#1E3561] py-[50px] md:py-[100px]">
+			<div className="pt-32 pb-20 bg-[#1E3561]">
+				<div className={css.my_container}>
+					<div className="flex flex-col gap-16 bg-[#1E3561] py-[50px] md:py-[100px]">
 						<section className={css.section_three}>
 							<div className={css.wrapper}>
 								<div className=" bg-white p-2 rounded-full">
@@ -110,30 +133,29 @@ const HomeView: FC = () => {
 						</section>
 
 					</div>
-
 				</div>
-
-
 			</div>
 
-			<div className="bg-[rgb(195,192,171,50)] py-12 md:py-36">
+			<div className="bg-[rgb(195,192,171,50%)] py-16 md:py-36">
 
 				<div className={css.my_container}>
-					<div className="">
-						<h1>TESTIMONIALS</h1>
-
-					</div>
+					<h1 className="mb-12 text-center font-mulish font-semibold text-[42px] text-theme_dark_green">TESTIMONIALS</h1>
+					
+					<TestimonialSection/>
 
 					<section className={css.track_wrapper}>
 						<div className={css.track}>
 							<div className="w-full">
-								<div className="relative w-full  aspect-square md:full md:h-[400px]">
+								<div className="mx-auto relative w-full max-w-[600px] h-auto aspect-video">
 									<Image src={'/assets/png/bicycle.png'} alt="globe" objectFit="contain" layout="fill" />
 								</div>
 							</div>
 
-							<h1>Paper Trails is a family run (ha!) business.
-								We’re runners, cyclists and only sell products we’d buy ourselves.</h1>
+							<span>
+								Trail Pirnts is a family run (ha!) business.
+								<br/>
+								We’re runners, cyclists and only sell products we’d buy ourselves.
+							</span>
 						</div>
 
 					</section>

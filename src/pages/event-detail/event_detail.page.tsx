@@ -1,7 +1,6 @@
 
-import React, { FC, Fragment, useRef, useState } from "react";
-import Link from "next/link";
-import { SETTINGS } from "../../constants/pageLinks";
+import React, { FC, } from "react";
+
 import css from "./event_detail.module.css";
 import Image from "next/image";
 import Footer from "../../components/Footer";
