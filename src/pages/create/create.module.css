@@ -45,3 +45,16 @@
 .color_row > div > input[type="color"]::-webkit-color-swatch {
     border: none;
 }
+
+
+.detail_row{
+    @apply flex gap-x-4 text-left;
+}
+
+.detail_row_circle{
+    @apply self-start outline outline-[3px] outline-[hsla(52,17%,72%,0.5)] w-5 h-5 aspect-square rounded-full;
+}
+
+.detail_label{
+    @apply font-quicksand font-light text-theme_dark_blue text-18 leading-tight;
+}

@@ -10,7 +10,7 @@ const MyInput:FC<MyInputProps> = ({
     ...props
 }) => {
     return (
-        <input {...props} className={`${css.input_css}`}/>
+        <input {...props} className={`${css.input_css} ${className}`}/>
     )
 }
 

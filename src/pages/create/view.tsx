@@ -1,4 +1,4 @@
-import { FC, useReducer, useState } from 'react'
+import { ChangeEvent, FC, useCallback, useReducer, useState } from 'react'
 import Image from 'next/image'
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
@@ -10,7 +10,7 @@ import MyInput from '../../components/MyInput'
 
 import { RadioGroup } from '@headlessui/react'
 import { Row, SelectButton, SelectImage } from './components'
-import { createReducer, LAYOUT, ORIENTATION, pageState, THEME } from '../../store/slices/createPageSlice'
+import { createReducer, LAYOUT, ORIENTATION, pageState, THEME, COLOR } from '../../store/slices/createPageSlice'
 import { debounce } from '../../utils/helperFunctions'
 
 
@@ -20,6 +20,10 @@ export type CreatePageViewProps = {
 const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	
 	const [state, dispatch] = useReducer(createReducer, pageState)
+
+	const onColorChange = useCallback((colorField: COLOR, e: ChangeEvent<HTMLInputElement>)=>{
+		debounce(() => dispatch({ type: colorField, payload: e.target.value }), 20)();
+	}, [dispatch])
 
 	return (
 		<div className='flex flex-col min-h-screen'>
@@ -164,30 +168,58 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 					<MyAccordian title='Colors'>
 						<div className={css.sidebar_accordian_view}>
 							<div className={css.color_row}>
-								<div><input defaultValue={state.colors.primaryText} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "primaryText", payload: e.target.value}), 20)()}/></div>
-								<span>Primary Text Color</span>
+								<div><input id='primaryText' defaultValue={state.colors.primaryText} type={'color'} onChange={(e)=>onColorChange("primaryText", e)}/></div>
+								<label htmlFor='primaryText'>Primary Text Color</label>
 							</div>
 							<div className={css.color_row}>
-								<div><input defaultValue={state.colors.secondaryText} type={'color'} onChange={(e)=>debounce(()=>dispatch({ type: "secondaryText", payload: e.target.value }), 20)()}/></div>
-								<span>Secondary Text Color</span>
+								<div><input id='secondaryText' defaultValue={state.colors.secondaryText} type={'color'} onChange={(e)=>onColorChange("secondaryText", e)}/></div>
+								<label htmlFor='secondaryText'>Secondary Text Color</label>
 							</div>
 							<div className={css.color_row}>
-								<div><input defaultValue={state.colors.background} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "background", payload: e.target.value}), 20)()}/></div>
-								<span>Background Color</span>
+								<div><input id='background' defaultValue={state.colors.background} type={'color'} onChange={(e)=>onColorChange("background", e)}/></div>
+								<label htmlFor='background'>Background Color</label>
 							</div>
 							<div className={css.color_row}>
-								<div><input defaultValue={state.colors.activity} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "activity", payload: e.target.value}), 20)()}/></div>
-								<span>Activity Color</span>
+								<div><input id='activity' defaultValue={state.colors.activity} type={'color'} onChange={(e)=>onColorChange("activity", e)}/></div>
+								<label htmlFor='activity'>Activity Color</label>
 							</div>
 							<div className={css.color_row}>
-								<div><input defaultValue={state.colors.elevation} type={'color'} onChange={(e)=>debounce(()=>dispatch({type: "elevation", payload: e.target.value}), 20)()}/></div>
-								<span>Elevation Color</span>
+								<div><input id='elevation' defaultValue={state.colors.elevation} type={'color'} onChange={(e)=>onColorChange("elevation", e)}/></div>
+								<label htmlFor='elevation'>Elevation Color</label>
 							</div>
 						</div>
 					</MyAccordian>
 					
 					<MyAccordian title='Details'>
 						<div className={css.sidebar_accordian_view}>
+							<button className={css.detail_row} onClick={()=>dispatch({type:'TOGGLE_ELEVATION_PROFILE'})}>
+								<div className={[css.detail_row_circle + ' ' + (state.elevationProfile ? 'bg-theme_green' :' ')].join(' ')}></div>
+								<div className='flex flex-col gap-y-2'>
+									<span className={css.detail_label}>Elevation Profile</span>
+									<p className={[css.sidebar_label, 'text-left px-0'].join(' ')}>
+										This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
+									</p>
+								</div>
+							</button>
+							
+							<button className={css.detail_row} onClick={()=>dispatch({type:'TOGGLE_DASHED_LINES'})}>
+								<div className={[css.detail_row_circle + ' ' + (state.useDashedLined ? 'bg-theme_green' :' ')].join(' ')}></div>
+								<span className={css.detail_label}>Use dashed lines</span>
+							</button>
+							
+							<button className={css.detail_row} onClick={()=>dispatch({type:'TOGGLE_ENDPOINTS'})}>
+								<div className={[css.detail_row_circle + ' ' + (state.endpoints ? 'bg-theme_green' :' ')].join(' ')}></div>
+								<span className={css.detail_label}>Endpoints for all activities</span>
+							</button>
+							
+							
+							<button className={css.detail_row + ' items-baseline'} >
+								<MyInput defaultValue={state.activityThickness}  type={'number'} min={1} max={20} onChange={(e)=>dispatch({type: 'SET_ACTIVITY_THICKNESS', payload: Math.max(0, Math.min(20, e.target.valueAsNumber))})}
+									className='w-auto flex-1'
+								/>
+								<span className={css.detail_label + ' flex-[2]'}>Activity Thinkness</span>
+							</button>
+
 
 						</div>
 					</MyAccordian>
