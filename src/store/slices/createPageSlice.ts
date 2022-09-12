@@ -1,17 +1,23 @@
 export type ORIENTATION = 'portrait' | 'landscape';
 export type LAYOUT = '1' | '2' | '3' | '4';
 export type THEME = '1' | '2' | '3' | '4' | '5' | '6';
+
+const vl_ids = ['vl1' , 'vl2' , 'vl3' , 'vl4' , 'vl5' , 'vl6'] as const
+export type VALUE_LABELS = typeof vl_ids[number];
+
 export type COLOR =		'primaryText' | 
 						'secondaryText' | 
 						'background' | 
 						'activity' | 
 						'elevation' ;
 
+
 export type PageState = {
 	text: {
 		title: string,
 		subtitle: string,
 	},
+	valueLabels: {id: VALUE_LABELS, value: string, label: string}[],
 	orientation: ORIENTATION,
 	layout: LAYOUT,
 	theme: THEME,
@@ -33,6 +39,7 @@ export const pageState: PageState = {
 		title: '',
 		subtitle: '',
 	},
+	valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),
 	orientation: 'portrait',
 	layout: '1',
 	theme: '1',
@@ -52,6 +59,7 @@ export const pageState: PageState = {
 /* Actions */
 
 type SET_TITLE      = { type: 'SET_TITLE',    payload: string,}
+type SET_VALUE_LABELS = { type: 'SET_VALUE_LABELS', payload: { id: VALUE_LABELS, target: 'v' | 'l', value: string},}
 type SET_SUBTITLE   = { type: 'SET_SUBTITLE', payload: string,}
 type SET_ORIENTATION  = { type: 'SET_ORIENTATION', payload: ORIENTATION,}
 
@@ -66,11 +74,12 @@ type TOGGLE_ENDPOINTS  = { type: 'TOGGLE_ENDPOINTS', payload?: undefined,}
 type SET_ACTIVITY_THICKNESS  = { type: 'SET_ACTIVITY_THICKNESS', payload: number,}
 
 
-type Action = SET_ORIENTATION 
+type Action = SET_TITLE 
+			| SET_SUBTITLE 
+			| SET_VALUE_LABELS 
+			| SET_ORIENTATION 
 			| SET_LAYOUT 
 			| SET_THEME 
-			| SET_TITLE 
-			| SET_SUBTITLE 
 			| SET_COLOR
 			| TOGGLE_ELEVATION_PROFILE
 			| TOGGLE_DASHED_LINES
@@ -85,6 +94,17 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, text: {...state.text, title: action.payload}};
 		case 'SET_SUBTITLE':
 			return { ...state, text: {...state.text, subtitle: action.payload}};
+
+		case 'SET_VALUE_LABELS':
+			const id = state.valueLabels.findIndex((v)=>v.id===action.payload.id);
+			const newArray = [...state.valueLabels];
+			if(action.payload.target === "v"){
+				newArray[id].value = action.payload.value;
+			}else{
+				newArray[id].label = action.payload.value;
+			}
+			return {...state};
+		
 		case 'SET_ORIENTATION':
 			return { ...state, orientation: action.payload };
 		case 'SET_LAYOUT':
@@ -118,3 +138,11 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 	}
 }
 
+export const valueLabelAction = (id: VALUE_LABELS, target: 'v' | 'l', value: string): SET_VALUE_LABELS => {
+	return {
+		type:'SET_VALUE_LABELS',
+		payload:{
+			id, target, value
+		}
+	}
+}

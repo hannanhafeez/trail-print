@@ -1,4 +1,6 @@
-import { ChangeEvent, FC, useCallback, useReducer, useState } from 'react'
+import { ChangeEvent, Component, FC, ReactNode, useCallback, useReducer, useState } from 'react'
+import DraggableList from "react-draggable-list";
+
 import Image from 'next/image'
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
@@ -10,7 +12,7 @@ import MyInput from '../../components/MyInput'
 
 import { RadioGroup } from '@headlessui/react'
 import { Row, SelectButton, SelectImage } from './components'
-import { createReducer, LAYOUT, ORIENTATION, pageState, THEME, COLOR } from '../../store/slices/createPageSlice'
+import { createReducer, LAYOUT, ORIENTATION, pageState, THEME, COLOR, valueLabelAction, VALUE_LABELS } from '../../store/slices/createPageSlice'
 import { debounce } from '../../utils/helperFunctions'
 
 
@@ -37,7 +39,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 				</div>
 
 				<div className={css.static_sidebar}>
-					<MyAccordian defaultOpen title='Add Activities'>
+					<MyAccordian title='Add Activities'>
 						<div className={css.sidebar_accordian_view}>
 							<p className={css.sidebar_label}>
 								This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
@@ -58,47 +60,30 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 						</div>
 					</MyAccordian>
 
-					<MyAccordian title='Labels'>
+					<MyAccordian defaultOpen title='Labels'>
 						<div className={css.sidebar_accordian_view}>
 							<div className='pr-2 flex flex-col gap-y-6'>
 								<MyInput placeholder='Title' type={'text'} onChange={(e)=>dispatch({type:'SET_TITLE', payload: e.target.value})}/>
 								<MyInput placeholder='Subtitle' type={'text'} onChange={(e) => dispatch({ type: 'SET_SUBTITLE', payload: e.target.value })} />
 
 								<div className='flex flex-col gap-y-6'>
-									<Row>
-										<MyInput placeholder='Value 1'/>
-										<MyInput placeholder='Label 1'/>
-									</Row>
-									
-									<Row>
-										<MyInput placeholder='Value 2'/>
-										<MyInput placeholder='Label 2'/>
-									</Row>
-									
-									<Row>
-										<MyInput placeholder='Value 3'/>
-										<MyInput placeholder='Label 3'/>
-									</Row>
-									
-									<Row>
-										<MyInput placeholder='Value 4'/>
-										<MyInput placeholder='Label 4'/>
-									</Row>
-									
-									<Row>
-										<MyInput placeholder='Value 5'/>
-										<MyInput placeholder='Label 5'/>
-									</Row>
-									
-									<Row>
-										<MyInput placeholder='Value 6'/>
-										<MyInput placeholder='Label 6'/>
-									</Row>
+									{
+										state.valueLabels.map((v, ind)=>(
+											<Row key={v.id}>
+												<MyInput defaultValue={v.value} placeholder={`Value ${v.id.slice(2,3)}`} 
+													onChange={(e)=>dispatch(valueLabelAction(v.id, 'v', e.target.value))}
+												/>
+												<MyInput defaultValue={v.label} placeholder={`Label ${v.id.slice(2,3)}`} 
+													onChange={(e)=>dispatch(valueLabelAction(v.id, 'l', e.target.value))}
+												/>
+											</Row>
+										))
+									}
 								</div>
 							</div>
 
 							<p className={[css.sidebar_label, 'mt-4'].join(' ')}>
-								This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
+								To remove any labels from your poster, simply delete the text from the field.
 							</p>
 						</div>
 					</MyAccordian>
@@ -197,7 +182,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 								<div className='flex flex-col gap-y-2'>
 									<span className={css.detail_label}>Elevation Profile</span>
 									<p className={[css.sidebar_label, 'text-left px-0'].join(' ')}>
-										This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
+										Please make sure your activities are ordered correctly
 									</p>
 								</div>
 							</button>
