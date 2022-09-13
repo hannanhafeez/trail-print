@@ -5,7 +5,7 @@
 }
 
 .static_sidebar{
-   @apply h-[calc(100vh-80px)] overflow-y-scroll hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#FAFCF8]; 
+   @apply h-[calc(100vh-80px)] overflow-y-scroll hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#fafcf8]; 
 }
 
 .sidebar_accordian_view{

@@ -1,5 +1,4 @@
-import { ChangeEvent, Component, FC, ReactNode, useCallback, useReducer, useState } from 'react'
-import DraggableList from "react-draggable-list";
+import { ChangeEvent, CSSProperties, FC, useCallback, useReducer, } from 'react'; 
 
 import Image from 'next/image'
 import Footer from '../../components/Footer'
@@ -10,14 +9,36 @@ import MyAccordian from '../../components/MyAccordian'
 import MyButton, { MySelectButton } from '../../components/MyButton'
 import MyInput from '../../components/MyInput'
 
+import { DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
 import { RadioGroup } from '@headlessui/react'
 import { Row, SelectButton, SelectImage } from './components'
-import { createReducer, LAYOUT, ORIENTATION, pageState, THEME, COLOR, valueLabelAction, VALUE_LABELS } from '../../store/slices/createPageSlice'
+import { createReducer, LAYOUT, ORIENTATION, pageState, THEME, COLOR, valueLabelAction, VALUE_LABELS, } from '../../store/slices/createPageSlice'
 import { debounce } from '../../utils/helperFunctions'
 
 
 export type CreatePageViewProps = {
 }
+
+const reorder = (list: VALUE_LABELS, startIndex: number, endIndex: number) => {
+	const result = Array.from(list);
+	const [removed] = result.splice(startIndex, 1);
+	result.splice(endIndex, 0, removed);
+
+	return result;
+};
+
+const grid = 8;
+
+
+const getItemStyle = (isDragging: boolean, draggableStyle?: DraggingStyle | NotDraggingStyle): CSSProperties => ({
+	// some basic styles to make the items look a bit nicer
+	// userSelect: "none",
+	// change background colour if dragging
+	background: isDragging ? "#fafcf8" : "transparent",
+
+	// styles we need to apply on draggables
+	...draggableStyle
+});
 
 const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	
@@ -26,6 +47,22 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	const onColorChange = useCallback((colorField: COLOR, e: ChangeEvent<HTMLInputElement>)=>{
 		debounce(() => dispatch({ type: colorField, payload: e.target.value }), 20)();
 	}, [dispatch])
+
+	const onDragEnd = (result: DropResult,) => {
+		// dropped outside the list
+		if (!result.destination) {
+			return;
+		}
+
+		const items = reorder(
+			state.valueLabels,
+			result.source.index,
+			result.destination.index
+		);
+
+		dispatch({type:'SET_VALUE_LABELS_ORDERED', payload: items})
+
+	}
 
 	return (
 		<div className='flex flex-col min-h-screen'>
@@ -65,21 +102,46 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 							<div className='pr-2 flex flex-col gap-y-6'>
 								<MyInput placeholder='Title' type={'text'} onChange={(e)=>dispatch({type:'SET_TITLE', payload: e.target.value})}/>
 								<MyInput placeholder='Subtitle' type={'text'} onChange={(e) => dispatch({ type: 'SET_SUBTITLE', payload: e.target.value })} />
-
-								<div className='flex flex-col gap-y-6'>
-									{
-										state.valueLabels.map((v, ind)=>(
-											<Row key={v.id}>
-												<MyInput defaultValue={v.value} placeholder={`Value ${v.id.slice(2,3)}`} 
-													onChange={(e)=>dispatch(valueLabelAction(v.id, 'v', e.target.value))}
-												/>
-												<MyInput defaultValue={v.label} placeholder={`Label ${v.id.slice(2,3)}`} 
-													onChange={(e)=>dispatch(valueLabelAction(v.id, 'l', e.target.value))}
-												/>
-											</Row>
-										))
-									}
-								</div>
+								
+								<DragDropContext onDragEnd={onDragEnd}>
+									<Droppable droppableId="droppable">
+										{(provided, snapshot) => (
+											<div
+												{...provided.droppableProps}
+												ref={provided.innerRef}
+												className="flex flex-col gap-y-6 py-4"
+											>
+												{
+													state.valueLabels.map((v, ind) => (
+														<Draggable key={v.id} draggableId={v.id} index={ind}>
+															{(provided, snapshot) => (
+																<div
+																	ref={provided.innerRef}
+																	{...provided.draggableProps}
+																	{...provided.dragHandleProps}
+																	style={getItemStyle(
+																		snapshot.isDragging,
+																		provided.draggableProps.style
+																	)}
+																>
+																	<Row>
+																		<MyInput defaultValue={v.value} placeholder={`Value ${v.id.slice(2, 3)}`}
+																			onChange={(e) => dispatch(valueLabelAction(v.id, 'v', e.target.value))}
+																		/>
+																		<MyInput defaultValue={v.label} placeholder={`Label ${v.id.slice(2, 3)}`}
+																			onChange={(e) => dispatch(valueLabelAction(v.id, 'l', e.target.value))}
+																		/>
+																	</Row>
+																</div>
+															)}
+														</Draggable>
+													))
+												}
+												{provided.placeholder}
+											</div>
+										)}
+									</Droppable>
+								</DragDropContext>
 							</div>
 
 							<p className={[css.sidebar_label, 'mt-4'].join(' ')}>
