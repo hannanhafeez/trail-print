@@ -1,60 +1,13 @@
 @import '../../../styles/common.css';
 
 .main_view{
-    @apply h-[calc(100vh-80px)] px-20 py-20 flex-1 flex justify-center items-center;
-}
+    @apply h-[calc(100vh-80px)] px-0 md:px-2 lg:px-20 py-10 lg:py-20 flex-1 flex justify-center items-center;
+}    
 
 .static_sidebar{
    @apply h-[calc(100vh-80px)] overflow-y-scroll hidden md:flex md:w-[40%] lg:w-64 xl:w-96 min-h-full flex-col py-20 pl-8 bg-[#fafcf8]; 
 }
 
-.sidebar_accordian_view{
-    @apply flex flex-col gap-5 py-10 pr-4;
-}
-
-.sidebar_label{
-    @apply font-quicksand text-14 text-center text-theme_dark_green pl-2;
-}
-
-
-.color_row{
-    @apply flex items-center gap-4 font-quicksand font-light text-17;
-}
-
-.color_row>div{
-    --size: 25px;
-    @apply outline outline-[hsla(52,17%,72%,0.5)];
-    cursor: pointer;
-    border-radius: calc(var(--size)/2);
-    overflow: hidden;
-    width: var(--size);
-    height: var(--size);
-}
-
-.color_row > div > input[type="color"] {
-    -webkit-appearance: none;
-    border: none;
-    width: var(--size);
-    height: var(--size);
-}
-
-.color_row > div > input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-.color_row > div > input[type="color"]::-webkit-color-swatch {
-    border: none;
-}
-
-
-.detail_row{
-    @apply flex gap-x-4 text-left;
-}
-
-.detail_row_circle{
-    @apply self-start outline outline-[3px] outline-[hsla(52,17%,72%,0.5)] w-5 h-5 aspect-square rounded-full;
-}
-
-.detail_label{
-    @apply font-quicksand font-light text-theme_dark_blue text-18 leading-tight;
+.total_label{
+    @apply font-quicksand font-medium text-[42px] text-theme_blue;
 }

@@ -14,7 +14,7 @@ const Footer: FC<FooterProps> = ({}) => {
 
             <div className={css.my_container}>
 
-                <div className="flex flex-col md:flex-row justify-between pt-[144px]">
+                <div className="flex flex-col md:flex-row justify-between pt-20 md:pt-32">
 
                     <div className="flex flex-col flex-1">
 

@@ -76,7 +76,7 @@ type TOGGLE_ENDPOINTS  = { type: 'TOGGLE_ENDPOINTS', payload?: undefined,}
 type SET_ACTIVITY_THICKNESS  = { type: 'SET_ACTIVITY_THICKNESS', payload: number,}
 
 
-type Action = SET_TITLE 
+export type Action = SET_TITLE 
 			| SET_SUBTITLE 
 			| SET_VALUE_LABELS 
 			| SET_VALUE_LABELS_ORDERED 

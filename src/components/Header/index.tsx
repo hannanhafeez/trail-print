@@ -34,7 +34,7 @@ const Header:FC<HeaderProps> = ({}) => {
             </div>
             
             {/* This `show` prop controls all nested `Transition.Child` components. */}
-            <Transition show={isShowing} className="sm:hidden">
+            <Transition show={isShowing}  className="sm:hidden">
                 {/* Background overlay */}
                 <Transition.Child onClick={() => setIsShowing(old => !old)}
                     className="bg-[#00000066] z-[-1] absolute top-0 left-0 w-full h-screen"
@@ -48,8 +48,8 @@ const Header:FC<HeaderProps> = ({}) => {
                 </Transition.Child>
 
                 {/* Sliding sidebar */}
-                <Transition.Child
-                    className={[css.dd_container, 'z-10'].join(' ')}
+                <Transition.Child unmount={false}
+                    className={[css.dd_container, 'z-1'].join(' ')}
                     enter="transition ease-in-out duration-200 transform"
                     enterFrom="-translate-y-full"
                     enterTo="translate-y-0"
