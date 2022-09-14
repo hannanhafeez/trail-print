@@ -18,7 +18,7 @@ const MyAccordian: FC<MyAccordianProps> = ({ title, defaultOpen, children }) => 
             {({ open, }) => (
                 <>
                     <Disclosure.Button as={Fragment}>
-                        <button className='font-quicksand font-medium text-[22px] text-[#22588D] w-full flex items-center justify-between py-2 pr-2'>
+                        <button className='font-quicksand font-medium text-[22px] text-[#22588D] w-full flex items-center justify-between py-2 pr-4'>
                             {title}
                             <span className={"transition " + (open ? "" : 'rotate-180')}>
                                 <svg width="12" height="8" viewBox="0 0 8 6" fill="currentColor">

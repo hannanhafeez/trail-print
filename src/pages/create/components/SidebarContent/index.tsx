@@ -47,7 +47,7 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 
 	return (
 		<>
-			<MyAccordian title='Add Activities'>
+			<MyAccordian defaultOpen title='Add Activities'>
 				<div className={css.sidebar_accordian_view}>
 					<p className={css.sidebar_label}>
 						This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
@@ -68,7 +68,7 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 				</div>
 			</MyAccordian>
 
-			<MyAccordian defaultOpen title='Labels'>
+			<MyAccordian title='Labels'>
 				<div className={css.sidebar_accordian_view}>
 					<div className='pr-2 flex flex-col gap-y-6'>
 						<MyInput placeholder='Title' type={'text'} onChange={(e) => dispatch({ type: 'SET_TITLE', payload: e.target.value })} />

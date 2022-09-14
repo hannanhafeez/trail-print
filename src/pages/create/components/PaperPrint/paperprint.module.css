@@ -1,0 +1,15 @@
+.paper{
+    @apply  w-[1191px] aspect-[0.7072446556] flex flex-col
+            absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+            scale-[0.25] md:scale-[0.3] lg:scale-[0.35] xl:scale-[0.35] 2xl:scale-[0.45] 3xl:scale-[0.5]
+            ;
+    /* box-shadow: rgb(0 0 0 / 15%) 0px 10px 20px 0px; */
+    background: #fff;
+    box-shadow: rgb(0 0 0 / 15%) 0px 10px 20px 0px;
+}
+
+
+.map_wrapper{
+    @apply flex-1;
+    background-color: black;
+}
