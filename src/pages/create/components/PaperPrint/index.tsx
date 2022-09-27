@@ -8,11 +8,13 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import css from './paperprint.module.css';
-import { TRACKING_DATA } from '../../../../store/slices/createPageSlice';
+import { PageState, TRACKING_DATA } from '../../../../store/slices/createPageSlice';
+import { colorThemeData } from '../../../../constants/themeData';
 
 type MyDatum = { date: Date, stars: number }
 
 export type PaperPrintProps = {
+    state: PageState,
     data?: TRACKING_DATA,
     mapStyle?: string | mapboxgl.Style,
     colors: {
@@ -39,7 +41,8 @@ const defaultData: TRACKING_DATA = [
 
 const PaperPrint:FC<PaperPrintProps> = ({
     // data = defaultData,
-    mapStyle = 'mapbox://styles/aoreamuno/cl82zovde000p14pkummrl01m',
+    state,
+    mapStyle = colorThemeData[0].mapStyle,
     colors:{activity, background, elevation, primaryText, secondaryText},
 }) => {
     const mapContainer = useRef(null);
@@ -53,14 +56,22 @@ const PaperPrint:FC<PaperPrintProps> = ({
         if (map.current) return; // initialize map only once
         map.current = new mapboxgl.Map({
             container: mapContainer.current || '',
-            style: mapStyle,
             center: [lng, lat],
             zoom: zoom,
+            // style: mapStyle,
             // boxZoom:true,
             // attributionControl:true,
         });
-    }, [lat, lng, mapStyle, zoom]);
+    });
 
+    useEffect(() => {
+        map.current?.setStyle(mapStyle);
+    }, [mapStyle,])
+    
+    const { text:{title, subtitle}, valueLabels } = state;
+    useEffect(() => {
+        map.current?.resize();
+    }, [title, subtitle])
     
 
     return (
@@ -70,9 +81,31 @@ const PaperPrint:FC<PaperPrintProps> = ({
 
                 </div>
 
-                <figure className='h-[80px] w-full' /* style={{backgroundColor: elevation}} */>
+                <figure className={[css.graph].join(' ')} style={{backgroundColor: elevation}}>
                     
                 </figure>
+                
+                {(title || subtitle || valueLabels.some(({value, label})=>!!value || !!label)) &&
+                    <div className={[css.bottom_container].join(' ')}>
+                        <div className={[css.heading_container].join(' ')}>
+                            {title && <h1 style={{color: primaryText}}>{title}</h1>}
+                            {subtitle && <p style={{color: secondaryText}}>{subtitle}</p>}
+                        </div>
+                        
+                        <div className={[css.value_label_outer].join(' ')}>
+                            {
+                                valueLabels.map(({id, value, label})=>(
+                                    // (value || label) &&
+                                    <div key={id} className={[css.value_label_inner].join(' ')}>
+                                        <div style={{backgroundColor: secondaryText}} className={css.value_label_divider}></div>
+                                        {<h2 style={{ color: primaryText }}>{value}</h2>}
+                                        {<p style={{ color: secondaryText }}>{label}</p>}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                }
 
             </div>
         </div>

@@ -72,8 +72,8 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 			<MyAccordian title='Labels'>
 				<div className={css.sidebar_accordian_view}>
 					<div className='pr-2 flex flex-col gap-y-6'>
-						<MyInput placeholder='Title' type={'text'} onChange={(e) => dispatch({ type: 'SET_TITLE', payload: e.target.value })} />
-						<MyInput placeholder='Subtitle' type={'text'} onChange={(e) => dispatch({ type: 'SET_SUBTITLE', payload: e.target.value })} />
+						<MyInput value={state.text.title} placeholder='Title' type={'text'} onChange={(e) => dispatch({ type: 'SET_TITLE', payload: e.target.value })} />
+						<MyInput value={state.text.subtitle} placeholder='Subtitle' type={'text'} onChange={(e) => dispatch({ type: 'SET_SUBTITLE', payload: e.target.value })} />
 
 						<DragDropContext onDragEnd={onDragEnd}>
 							<Droppable droppableId="droppable">
@@ -97,10 +97,10 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 															)}
 														>
 															<Row>
-																<MyInput defaultValue={v.value} placeholder={`Value ${v.id.slice(2, 3)}`}
+																<MyInput value={v.value} placeholder={`Value ${v.id.slice(2, 3)}`}
 																	onChange={(e) => dispatch(valueLabelAction(v.id, 'v', e.target.value))}
 																/>
-																<MyInput defaultValue={v.label} placeholder={`Label ${v.id.slice(2, 3)}`}
+																<MyInput value={v.label} placeholder={`Label ${v.id.slice(2, 3)}`}
 																	onChange={(e) => dispatch(valueLabelAction(v.id, 'l', e.target.value))}
 																/>
 															</Row>

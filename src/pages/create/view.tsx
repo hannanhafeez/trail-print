@@ -29,6 +29,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
 						<PaperPrint
+							state={state}
 							colors={state.colors}
 							mapStyle={state.mapStyle}
 						/>

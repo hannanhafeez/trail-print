@@ -1,4 +1,5 @@
 import mapboxgl from "mapbox-gl";
+import { colorThemeData } from "../../constants/themeData";
 
 export type TRACKING_DATA = { time?: string, value: number }[];
 export type ORIENTATION = 'portrait' | 'landscape';
@@ -48,18 +49,12 @@ export const pageState: PageState = {
 	orientation: 'portrait',
 	layout: '1',
 	theme: '1',
-	colors:{
-		primaryText:	'#263D69',
-		secondaryText:	'#282726',
-		background:		'#EEEDE7',
-		activity: 		'#94B028',
-		elevation: 		'#263D69',
-	},
+	colors: colorThemeData[0].colors,
 	elevationProfile: false,
 	useDashedLined: false,
 	endpoints: false,
 	activityThickness: 4,
-	mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
+	mapStyle: colorThemeData[0].mapStyle,
 }
 
 /* Actions */

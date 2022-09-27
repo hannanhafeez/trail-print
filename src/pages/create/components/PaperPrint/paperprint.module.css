@@ -2,6 +2,7 @@
     @apply  w-[1191px] aspect-[0.7072446556]
             absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
             scale-[0.25] md:scale-[0.3] lg:scale-[0.35] xl:scale-[0.35] 2xl:scale-[0.45] 3xl:scale-[0.5]
+            transition-all duration-300
             ;
     /* box-shadow: rgb(0 0 0 / 15%) 0px 10px 20px 0px; */
     background: #fff;
@@ -16,5 +17,69 @@
 }
 
 .mapbox_wrapper{
-    @apply flex-1;
+    @apply flex-1 rounded-lg;
+}
+
+.graph{
+    @apply h-[80px] w-full mb-1;
+    clip-path: polygon(46% 39%, 62% 69%, 79% 53%, 97% 66%, 100% 100%, 0 100%, 4% 60%, 19% 82%, 26% 67%);
+}
+
+
+
+.bottom_container{
+    @apply min-h-[80px] w-full flex;
+}
+
+.heading_container{
+    @apply h-full grow flex flex-col gap-y-2;
+}
+
+.heading_container > h1{
+    @apply font-mulish font-bold;
+    font-size: 3.6rem; line-height: 1.1;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+.heading_container > p{
+    @apply font-quicksand;
+    font-size: 2rem; line-height: 1.4;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+
+.value_label_outer{
+    @apply grid grid-rows-2 grid-flow-col;
+}
+
+.value_label_inner{
+    @apply relative h-full grow flex flex-col gap-y-1 px-5 min-w-[145px];
+}
+.value_label_inner:nth-child(even){
+    @apply py-3;
+}
+
+.value_label_inner > h2 {
+    @apply font-mulish font-extrabold;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+.value_label_inner > p {
+    @apply font-quicksand;
+    font-size: 1rem;
+    line-height: 1.4;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-style: normal;
+}
+.value_label_inner > .value_label_divider {
+    @apply absolute top-0 bottom-0 w-0.25 -left-1.5 opacity-40;
 }

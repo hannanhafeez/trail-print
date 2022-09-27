@@ -1,6 +1,6 @@
 export const colorThemeData = [
     {
-        value: '1', title: 'Outlines: 1', color: '#ED4512', src: '/assets/theme_imgs/1.png',
+        value: '1', title: 'Outlines: 2', color: '#ED4512', src: '/assets/theme_imgs/1.png',
         colors: {
             primaryText: '#ed4512',
             secondaryText: '#989898',
@@ -8,10 +8,10 @@ export const colorThemeData = [
             activity: '#ed4512',
             elevation: '#ed4512',
         },
-        mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
+        mapStyle: 'mapbox://styles/aoreamuno/cl82tlry1000h15ofojduh4zt',
     },
     { 
-        value: '2', title: 'Outlines: 2', color: '#00225C', src: '/assets/theme_imgs/2.png',
+        value: '2', title: 'Outlines: 1', color: '#00225C', src: '/assets/theme_imgs/2.png',
         colors: {
             primaryText: '#ffffff',
             secondaryText: '#0f2a30',
@@ -19,7 +19,7 @@ export const colorThemeData = [
             activity: '#ffffff',
             elevation: '#ffffff',
         }, 
-        mapStyle: 'mapbox://styles/aoreamuno/cl82tlry1000h15ofojduh4zt',
+        mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
     },
     { 
         value: '3', title: 'Heather', color: '#524F32', src: '/assets/theme_imgs/3.png',
@@ -63,7 +63,7 @@ export const colorThemeData = [
             activity: '#ffffff',
             elevation: '#ffffff',
         }, 
-        mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
+        mapStyle: 'mapbox://styles/aoreamuno/cl833v4lu001n16s8efl5chio',
     },
     { 
         value: '7', title: 'Crimson Ride', color: '#ff4700', src: '/assets/theme_imgs/7.png',
