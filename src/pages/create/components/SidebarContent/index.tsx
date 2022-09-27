@@ -18,6 +18,7 @@ import { Row, SelectButton, SelectImage } from '../index'
 import { DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
 
 import { debounce } from '../../../../utils/helperFunctions'
+import { colorThemeData } from '../../../../constants/themeData'
 
 export type SidebarContentProps = {
 	state: PageState,
@@ -172,13 +173,22 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 
 			<MyAccordian title='Themes'>
 				<div className={css.sidebar_accordian_view}>
-					<RadioGroup value={state.theme} onChange={(v: THEME) => dispatch({ type: 'SET_THEME', payload: v })} className='grid grid-cols-2 xl:grid-cols-3 gap-7'>
-						<SelectImage value='1' title='Outlines: 1' color='#ED4512' src='/assets/theme_imgs/1.png' />
-						<SelectImage value='2' title='Outlines: 2' color='#00225C' src='/assets/theme_imgs/2.png' />
-						<SelectImage value='3' title='Heather' color='#524F32' src='/assets/theme_imgs/3.png' />
-						<SelectImage value='4' title='The Classic' color='#9B441E' src='/assets/theme_imgs/4.png' />
-						<SelectImage value='5' title='Copper Mine' color='#282726' src='/assets/theme_imgs/5.png' />
-						<SelectImage value='6' title='Moonraker' color='#384759' src='/assets/theme_imgs/6.png' />
+					<RadioGroup value={state.theme} className='grid grid-cols-2 xl:grid-cols-3 gap-7'
+						onChange={(v: THEME) => {
+							const foundTheme = colorThemeData.find(({ value }) => value === v)
+							console.log(foundTheme?.colors)
+							dispatch({ type: 'SET_THEME', payload: { theme: v, colors: foundTheme?.colors, mapStyle: foundTheme?.mapStyle }})}
+						} 
+					>
+						{ colorThemeData.map(({value, title, color, src})=>(
+								<SelectImage key={`${value}-${title}`}
+									value={value}
+									title={title}
+									color={color}
+									src={src}
+								/>
+							))
+						}
 					</RadioGroup>
 				</div>
 			</MyAccordian>
@@ -246,6 +256,7 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 }
 
 export default SidebarContent
+
 
 const reorder = (list: VALUE_LABELS, startIndex: number, endIndex: number) => {
 	const result = Array.from(list);

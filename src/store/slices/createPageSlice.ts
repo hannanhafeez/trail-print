@@ -1,15 +1,18 @@
+import mapboxgl from "mapbox-gl";
+
+export type TRACKING_DATA = { time?: string, value: number }[];
 export type ORIENTATION = 'portrait' | 'landscape';
 export type LAYOUT = '1' | '2' | '3' | '4';
-export type THEME = '1' | '2' | '3' | '4' | '5' | '6';
+export type THEME = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14';
 
 const vl_ids = ['vl1' , 'vl2' , 'vl3' , 'vl4' , 'vl5' , 'vl6'] as const
 export type VALUE_LABEL_IDS = typeof vl_ids[number];
 
-export type COLOR =		'primaryText' | 
-						'secondaryText' | 
-						'background' | 
-						'activity' | 
-						'elevation' ;
+export type COLOR =	'primaryText' | 
+					'secondaryText' | 
+					'background' | 
+					'activity' | 
+					'elevation' ;
 
 export type VALUE_LABELS = { id: VALUE_LABEL_IDS, value: string, label: string }[];
 
@@ -33,6 +36,7 @@ export type PageState = {
 	useDashedLined: boolean,
 	endpoints: boolean,
 	activityThickness: number,
+	mapStyle: string | mapboxgl.Style
 }
 
 export const pageState: PageState = {
@@ -55,6 +59,7 @@ export const pageState: PageState = {
 	useDashedLined: false,
 	endpoints: false,
 	activityThickness: 4,
+	mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
 }
 
 /* Actions */
@@ -67,7 +72,17 @@ type SET_ORIENTATION  = { type: 'SET_ORIENTATION', payload: ORIENTATION,}
 
 type SET_LAYOUT  = { type: 'SET_LAYOUT', payload: LAYOUT,}
 
-type SET_THEME  = { type: 'SET_THEME', payload: THEME,}
+type SET_THEME  = { type: 'SET_THEME', payload: {
+	theme: THEME,
+	colors?: {
+		primaryText: string,
+		secondaryText: string,
+		background: string,
+		activity: string,
+		elevation: string,
+	},
+	mapStyle?: string | mapboxgl.Style,
+},}
 
 type SET_COLOR  = { type: COLOR, payload: string,}
 type TOGGLE_ELEVATION_PROFILE  = { type: 'TOGGLE_ELEVATION_PROFILE', payload?: undefined,}
@@ -116,7 +131,12 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 		case 'SET_LAYOUT':
 			return { ...state, layout: action.payload };
 		case "SET_THEME":
-			return { ...state, theme: action.payload};
+			return { 
+				...state, 
+				theme: action.payload.theme, 
+				colors: action.payload.colors ? action.payload.colors : state.colors,
+				mapStyle: action.payload.mapStyle ? action.payload.mapStyle : state.mapStyle,
+			};
 		
 		case "primaryText":
 			return { ...state, colors: {...state.colors, primaryText:action.payload}};

@@ -48,7 +48,7 @@ const Section1Bg:FC<Section1BgProps> = ({}) => {
                     <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
                         <use xlinkHref="#image0_269_888" transform="scale(0.000390625)" />
                     </pattern>
-                    <image id="image0_269_888" width="2560" height="2560" xlinkHref="/assets/png/svg-bg-map.png" />
+                    <image id="image0_269_888" width="2560" height="2560" xlinkHref="/assets/imgs/svg-bg-map.webp" />
                 </defs>
             </svg>
         </div>

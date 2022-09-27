@@ -1,4 +1,5 @@
 import { FC, useReducer, useState, } from 'react'; 
+import dynamic from 'next/dynamic';
 
 import Image from 'next/image'
 import Footer from '../../components/Footer'
@@ -10,11 +11,11 @@ import MyButton from '../../components/MyButton'
 import { createReducer, pageState } from '../../store/slices/createPageSlice'
 import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
-import PaperPrint from './components/PaperPrint';
+const PaperPrint = dynamic(() => import('./components/PaperPrint'), {ssr:false});
+// import PaperPrint from './components/PaperPrint';
 
 export type CreatePageViewProps = {
 }
-
 
 const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	const [showSidebar, setShowSidebar] = useState(false);
@@ -28,6 +29,8 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
 						<PaperPrint
+							colors={state.colors}
+							mapStyle={state.mapStyle}
 						/>
 					</div>
 

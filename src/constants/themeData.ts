@@ -1,0 +1,156 @@
+export const colorThemeData = [
+    {
+        value: '1', title: 'Outlines: 1', color: '#ED4512', src: '/assets/theme_imgs/1.png',
+        colors: {
+            primaryText: '#ed4512',
+            secondaryText: '#989898',
+            background: '#ffffff',
+            activity: '#ed4512',
+            elevation: '#ed4512',
+        },
+        mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
+    },
+    { 
+        value: '2', title: 'Outlines: 2', color: '#00225C', src: '/assets/theme_imgs/2.png',
+        colors: {
+            primaryText: '#ffffff',
+            secondaryText: '#0f2a30',
+            background: '#299fbc',
+            activity: '#ffffff',
+            elevation: '#ffffff',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl82tlry1000h15ofojduh4zt',
+    },
+    { 
+        value: '3', title: 'Heather', color: '#524F32', src: '/assets/theme_imgs/3.png',
+        colors: {
+            primaryText: '#525030',
+            secondaryText: '#a4a168',
+            background: '#ffffff',
+            activity: '#525030',
+            elevation: '#dad9a0',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl82yzq7n000f14mvw0shqj4a',
+    },
+    { 
+        value: '4', title: 'The Classic', color: '#9B441E', src: '/assets/theme_imgs/4.png',
+        colors: {
+            primaryText: '#6d3b2c',
+            secondaryText: '#e45b16',
+            background: '#fff6e4',
+            activity: '#e45e16',
+            elevation: '#efe6d4',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl82zovde000p14pkummrl01m',
+    },
+    { 
+        value: '5', title: 'Copper Mine', color: '#282726', src: '/assets/theme_imgs/5.png',
+        colors: {
+            primaryText: '#ff6b36',
+            secondaryText: '#000000',
+            background: '#4f4f4f',
+            activity: '#ff6b36',
+            elevation: '#000000',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl832d53u000315p0qz8tfkhb',
+    },
+    { 
+        value: '6', title: 'Moonraker', color: '#384759', src: '/assets/theme_imgs/6.png',
+        colors: {
+            primaryText: '#ffffff',
+            secondaryText: '#26303d',
+            background: '#8795a3',
+            activity: '#ffffff',
+            elevation: '#ffffff',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl82xvg15004q14mx0ltmftu5',
+    },
+    { 
+        value: '7', title: 'Crimson Ride', color: '#ff4700', src: '/assets/theme_imgs/7.png',
+        colors: {
+            primaryText: '#ff4701',
+            secondaryText: '#ffffff',
+            background: '#21060b',
+            activity: '#ffffff',
+            elevation: '#ff4701',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl8370xnt005714mxbjf64r3d',
+    },
+    { 
+        value: '8', title: 'Minty Miles', color: '#51c6ac', src: '/assets/theme_imgs/8.png',
+        colors: {
+            primaryText: '#24803E',
+            secondaryText: '#0e599a',
+            background: '#ffffff',
+            activity: '#24803E',
+            elevation: '#78efd5',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl837m0d2001114qygd7dn9ln',
+    },
+    { 
+        value: '9', title: 'Blueprint', color: '#405ebf', src: '/assets/theme_imgs/9.png',
+        colors: {
+            primaryText: '#ffffff',
+            secondaryText: '#93aeff',
+            background: '#2a4183',
+            activity: '#ffffff',
+            elevation: '#ffffff',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl83a3ly0002914p7fsxag6wu',
+    },
+    { 
+        value: '10', title: 'Swamp Thing', color: '#67793c', src: '/assets/theme_imgs/10.png',
+        colors: {
+            primaryText: '#d3ff1a',
+            secondaryText: '#d2deaa',
+            background: '#1a2314',
+            activity: '#d3ff1a',
+            elevation: '#d3ff1a',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl849q06j000014ln9894ia7e',
+    },
+    { 
+        value: '11', title: 'Red Dead', color: '#ec0000', src: '/assets/theme_imgs/11.png',
+        colors: {
+            primaryText: '#35312a',
+            secondaryText: '#695839',
+            background: '#dec29b',
+            activity: '#d20000',
+            elevation: '#35312a',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl84aos33003v14muimuuirao',
+    },
+    { 
+        value: '12', title: 'Lingerie', color: '#d56cf7', src: '/assets/theme_imgs/12.png',
+        colors: {
+            primaryText: '#e287ff',
+            secondaryText: '#eedba8',
+            background: '#1d131d',
+            activity: '#26e4c3',
+            elevation: '#26e4c3',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl84b6jue002314mnxdtynl65',
+    },
+    { 
+        value: '13', title: 'American Rust', color: '#df5d3d', src: '/assets/theme_imgs/13.png',
+        colors: {
+            primaryText: '#ffffff',
+            secondaryText: '#ff6842',
+            background: '#1a2258',
+            activity: '#ffffff',
+            elevation: '#ff6842',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl84bppdl000314ocn5gr3gkm',
+    },
+    { 
+        value: '14', title: 'Paper Chase', color: '#7b7b7b', src: '/assets/theme_imgs/14.png',
+        colors: {
+            primaryText: '#000000',
+            secondaryText: '#6b6b6b',
+            background: '#ffffff',
+            activity: '#000000',
+            elevation: '#000000',
+        }, 
+        mapStyle: 'mapbox://styles/aoreamuno/cl84d3uv9006a14ph3vsnsghe',
+    },
+]
