@@ -42,8 +42,8 @@ export type PageState = {
 
 export const pageState: PageState = {
 	text: {
-		title: '',
-		subtitle: '',
+		title: 'Title',
+		subtitle: 'Subtitle',
 	},
 	valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),
 	orientation: 'portrait',
