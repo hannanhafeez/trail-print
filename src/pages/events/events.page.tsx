@@ -2,7 +2,8 @@
 import React, { FC, } from "react";
 
 import css from "./events.module.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+// import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
@@ -15,7 +16,7 @@ const Events: FC = () => {
 			{/* Header End */}
 
 			<div className={css.img}>
-				<Image alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
+				<ExportedImage alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
 					
 				/>
 			</div>
@@ -43,7 +44,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className={css.font_wrapper}>Great British Divide</h1>
@@ -52,7 +53,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className={css.font_wrapper}>Great British Divide</h1>
@@ -61,7 +62,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className={css.font_wrapper}>Great British Divide</h1>
@@ -70,7 +71,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className={css.font_wrapper}>Great British Divide</h1>
@@ -79,7 +80,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className={css.font_wrapper_soon}>Great British Divide</h1>
@@ -88,7 +89,7 @@ const Events: FC = () => {
 					<div className={css.image_container}>
 						
 							<div className={css.country_image}>
-								<Image alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
+								<ExportedImage alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className= {css.font_wrapper_soon}>Great British Divide</h1>

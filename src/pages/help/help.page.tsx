@@ -1,9 +1,10 @@
 
 import React, { FC, } from "react";
-import Link from "next/link";
+
 
 import css from "./help.module.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+// import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
@@ -16,7 +17,7 @@ const Help: FC = () => {
 			{/* Header End */}
 
 			<div className={css.img}>
-				<Image alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
+				<ExportedImage alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
 					className="s"
 				/>
 			</div>

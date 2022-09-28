@@ -1,7 +1,8 @@
-import { FC, useReducer, useState, } from 'react'; 
+import { FC, Suspense, useReducer, useState, } from 'react'; 
 import dynamic from 'next/dynamic';
 
-import Image from 'next/image'
+// import Image from 'next/image'
+import ExportedImage from 'next-image-export-optimizer';
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
 
@@ -11,8 +12,16 @@ import MyButton from '../../components/MyButton'
 import { createReducer, pageState } from '../../store/slices/createPageSlice'
 import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
-const PaperPrint = dynamic(() => import('./components/PaperPrint'), {ssr:false});
-// import PaperPrint from './components/PaperPrint';
+// import Loader from '../../components/Loader';
+
+const PaperPrint = dynamic(async() => {
+	/* const p = new Promise((resolve)=>{
+		setTimeout(()=>resolve('done'), 3000);
+	}) 
+	await p;
+	*/
+	return import('./components/PaperPrint')
+}, { ssr: false, });
 
 export type CreatePageViewProps = {
 }
@@ -28,11 +37,13 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 				
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
-						<PaperPrint
-							state={state}
-							colors={state.colors}
-							mapStyle={state.mapStyle}
-						/>
+						{/* <Suspense fallback={<Loader size={64} />}> */}
+							<PaperPrint
+								state={state}
+								colors={state.colors}
+								mapStyle={state.mapStyle}
+							/>
+						{/* </Suspense> */}
 					</div>
 
 					{/* Static Sidebar */}
@@ -51,7 +62,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 						onClick={()=>setShowSidebar(old=>!old)}
 					>
 						<div className='relative w-5 h-5 animate-pulse'>
-							<Image src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain'  />
+							<ExportedImage src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain'  />
 						</div>
 					</MyButton>
 				</section>

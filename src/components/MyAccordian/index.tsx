@@ -1,12 +1,6 @@
 import React, { FC, Fragment, useState } from 'react'
-import Image from 'next/image';
-import Link from 'next/link';
 
 import { Disclosure, Transition } from '@headlessui/react'
-
-import css from './accordian.module.css';
-
-import { useRouter } from 'next/router';
 
 export type MyAccordianProps = {
     title: string, defaultOpen?: boolean, children?: React.ReactNode

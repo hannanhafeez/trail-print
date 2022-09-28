@@ -2,7 +2,8 @@
 import React, { FC, Fragment, useRef, useState } from "react";
 
 import css from "./preview.module.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+// import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
@@ -37,7 +38,7 @@ const Preview: FC = () => {
 
 						<button className={css.choise_button}>
 						<div className={css.arrow}>
-							<Image src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
+							<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
 						</div>
 							Back to Edit
 
@@ -46,7 +47,7 @@ const Preview: FC = () => {
 						<button className={css.choise_button}>
 							Order
 						<div className={css.arrow_back}>
-							<Image src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
+							<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
 						</div>
 						</button>
 

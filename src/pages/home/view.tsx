@@ -2,12 +2,28 @@ import React, { FC, Fragment, useRef, useState } from "react";
 
 import css from "./home.module.css";
 
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+// import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Section1Bg from "./components/Section1Bg";
 import TestimonialSection from "./components/TestimonialSection";
 
+/* Static Image Imports */
+import trailtrackImg from '../../../public/assets/png/trailtrack.png';
+import globeImg from '../../../public/assets/png/globe.png';
+import deliveryImg from '../../../public/assets/png/delivery.png';
+import hGlobeImg from '../../../public/assets/png/hglobe.png';
+import eventOrganizerImg from '../../../public/assets/png/yourtrail.png';
+import giftVoucherImg from '../../../public/assets/png/logomask.png';
+import bicycleImg from '../../../public/assets/png/bicycle.png';
+import gravelImg from '../../../public/assets/png/gravel.png';
+import rhinoImg from '../../../public/assets/png/rhino.png';
+import pan2Img from '../../../public/assets/png/pan2.png';
+import tribeImg from '../../../public/assets/png/tribe.png';
+import peaksImg from '../../../public/assets/png/peaks.png';
+import britImg from '../../../public/assets/png/brit.png';
+/* Static Image Imports */
 const HomeView: FC = () => {
 	return (
 		<div>
@@ -47,7 +63,7 @@ const HomeView: FC = () => {
 						</div>
 						<div className={css.img_wrapper_top}>
 							<div className={css.img_top}>
-								<Image src={'/assets/png/trailtrack.png'} alt="globe" objectFit="contain" layout="fill" quality={100} />
+								<ExportedImage src={trailtrackImg} alt="globe" objectFit="contain" layout="fill" />
 							</div>
 
 						</div>
@@ -81,7 +97,7 @@ const HomeView: FC = () => {
 							<div className={css.wrapper}>
 								<div className=" bg-white p-2 rounded-full">
 									<div className="relative w-[200px] md:w-[200px] aspect-square">
-										<Image src={'/assets/png/globe.png'} alt="globe" objectFit="contain" layout="fill" />
+										<ExportedImage src={globeImg} alt="globe" objectFit="contain" layout="fill" />
 									</div>
 								</div>
 								<h1>Printed Locally</h1>
@@ -92,7 +108,7 @@ const HomeView: FC = () => {
 							<div className={css.wrapper}>
 								<div className=" bg-white p-2 rounded-full">
 									<div className="relative w-[200px] md:w-[200px] aspect-square">
-										<Image src={'/assets/png/delivery.png'} alt="globe" objectFit="contain" layout="fill" />
+										<ExportedImage src={deliveryImg} alt="delivery" objectFit="contain" layout="fill" />
 									</div>
 								</div>
 								<h1>Free Shipping</h1>
@@ -103,7 +119,7 @@ const HomeView: FC = () => {
 							<div className={css.wrapper}>
 								<div className=" bg-white p-2 rounded-full">
 									<div className="relative w-[200px] md:w-[200px] aspect-square">
-										<Image src={'/assets/png/hglobe.png'} alt="globe" objectFit="contain" layout="fill" />
+										<ExportedImage src={hGlobeImg} alt="global" objectFit="contain" layout="fill" />
 									</div>
 								</div>
 								<h1>Sustainable</h1>
@@ -126,7 +142,7 @@ const HomeView: FC = () => {
 							</div>
 							<div className={css.img_wrapper_top}>
 								<div className={css.img_top}>
-									<Image src={'/assets/png/yourtrail.png'} alt="globe" objectFit="contain" layout="fill" />
+									<ExportedImage src={eventOrganizerImg} alt="Event Organizers Image" objectFit="contain" layout="fill" />
 								</div>
 
 							</div>
@@ -145,7 +161,7 @@ const HomeView: FC = () => {
 							</div>
 							<div className={[css.img_wrapper, 'pb-4'].join(' ')}>
 								<div className={[css.img, 'aspect-square'].join(' ')}>
-									<Image src={'/assets/png/logomask.png'} alt="globe" objectFit="contain" layout="fill" quality={100}/>
+									<ExportedImage src={giftVoucherImg} alt="Gift Voucher Image" objectFit="contain" layout="fill" quality={100}/>
 								</div>
 								<h2 className={css.vouch}>GIFT VOUCHERS</h2>
 							</div>
@@ -166,7 +182,7 @@ const HomeView: FC = () => {
 						<div className={css.track}>
 							<div className="w-full">
 								<div className="mx-auto relative w-full max-w-[600px] h-auto aspect-video">
-									<Image src={'/assets/png/bicycle.png'} alt="globe" objectFit="contain" layout="fill" />
+									<ExportedImage src={bicycleImg} alt="bicycle" objectFit="contain" layout="fill" />
 								</div>
 							</div>
 
@@ -191,32 +207,31 @@ const HomeView: FC = () => {
 						<div className={css.testomonial_img}>
 
 							<div className={css.img_style}>
-								<Image src={'/assets/png/gravel.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={gravelImg} alt="gravel" objectFit="contain" layout="fill" />
 							</div>
 
 							<div className={css.img_style}>
-								<Image src={'/assets/png/rhino.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={rhinoImg} alt="rhino" objectFit="contain" layout="fill" />
 							</div>
 
 							<div className={css.img_style}>
-								<Image src={'/assets/png/pan2.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={pan2Img} alt="pan2" objectFit="contain" layout="fill" />
 							</div>
 
 							<div className={css.img_style}>
-								<Image src={'/assets/png/tribe.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={tribeImg} alt="tribe" objectFit="contain" layout="fill" />
 							</div>
 							<div className={css.img_style}>
-								<Image src={'/assets/png/peaks.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={peaksImg} alt="peaks" objectFit="contain" layout="fill" />
 							</div>
 							<div className={css.img_style}>
-								<Image src={'/assets/png/brit.png'} alt="globe" objectFit="contain" layout="fill" />
+								<ExportedImage src={britImg} alt="brit" objectFit="contain" layout="fill" />
 							</div>
 
 						</div>
 
 					</div>
 				</div>
-
 			</section>
 
 

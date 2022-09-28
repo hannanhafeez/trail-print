@@ -2,7 +2,8 @@
 import React, { FC, } from "react";
 
 import css from "./event_detail.module.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+// import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
@@ -15,7 +16,7 @@ const EventDetail: FC = () => {
 			{/* Header End */}
 
 			<div className={css.img}>
-				<Image alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
+				<ExportedImage alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
 				/>
 			</div>
 
@@ -24,7 +25,7 @@ const EventDetail: FC = () => {
 			<section className={`${css.my_container} relative top-[-210px] flex flex-col z-10 mt-96 gap-10 pb-8 `}>
 
 				<div className={css.img_center}>
-					<Image alt='ben' src={'/assets/imgs/pan.png'} layout='fill' objectFit='contain' />
+					<ExportedImage alt='ben' src={'/assets/imgs/pan.png'} layout='fill' objectFit='contain' />
 				</div>
 
 

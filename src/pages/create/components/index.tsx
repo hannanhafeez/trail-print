@@ -1,7 +1,8 @@
 import { FC, ReactNode } from "react"
 import { RadioGroup } from '@headlessui/react'
 import { MySelectButton } from "../../../components/MyButton"
-import Image from "next/image"
+// import Image from "next/image"
+import ExportedImage from "next-image-export-optimizer"
 
 export const Row: FC<{ children?: ReactNode }> = ({ children }) => {
     return (
@@ -38,7 +39,7 @@ export const SelectImage: FC<{ title?: string, value: string, src: string, color
             {({ checked }) => (
                 <div  className={'flex flex-col items-stretch gap-y-2'}>
                     <div className={"relative aspect-square w-full transition-all duration-200 " + (checked ? 'ring-[7px] ring-theme_green ' : 'outline outline-offset-0 outline-[hsla(52,17%,72%,0.5)]')}>
-                        <Image src={src} alt={title + 'image'} layout='fill' objectFit="cover"/>
+                        <ExportedImage src={src} alt={title + 'image'} layout='fill' objectFit="cover"/>
                     </div>
 
                     <span className='font-quicksand font-light text-center text-16 lg:text-18' style={{color}}>

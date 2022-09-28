@@ -2,7 +2,8 @@
 import React, { FC, } from "react";
 
 import css from "./about.module.css";
-import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -15,7 +16,7 @@ const AboutView: FC = () => {
 			{/* Header End */}
 
 			<div className={css.img}>
-				<Image alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
+				<ExportedImage alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
 					className="s"
 				/>
 			</div>

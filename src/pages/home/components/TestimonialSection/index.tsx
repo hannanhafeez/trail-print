@@ -1,4 +1,5 @@
-import Image from 'next/image';
+import ExportedImage from 'next-image-export-optimizer';
+// import Image from 'next/image';
 import React, { FC, useCallback, useRef } from 'react'
 
 import css from './testimonial.module.css';
@@ -20,7 +21,7 @@ const TestimonialSection:FC<TestimonialSectionProps> = ({}) => {
             <button className='z-10 absolute left-4 top-[50%] translate-y-[-50%] h-7 aspect-square bg-[#ffffff33] p-1'
                 onClick={() => onBtnPressed('L')}
             >
-                <Image alt='left button' src={'/assets/svg/arrow2.svg'} layout='fill' objectFit='contain'
+                <ExportedImage alt='left button' src={'/assets/svg/arrow2.svg'} layout='fill' objectFit='contain'
                     className='p-2'
                     />
             </button>
@@ -28,7 +29,7 @@ const TestimonialSection:FC<TestimonialSectionProps> = ({}) => {
             <button className='z-10 absolute right-4 top-[50%] translate-y-[-50%] h-7 aspect-square bg-[#ffffff33] p-1'
                 onClick={() => onBtnPressed('R')}
             >
-                <Image alt='left button' src={'/assets/svg/arrow1.svg'} layout='fill' objectFit='contain'
+                <ExportedImage alt='left button' src={'/assets/svg/arrow1.svg'} layout='fill' objectFit='contain'
                     className='p-2'
                     />
             </button>

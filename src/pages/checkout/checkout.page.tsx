@@ -2,6 +2,8 @@ import React, { FC, } from "react";
 
 import css from "./checkout.module.css";
 import Image from "next/image";
+import ExportedImage from "next-image-export-optimizer";
+
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
@@ -85,7 +87,7 @@ const CheckOut: FC = () => {
 							<div className="flex items-center flex-col md:flex-row w-full gap-y-6 gap-x-4 border-0 md:border-b  ">
 								<div className="flex-1 flex  items-center border-b w-full md:border-none">
 									<div className="relative h-[15px] w-[20px] mr-2">
-										<Image
+										<ExportedImage
 											alt="card"
 											src={"/assets/png/card.png"}
 											layout="fill"

@@ -1,5 +1,5 @@
 .my_container {
-    @apply container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-6 ;
+    @apply container mx-auto px-4 sm:px-6 lg:px-8 2xl:px-6 2xl:max-w-[1536px] /* 3xl:max-w-[1920px] */;
 }
 
 .header_shadow{

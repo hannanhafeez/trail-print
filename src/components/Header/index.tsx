@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
-import Image from 'next/image';
+// import Image from 'next/image';
+import ExportedImage from 'next-image-export-optimizer';
 import Link from 'next/link';
 
 import { Transition } from '@headlessui/react'
@@ -7,6 +8,8 @@ import { Transition } from '@headlessui/react'
 import css from './header.module.css';
 import { CREATE, EVENTS, HELP, HOME } from '../../constants/pageLinks';
 import { useRouter } from 'next/router';
+
+import logoImg from '../../../public/assets/imgs/logo.png'
 
 export type HeaderProps = {
     
@@ -20,7 +23,7 @@ const Header:FC<HeaderProps> = ({}) => {
             <div className={[css.my_container, css.inner_container].join(' ')}>
                 <Link href={HOME}>
                     <a className={css.logo_style}>
-                        <Image alt='Logo' src={'/assets/imgs/logo.png'} layout='fill' objectFit='cover' />
+                        <ExportedImage alt='Logo' src={logoImg} layout='fill' objectFit='cover' />
                     </a>
                 </Link>
                 <div className={css.nav_links}>
