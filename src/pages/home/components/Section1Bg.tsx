@@ -1,11 +1,39 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 
 export type Section1BgProps = {
 }
 
 const Section1Bg:FC<Section1BgProps> = ({}) => {
+    const [imageUrl, setImageUrl] = useState('');
+
+    useEffect(() => {
+        const listener = () => {
+            const width = window.innerWidth;
+            if(width <= 640){
+                if (!(imageUrl === '/assets/imgs/svg-bg-map@640.webp' || imageUrl === '/assets/imgs/svg-bg-map@1280.webp' || imageUrl === '/assets/imgs/svg-bg-map.webp')) {
+                    setImageUrl('/assets/imgs/svg-bg-map@640.webp')
+                }
+            }else if( width > 640 && width <= 1280){
+                if (!(imageUrl === '/assets/imgs/svg-bg-map@1280.webp' || imageUrl === '/assets/imgs/svg-bg-map.webp')){
+                    setImageUrl('/assets/imgs/svg-bg-map@1280.webp')
+                }
+            }else{
+                if (!(imageUrl === '/assets/imgs/svg-bg-map.webp')) {
+                    setImageUrl('/assets/imgs/svg-bg-map.webp')
+                }
+            }
+        }
+        listener();
+        window.addEventListener('resize', listener)
+    
+        return () => {
+            window.removeEventListener('resize', listener);    
+        }
+    }, [])
+    
+
     return (
-        <div className='absolute inset-0 overflow-hidden'>
+        <div className='absolute inset-0 overflow-hidden bg-[#1c3460]'>
             <svg className='h-full w-auto xl:h-auto xl:w-full' viewBox="0 0 1440 737" fill="none">
                 <defs>
                     <marker id="circle" viewBox="0 0 10 10"
@@ -48,7 +76,7 @@ const Section1Bg:FC<Section1BgProps> = ({}) => {
                     <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
                         <use xlinkHref="#image0_269_888" transform="scale(0.000390625)" />
                     </pattern>
-                    <image id="image0_269_888" width="2560" height="2560" xlinkHref="/assets/imgs/svg-bg-map.webp" />
+                    <image id="image0_269_888" width="2560" height="2560" xlinkHref={imageUrl} />
                 </defs>
             </svg>
         </div>

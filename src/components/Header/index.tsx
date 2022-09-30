@@ -23,7 +23,7 @@ const Header:FC<HeaderProps> = ({}) => {
             <div className={[css.my_container, css.inner_container].join(' ')}>
                 <Link href={HOME}>
                     <a className={css.logo_style}>
-                        <ExportedImage alt='Logo' src={logoImg} layout='fill' objectFit='cover' />
+                        <ExportedImage alt='Logo' src={logoImg} width={90} height={90} quality={100} objectFit='cover' />
                     </a>
                 </Link>
                 <div className={css.nav_links}>
