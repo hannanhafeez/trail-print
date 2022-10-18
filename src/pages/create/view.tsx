@@ -1,7 +1,9 @@
-import { FC, Suspense, useReducer, useState, } from 'react'; 
+import { FC, Suspense, useEffect, useReducer, useState, } from 'react';
 import dynamic from 'next/dynamic';
+import { useFilePicker } from 'use-file-picker';
 
-// import Image from 'next/image'
+const tj = require('@mapbox/togeojson');
+
 import ExportedImage from 'next-image-export-optimizer';
 import Footer from '../../components/Footer'
 import Header from '../../components/Header'
@@ -17,7 +19,7 @@ import { Transition } from '@headlessui/react';
 const PaperPrint = dynamic(async() => {
 	/* const p = new Promise((resolve)=>{
 		setTimeout(()=>resolve('done'), 3000);
-	}) 
+	})
 	await p;
 	*/
 	return import('./components/PaperPrint')
@@ -30,11 +32,36 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	const [showSidebar, setShowSidebar] = useState(false);
 	const [state, dispatch] = useReducer(createReducer, pageState)
 
+	const [openFileSelector, { filesContent, loading }] = useFilePicker({
+		accept: ['.gpx', '.kml'],
+		readFilesContent: true,
+	});
+
+	useEffect(() => {
+		console.log(filesContent)
+		if(filesContent.length === 0)return;
+
+		try {
+			const file = (new DOMParser()).parseFromString(filesContent[0].content, 'text/xml');
+			const extension = filesContent[0].name.split('.').pop()
+			const converted = (extension === 'kml') ? tj.kml(file) : tj.gpx(file);
+			// const convertedWithStyles = tj.gpx(gpx, { styles: true });
+
+			console.log({ fileContent: filesContent[0].content, file, converted, extension });
+			// console.log(filesContent[0].content);
+		} catch (e:any) {
+			console.warn("\n\nERROR:\n", e, "\n\n");
+		}
+
+	}, [filesContent])
+
+
+
 	return (
 		<>
 			<div className='flex flex-col min-h-screen'>
 				<Header/>
-				
+
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
 						{/* <Suspense fallback={<Loader size={64} />}> */}
@@ -48,7 +75,9 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 
 					{/* Static Sidebar */}
 					<div className={css.static_sidebar}>
-						<SidebarContent state={state} dispatch={dispatch}/>
+						<SidebarContent state={state} dispatch={dispatch}
+							onUploadClicked={() => openFileSelector()}
+						/>
 
 						<div className="flex flex-col gap-8 pt-20 pb-2 pr-4 text-center">
 							<h2 className={css.total_label}>
@@ -66,7 +95,7 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 						</div>
 					</MyButton>
 				</section>
-				
+
 				<Footer/>
 
 				{/* Animating Sidebar */}

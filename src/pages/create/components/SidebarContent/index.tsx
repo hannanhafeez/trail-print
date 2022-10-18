@@ -1,8 +1,8 @@
 import React, { ChangeEvent, CSSProperties, Dispatch, FC, useCallback } from 'react'
-import { 
-	valueLabelAction, 
-	LAYOUT, ORIENTATION, THEME, COLOR, VALUE_LABELS, 
-	Action, PageState 
+import {
+	valueLabelAction,
+	LAYOUT, ORIENTATION, THEME, COLOR, VALUE_LABELS,
+	Action, PageState
 } from '../../../../store/slices/createPageSlice'
 
 import css from './sidebar.module.css'
@@ -22,11 +22,15 @@ import { colorThemeData } from '../../../../constants/themeData'
 
 export type SidebarContentProps = {
 	state: PageState,
-	dispatch: Dispatch<Action>
+	dispatch: Dispatch<Action>,
+	onUploadClicked?: ()=>void,
 }
 
-const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
-	
+const SidebarContent:FC<SidebarContentProps> = ({
+	state, dispatch,
+	onUploadClicked,
+}) => {
+
 	const onColorChange = useCallback((colorField: COLOR, e: ChangeEvent<HTMLInputElement>) => {
 		debounce(() => dispatch({ type: colorField, payload: e.target.value }), 20)();
 	}, [dispatch])
@@ -64,7 +68,7 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 						</svg>
 					</MyButton>
 
-					<MyButton title='Upload GPX/KML files' />
+					<MyButton title='Upload GPX/KML files' onClick={onUploadClicked}/>
 
 				</div>
 			</MyAccordian>
@@ -178,7 +182,7 @@ const SidebarContent:FC<SidebarContentProps> = ({state, dispatch}) => {
 							const foundTheme = colorThemeData.find(({ value }) => value === v)
 							console.log(foundTheme?.colors)
 							dispatch({ type: 'SET_THEME', payload: { theme: v, colors: foundTheme?.colors, mapStyle: foundTheme?.mapStyle }})}
-						} 
+						}
 					>
 						{ colorThemeData.map(({value, title, color, src})=>(
 								<SelectImage key={`${value}-${title}`}
