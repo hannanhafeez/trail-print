@@ -41,16 +41,6 @@ const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
 			// const convertedWithStyles = tj.gpx(gpx, { styles: true });
 
 			console.log({ converted, extension });
-			/* dispatch({
-				type: 'ADD_TRAILS',
-				payload: [{
-					name: 'Name',
-					time: '2012-10-24T23:29:40.000Z',
-					type: extension || 'gpx',
-					lengthInKm: 0,
-					mapDetail: converted as mapboxgl.AnyLayer,
-				}] as TRAIL[]
-			}) */
 			dispatch({
 				type: 'ADD_TRAILS',
 				payload: (converted.features as GeoJSON.Feature[]).map((feature, ) => {

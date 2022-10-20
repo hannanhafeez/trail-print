@@ -1,5 +1,5 @@
 import React, { FC, useRef, useEffect, useState } from 'react'
-import mapboxgl, { Map } from 'mapbox-gl';
+import mapboxgl, { AnyLayer, AnySourceData, GeoJSONSourceOptions, LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
@@ -25,27 +25,15 @@ export type PaperPrintProps = {
     }
 }
 
-const defaultData: TRACKING_DATA = [
-    { time: '2018-12-22', value: 32.51 },
-    { time: '2018-12-23', value: 31.11 },
-    { time: '2018-12-24', value: 27.02 },
-    { time: '2018-12-25', value: 27.32 },
-    { time: '2018-12-26', value: 25.17 },
-    { time: '2018-12-27', value: 28.89 },
-    { time: '2018-12-28', value: 25.46 },
-    { time: '2018-12-29', value: 23.92 },
-    { time: '2018-12-30', value: 22.68 },
-    { time: '2018-12-31', value: 22.67 },
-]
+const id = 'LineString';
 
-const PaperPrint:FC<PaperPrintProps> = ({
-    // data = defaultData,
+const PaperPrint: FC<PaperPrintProps> = ({
     state,
     mapStyle = colorThemeData[0].mapStyle,
-    colors:{activity, background, elevation, primaryText, secondaryText},
+    colors: { activity, background, elevation, primaryText, secondaryText },
 }) => {
     const mapContainer = useRef(null);
-    const map = useRef<Map|null>(null);
+    const map = useRef<Map | null>(null);
     const [lng, setLng] = useState(-70.9001);
     const [lat, setLat] = useState(42.5599);
     const [zoom, setZoom] = useState(14);
@@ -57,16 +45,18 @@ const PaperPrint:FC<PaperPrintProps> = ({
             container: mapContainer.current || '',
             center: [lng, lat],
             zoom: zoom,
-            attributionControl:true,
+            attributionControl: true,
         });
+        /*
         const setMapData = () =>{
             setLng(parseFloat(map!.current!.getCenter().lng.toFixed(4)));
             setLat(parseFloat(map!.current!.getCenter().lat.toFixed(4)));
             setZoom(parseFloat(map!.current!.getZoom().toFixed(2)));
         }
-        // map.current.on('move', setMapData);
+        map.current.on('move', setMapData);
+        */
 
-        return ()=>{
+        return () => {
             // map.current?.off('move', setMapData)
         }
     });
@@ -76,35 +66,176 @@ const PaperPrint:FC<PaperPrintProps> = ({
     }, [mapStyle,])
 
 
-    const { text:{title, subtitle}, orientation, elevationProfile, valueLabels } = state;
+    const { text: { title, subtitle }, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness } = state;
     useEffect(() => {
-        setTimeout(()=> map.current?.resize(), 300);
+        setTimeout(() => map.current?.resize(), 300);
     }, [title, subtitle, orientation, elevationProfile])
+
+    useEffect(() => {
+        if (!map.current) return; // initialize map only once
+
+        const src = map.current.getSource(id);
+        const layer = map.current.getLayer(id);
+        if (layer) {
+            map.current.removeLayer(id)
+        }
+        if (src && map.current.isSourceLoaded(id)) {
+            map.current.removeSource(id)
+        }
+
+        if (trails.length === 0) return;
+        console.log('trails')
+
+        //@ts-ignore
+        const bounds: LngLatLike[] = trails.reduce((acc, trail) => {
+                return trail.mapDetail.geometry.type === 'Point'
+                ?
+                acc
+                :
+                [
+                    ...acc,
+                    //@ts-ignore
+                    ...((trail.mapDetail.geometry.coordinates) || [])
+                //@ts-ignore
+                ].map(a => ([a[0], a[1]]))
+                }
+                , [] as LngLatLike[])
+            //@ts-ignore
+            .filter((a)=> (!isNaN(a[0] && a[1])));
+
+        console.log(bounds);
+
+        const lngLatBounds = new mapboxgl.LngLatBounds(
+            bounds[0],
+            bounds[0]
+        );
+
+        for (const coord of bounds) {
+            lngLatBounds.extend(coord);
+        }
+        map.current.fitBounds(lngLatBounds, {
+            padding: 80
+        });
+
+        try {
+            const geojson = {
+                'type': 'FeatureCollection',
+                'features': trails.map(({mapDetail})=>{
+                    //@ts-ignore
+                    const isPoint = mapDetail.geometry.type === 'Point';
+                    //@ts-ignore
+                    const is2D = Array.isArray(mapDetail.geometry.coordinates[0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0])
+                    //@ts-ignore
+                    // const is3D = Array.isArray(mapDetail.geometry.coordinates[0][0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0][0])
+                    var newCoordinates;
+                    if(isPoint){
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.slice(0,2);
+                    }else if(is2D){
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.slice(0,2));
+                    }/* else if(is3D){
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.map(coord2=>coord2.slice(0,2)));
+                    } */else{
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates;
+                    }
+                    return {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'LineString',
+                            'properties': mapDetail.properties,
+                            //@ts-ignore
+                            'coordinates':  newCoordinates,
+                        }
+                    }
+                })
+            };
+
+            // console.log({geojson})
+
+            map.current.addSource('LineString', {
+                'type': 'geojson',
+                //@ts-ignore
+                'data': geojson
+            });
+
+            map.current.addLayer({
+                'id': 'LineString',
+                'type': 'line',
+                'source': 'LineString',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    "line-color": activity,
+                    "line-width": activityThickness
+                }
+            });
+        } catch (error) {
+            console.warn(error)
+        }
+
+    }, [trails])
+
+    useEffect(() => {
+        if (!map.current) return; // initialize map only once
+        if (trails.length === 0) return;
+
+        if (trails.length > 0) {
+            const layer = map.current.getLayer(id);
+            if (layer) {
+                map.current.removeLayer(id)
+            }
+        }
+
+        try {
+            map.current.addLayer({
+                'id': 'LineString',
+                'type': 'line',
+                'source': 'LineString',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                paint: {
+                    "line-color": activity,
+                    "line-width": activityThickness
+                }
+            });
+
+        } catch (error) {
+            console.warn(error)
+        }
+
+    },[activity, activityThickness])
 
 
     return (
-        <div className={[css.paper, state.orientation === 'landscape' ? css.paper_landscape : '' ].join(' ')} style={{ backgroundColor: background }}>
+        <div className={[css.paper, state.orientation === 'landscape' ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
             <div className={css.content_wrapper}>
                 <div ref={mapContainer} className={`${css.mapbox_wrapper} map-container`}>
 
                 </div>
                 {state.elevationProfile &&
-                    <figure className={[css.graph].join(' ')} style={{backgroundColor: elevation}}/>
+                    <figure className={[css.graph].join(' ')} style={{ backgroundColor: elevation }} />
                 }
 
-                {(title || subtitle || valueLabels.some(({value, label})=>!!value || !!label)) &&
+                {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
                     <div className={[css.bottom_container].join(' ')}>
                         <div className={[css.heading_container].join(' ')}>
-                            {title && <h1 style={{color: primaryText}}>{title}</h1>}
-                            {subtitle && <p style={{color: secondaryText}}>{subtitle}</p>}
+                            {title && <h1 style={{ color: primaryText }}>{title}</h1>}
+                            {subtitle && <p style={{ color: secondaryText }}>{subtitle}</p>}
                         </div>
 
                         <div className={[css.value_label_outer].join(' ')}>
                             {
-                                valueLabels.map(({id, value, label})=>(
+                                valueLabels.map(({ id, value, label }) => (
                                     // (value || label) &&
                                     <div key={id} className={[css.value_label_inner].join(' ')}>
-                                        <div style={{backgroundColor: secondaryText}} className={css.value_label_divider}></div>
+                                        <div style={{ backgroundColor: secondaryText }} className={css.value_label_divider}></div>
                                         {<h2 style={{ color: primaryText }}>{value}</h2>}
                                         {<p style={{ color: secondaryText }}>{label}</p>}
                                     </div>
@@ -120,21 +251,32 @@ const PaperPrint:FC<PaperPrintProps> = ({
 }
 
 const addLayerToMap = (
-    map: Map, layerData: mapboxgl.AnyLayer,
-    useDashedLined: boolean,
-    endpoints: boolean,
+    map: Map, layerData: AnySourceData,
+    {
+        useDashedLined,
+        endpoints,
+        activity,
+        activityThickness,
+    }:
+    {
+        useDashedLined: boolean,
+        endpoints: boolean,
+        activity: string,
+        activityThickness: number
+    }
 ) => {
-    map.addLayer({
-        ...layerData,
-        type: 'line',
-        layout: {
-            "line-join": 'round',
-            "line-cap": 'round',
-        },
-        paint: {
+    // map.addLayer({
+    //     type: 'line',
+    //     layout: {
+    //         "line-join": 'round',
+    //         "line-cap": 'round',
+    //     },
+    //     paint: {
+    //         "line-color": activity,
+    //         "line-width": activityThickness
+    //     }
+    // })
 
-        }
-    })
 }
 
 export default PaperPrint

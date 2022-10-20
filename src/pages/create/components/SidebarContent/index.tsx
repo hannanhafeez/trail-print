@@ -80,7 +80,7 @@ const SidebarContent:FC<SidebarContentProps> = ({
 													{name}
 												</span>
 												<span className='text-16'>
-													{(new Date(time)).toLocaleDateString()} . {lengthInKm}Km
+													{(new Date(time)).toLocaleDateString()} . {lengthInKm}km
 												</span>
 											</div>
 											<button className='self-end text-14 hover:text-theme_blue'

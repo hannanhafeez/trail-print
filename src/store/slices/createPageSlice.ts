@@ -1,3 +1,4 @@
+import { Feature } from "geojson";
 import mapboxgl from "mapbox-gl";
 import { colorThemeData } from "../../constants/themeData";
 
@@ -26,7 +27,7 @@ export type TRAIL = {
 	 * Length of trach in KM.
 	 */
 	lengthInKm: number,
-	mapDetail: GeoJSON.Feature
+	mapDetail: Feature
 }
 
 export type PageState = {
@@ -184,7 +185,7 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, endpoints: !state.endpoints}
 
 		case "SET_ACTIVITY_THICKNESS":
-			return { ...state, activityThickness: action.payload };
+			return { ...state, activityThickness: Math.max(1, action.payload) };
 
 		default:
 			return state;
