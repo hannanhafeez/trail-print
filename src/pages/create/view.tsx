@@ -11,24 +11,17 @@ import Header from '../../components/Header'
 import css from './create.module.css'
 import MyButton from '../../components/MyButton'
 
-import { createReducer, pageState } from '../../store/slices/createPageSlice'
+import { createReducer, pageState, TRAIL } from '../../store/slices/createPageSlice'
 import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
 
-const PaperPrint = dynamic(async() => {
-	/* const p = new Promise((resolve)=>{
-		setTimeout(()=>resolve('done'), 3000);
-	})
-	await p;
-	*/
-	return import('./components/PaperPrint')
-}, { ssr: false, });
+const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
 
 export type CreatePageViewProps = {
 }
 
-const CreatePageView:FC<CreatePageViewProps> = ({}) => {
+const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
 	const [showSidebar, setShowSidebar] = useState(false);
 	const [state, dispatch] = useReducer(createReducer, pageState)
 
@@ -39,17 +32,39 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 
 	useEffect(() => {
 		console.log(filesContent)
-		if(filesContent.length === 0)return;
+		if (filesContent.length === 0) return;
 
 		try {
 			const file = (new DOMParser()).parseFromString(filesContent[0].content, 'text/xml');
-			const extension = filesContent[0].name.split('.').pop()
+			const extension = filesContent[0].name.split('.').pop();
 			const converted = (extension === 'kml') ? tj.kml(file) : tj.gpx(file);
 			// const convertedWithStyles = tj.gpx(gpx, { styles: true });
 
-			console.log({ fileContent: filesContent[0].content, file, converted, extension });
+			console.log({ converted, extension });
+			/* dispatch({
+				type: 'ADD_TRAILS',
+				payload: [{
+					name: 'Name',
+					time: '2012-10-24T23:29:40.000Z',
+					type: extension || 'gpx',
+					lengthInKm: 0,
+					mapDetail: converted as mapboxgl.AnyLayer,
+				}] as TRAIL[]
+			}) */
+			dispatch({
+				type: 'ADD_TRAILS',
+				payload: (converted.features as GeoJSON.Feature[]).map((feature, ) => {
+								return {
+									name: feature.properties?.name ?? "Untitled",
+									time: feature.properties?.time ?? (new Date()).toISOString(),
+									lengthInKm: 0,
+									type: extension || 'gpx',
+									mapDetail: feature
+								}
+							}) as TRAIL[]
+			})
 			// console.log(filesContent[0].content);
-		} catch (e:any) {
+		} catch (e: any) {
 			console.warn("\n\nERROR:\n", e, "\n\n");
 		}
 
@@ -60,16 +75,16 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 	return (
 		<>
 			<div className='flex flex-col min-h-screen'>
-				<Header/>
+				<Header />
 
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
 						{/* <Suspense fallback={<Loader size={64} />}> */}
-							<PaperPrint
-								state={state}
-								colors={state.colors}
-								mapStyle={state.mapStyle}
-							/>
+						<PaperPrint
+							state={state}
+							colors={state.colors}
+							mapStyle={state.mapStyle}
+						/>
 						{/* </Suspense> */}
 					</div>
 
@@ -83,20 +98,20 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 							<h2 className={css.total_label}>
 								Total: $20.00
 							</h2>
-							<MyButton title='Preview & Order' className='py-2 text-[22px]'/>
+							<MyButton title='Preview & Order' className='py-2 text-[22px]' />
 						</div>
 					</div>
 
 					<MyButton title='Customize' className='md:hidden mb-2 sticky bottom-2 py-2 text-[22px] gap-4 flex-row-reverse'
-						onClick={()=>setShowSidebar(old=>!old)}
+						onClick={() => setShowSidebar(old => !old)}
 					>
 						<div className='relative w-5 h-5 animate-pulse'>
-							<ExportedImage src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain'  />
+							<ExportedImage src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain' />
 						</div>
 					</MyButton>
 				</section>
 
-				<Footer/>
+				<Footer />
 
 				{/* Animating Sidebar */}
 				<Transition show={showSidebar}
@@ -122,7 +137,9 @@ const CreatePageView:FC<CreatePageViewProps> = ({}) => {
 						leaveTo={`-translate-x-[300px] sm: -translate-x-[400px] `}
 					>
 						<div className={'w-full py-4 pl-8'}>
-							<SidebarContent state={state} dispatch={dispatch} />
+							<SidebarContent state={state} dispatch={dispatch}
+								onUploadClicked={() => openFileSelector()}
+							/>
 
 							<div className="flex flex-col gap-8 pt-20 pb-2 pr-4 text-center">
 								<h2 className={css.total_label}>

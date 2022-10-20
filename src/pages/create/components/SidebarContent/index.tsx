@@ -6,6 +6,7 @@ import {
 } from '../../../../store/slices/createPageSlice'
 
 import css from './sidebar.module.css'
+import TrailPreview from '../../../../../public/assets/png/trail_preview.webp';
 
 import MyAccordian from '../../../../components/MyAccordian'
 import MyButton from '../../../../components/MyButton'
@@ -19,6 +20,7 @@ import { DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDr
 
 import { debounce } from '../../../../utils/helperFunctions'
 import { colorThemeData } from '../../../../constants/themeData'
+import ExportedImage from 'next-image-export-optimizer';
 
 export type SidebarContentProps = {
 	state: PageState,
@@ -54,9 +56,44 @@ const SidebarContent:FC<SidebarContentProps> = ({
 		<>
 			<MyAccordian defaultOpen title='Add Activities'>
 				<div className={css.sidebar_accordian_view}>
-					<p className={css.sidebar_label}>
-						This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
-					</p>
+					{
+						state.trails.length === 0
+						?
+						<p className={css.sidebar_label}>
+							This is just a sample for you to play with. Try adding an activity from Strava or uploading one!
+						</p>
+						:
+						<div className='flex flex-col items-stretch gap-y-4'>
+							{
+								state.trails.map(({name, time, type, lengthInKm},ind)=>(
+									<div key={`${name}-${time}-${ind}`}
+										className={'flex gap-x-4 min-h-[100px] font-mulish'}
+									>
+										<div className='relative flex items-center justify-center w-[100px] aspect-square outline outline-theme_blue'>
+											<ExportedImage alt='Trail Preview' src={TrailPreview} layout="fill" objectFit='cover' unoptimized
+											/>
+											<span className='absolute left-1/2 translate-x-[-50%] p-2 bg-theme_blue text-white'>{type.toUpperCase()}</span>
+										</div>
+										<div className='flex flex-col flex-1 items-stretch justify-between text-gray-500'>
+											<div className='flex flex-col gap-y-2'>
+												<span className='text-theme_blue'>
+													{name}
+												</span>
+												<span className='text-16'>
+													{(new Date(time)).toLocaleDateString()} . {lengthInKm}Km
+												</span>
+											</div>
+											<button className='self-end text-14 hover:text-theme_blue'
+												onClick={()=>dispatch({type:'REMOVE_TRAIL', payload: ind})}
+											>
+												Remove
+											</button>
+										</div>
+									</div>
+								))
+							}
+						</div>
+					}
 					<MyButton title='Connect to'>
 						<svg width="82" height="18" viewBox="0 0 82 18" fill="currentColor">
 							<path d="M8.31 16.84C6.8489 16.8505 5.395 16.6346 4 16.2C2.73307 15.8093 1.56149 15.1588 0.559998 14.29L3.26 11.08C4.0324 11.6887 4.91041 12.1497 5.85 12.44C6.72495 12.7086 7.63474 12.8468 8.55 12.85C8.89216 12.8747 9.23522 12.8164 9.55 12.68C9.63873 12.6373 9.71381 12.5707 9.7668 12.4876C9.81979 12.4046 9.8486 12.3085 9.85 12.21C9.83788 12.0867 9.78968 11.9697 9.71142 11.8737C9.63315 11.7776 9.52831 11.7068 9.41 11.67C8.87844 11.4591 8.32502 11.3082 7.76 11.22C6.91333 11.0467 6.10333 10.8433 5.33 10.61C4.62766 10.4055 3.95524 10.1097 3.33 9.73C2.76823 9.38961 2.29256 8.92421 1.94 8.37C1.57972 7.76647 1.39931 7.07259 1.42 6.37C1.41418 5.68085 1.55746 4.9986 1.84 4.37C2.12309 3.74446 2.54351 3.19075 3.07 2.75C3.65964 2.26271 4.33913 1.89578 5.07 1.67C5.96061 1.39689 6.88857 1.26528 7.82 1.28C9.12536 1.23274 10.4303 1.38448 11.69 1.73C12.7772 2.05672 13.7944 2.58228 14.69 3.28L12.23 6.69C11.5392 6.18738 10.7683 5.80532 9.95 5.56C9.21803 5.33136 8.45677 5.2101 7.69 5.2C7.40295 5.17902 7.11568 5.23785 6.86 5.37C6.77844 5.4135 6.71023 5.47835 6.66268 5.55761C6.61512 5.63687 6.59 5.72757 6.59 5.82C6.6022 5.93657 6.64719 6.04729 6.71976 6.13932C6.79233 6.23136 6.8895 6.30094 7 6.34C7.51357 6.55301 8.05069 6.70408 8.6 6.79C9.49173 6.94309 10.3733 7.15014 11.24 7.41C11.9479 7.62683 12.6213 7.94334 13.24 8.35C13.7665 8.70617 14.2044 9.17825 14.52 9.73C14.8428 10.3244 15.0016 10.994 14.98 11.67C14.9914 12.4112 14.8269 13.1446 14.5 13.81C14.184 14.4432 13.7253 14.9943 13.16 15.42C12.5306 15.8787 11.8221 16.2177 11.07 16.42C10.1745 16.6901 9.24525 16.8315 8.31 16.84Z" />

@@ -1,6 +1,6 @@
 .paper{
     @apply  w-[1191px] aspect-[0.7072446556]
-            absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+            absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
             scale-[0.25] md:scale-[0.3] lg:scale-[0.35] xl:scale-[0.35] 2xl:scale-[0.45] 3xl:scale-[0.5]
             transition-all duration-300
             ;
@@ -10,9 +10,13 @@
     padding: 2rem;
 }
 
+.paper_landscape{
+    @apply h-[1191px] w-auto aspect-[1/0.7072446556];
+}
+
 
 .content_wrapper{
-    @apply h-full w-full flex flex-col gap-y-4;
+    @apply h-full w-full flex flex-col gap-y-6;
     /* background-color: rgb(53, 156, 221); */
 }
 

@@ -9,19 +9,32 @@ export type THEME = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' |
 const vl_ids = ['vl1' , 'vl2' , 'vl3' , 'vl4' , 'vl5' , 'vl6'] as const
 export type VALUE_LABEL_IDS = typeof vl_ids[number];
 
-export type COLOR =	'primaryText' | 
-					'secondaryText' | 
-					'background' | 
-					'activity' | 
+export type COLOR =	'primaryText' |
+					'secondaryText' |
+					'background' |
+					'activity' |
 					'elevation' ;
 
 export type VALUE_LABELS = { id: VALUE_LABEL_IDS, value: string, label: string }[];
+
+export type TRAIL = {
+	name: string,
+	time: string,
+	type: 'gpx' | 'kml' | 'strava',
+
+	/**
+	 * Length of trach in KM.
+	 */
+	lengthInKm: number,
+	mapDetail: GeoJSON.Feature
+}
 
 export type PageState = {
 	text: {
 		title: string,
 		subtitle: string,
 	},
+	trails: TRAIL[],
 	valueLabels: VALUE_LABELS,
 	orientation: ORIENTATION,
 	layout: LAYOUT,
@@ -45,6 +58,7 @@ export const pageState: PageState = {
 		title: 'Title',
 		subtitle: 'Subtitle',
 	},
+	trails: [],
 	valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),
 	orientation: 'portrait',
 	layout: '1',
@@ -63,8 +77,13 @@ type SET_TITLE      = { type: 'SET_TITLE',    payload: string,}
 type SET_VALUE_LABELS = { type: 'SET_VALUE_LABELS', payload: { id: VALUE_LABEL_IDS, target: 'v' | 'l', value: string},}
 type SET_VALUE_LABELS_ORDERED = { type: 'SET_VALUE_LABELS_ORDERED', payload: VALUE_LABELS,}
 type SET_SUBTITLE   = { type: 'SET_SUBTITLE', payload: string,}
-type SET_ORIENTATION  = { type: 'SET_ORIENTATION', payload: ORIENTATION,}
 
+type ADD_TRAIL = {type: 'ADD_TRAIL', payload: TRAIL}
+type REMOVE_TRAIL = {type: 'REMOVE_TRAIL', payload: number}
+type ADD_TRAILS = {type: 'ADD_TRAILS', payload: TRAIL[]}
+type SET_TRAILS_ORDERED = {type: 'SET_TRAILS_ORDERED', payload: TRAIL[]}
+
+type SET_ORIENTATION  = { type: 'SET_ORIENTATION', payload: ORIENTATION,}
 type SET_LAYOUT  = { type: 'SET_LAYOUT', payload: LAYOUT,}
 
 type SET_THEME  = { type: 'SET_THEME', payload: {
@@ -86,18 +105,22 @@ type TOGGLE_ENDPOINTS  = { type: 'TOGGLE_ENDPOINTS', payload?: undefined,}
 type SET_ACTIVITY_THICKNESS  = { type: 'SET_ACTIVITY_THICKNESS', payload: number,}
 
 
-export type Action = SET_TITLE 
-			| SET_SUBTITLE 
-			| SET_VALUE_LABELS 
-			| SET_VALUE_LABELS_ORDERED 
-			| SET_ORIENTATION 
-			| SET_LAYOUT 
-			| SET_THEME 
-			| SET_COLOR
-			| TOGGLE_ELEVATION_PROFILE
-			| TOGGLE_DASHED_LINES
-			| TOGGLE_ENDPOINTS
-			| SET_ACTIVITY_THICKNESS;
+export type Action =  SET_TITLE
+					| SET_SUBTITLE
+					| SET_VALUE_LABELS
+					| SET_VALUE_LABELS_ORDERED
+					| SET_ORIENTATION
+					| SET_LAYOUT
+					| SET_THEME
+					| SET_COLOR
+					| TOGGLE_ELEVATION_PROFILE
+					| TOGGLE_DASHED_LINES
+					| TOGGLE_ENDPOINTS
+					| SET_ACTIVITY_THICKNESS
+					| ADD_TRAIL
+					| REMOVE_TRAIL
+					| ADD_TRAILS
+					| SET_TRAILS_ORDERED;
 
 /* Actions */
 
@@ -107,7 +130,16 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, text: {...state.text, title: action.payload}};
 		case 'SET_SUBTITLE':
 			return { ...state, text: {...state.text, subtitle: action.payload}};
-		
+
+		case 'SET_TRAILS_ORDERED':
+			return { ...state, trails: action.payload};
+		case 'ADD_TRAIL':
+			return { ...state, trails: [action.payload, ...state.trails]};
+		case 'ADD_TRAILS':
+			return { ...state, trails: [...action.payload, ...state.trails]};
+		case 'REMOVE_TRAIL':
+			return { ...state, trails: state.trails.filter((_, ind)=>ind !== action.payload)};
+
 		case 'SET_VALUE_LABELS_ORDERED':
 			return { ...state, valueLabels: action.payload};
 
@@ -120,19 +152,19 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 				newArray[id].label = action.payload.value;
 			}
 			return {...state};
-		
+
 		case 'SET_ORIENTATION':
 			return { ...state, orientation: action.payload };
 		case 'SET_LAYOUT':
 			return { ...state, layout: action.payload };
 		case "SET_THEME":
-			return { 
-				...state, 
-				theme: action.payload.theme, 
+			return {
+				...state,
+				theme: action.payload.theme,
 				colors: action.payload.colors ? action.payload.colors : state.colors,
 				mapStyle: action.payload.mapStyle ? action.payload.mapStyle : state.mapStyle,
 			};
-		
+
 		case "primaryText":
 			return { ...state, colors: {...state.colors, primaryText:action.payload}};
 		case "secondaryText":
@@ -150,7 +182,7 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, useDashedLined: !state.useDashedLined}
 		case 'TOGGLE_ENDPOINTS':
 			return { ...state, endpoints: !state.endpoints}
-		
+
 		case "SET_ACTIVITY_THICKNESS":
 			return { ...state, activityThickness: action.payload };
 

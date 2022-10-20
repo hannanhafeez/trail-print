@@ -23,13 +23,12 @@
     "use-file-picker": "^1.5.1"
   },
   "devDependencies": {
-    "@types/": "mapbox/togeojson",
+    "@types/geojson": "^7946.0.10",
     "@types/mapbox-gl": "^2.7.5",
-    "@types/node": "18.7.14",
+    "@types/node": "^18.11.3",
     "@types/react": "18.0.18",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "18.0.6",
-    "@types/xmldom": "^0.1.31",
     "autoprefixer": "^10.4.8",
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",

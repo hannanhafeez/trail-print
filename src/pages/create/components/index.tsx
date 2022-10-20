@@ -17,8 +17,8 @@ export const Row: FC<{ children?: ReactNode }> = ({ children }) => {
     )
 }
 
-export const SelectButton: FC<{title?: string, value: string, children?: ReactNode }> = ({ 
-    title, value ,children 
+export const SelectButton: FC<{title?: string, value: string, children?: ReactNode }> = ({
+    title, value ,children
 }) => {
     return(
         <RadioGroup.Option value={value} className={'flex-1 cursor-pointer'}>
@@ -31,7 +31,7 @@ export const SelectButton: FC<{title?: string, value: string, children?: ReactNo
     )
 }
 
-export const SelectImage: FC<{ title?: string, value: string, src: string, color?: string }> = ({ 
+export const SelectImage: FC<{ title?: string, value: string, src: string, color?: string }> = ({
     title, value, src, color
 }) => {
     return(
@@ -39,7 +39,7 @@ export const SelectImage: FC<{ title?: string, value: string, src: string, color
             {({ checked }) => (
                 <div  className={'flex flex-col items-stretch gap-y-2'}>
                     <div className={"relative aspect-square w-full transition-all duration-200 " + (checked ? 'ring-[7px] ring-theme_green ' : 'outline outline-offset-0 outline-[hsla(52,17%,72%,0.5)]')}>
-                        <ExportedImage src={src} alt={title + 'image'} layout='fill' objectFit="cover"/>
+                        <ExportedImage loading="eager" src={src} alt={title + 'image'} layout='fill' objectFit="cover"/>
                     </div>
 
                     <span className='font-quicksand font-light text-center text-16 lg:text-18' style={{color}}>
