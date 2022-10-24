@@ -19,9 +19,10 @@ import { Transition } from '@headlessui/react';
 const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
 
 export type CreatePageViewProps = {
+	strava_connected?: boolean,
 }
 
-const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
+const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 	const [showSidebar, setShowSidebar] = useState(false);
 	const [state, dispatch] = useReducer(createReducer, pageState)
 
@@ -61,7 +62,6 @@ const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
 	}, [filesContent])
 
 
-
 	return (
 		<>
 			<div className='flex flex-col min-h-screen'>
@@ -81,7 +81,8 @@ const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
 					{/* Static Sidebar */}
 					<div className={css.static_sidebar}>
 						<SidebarContent state={state} dispatch={dispatch}
-							onUploadClicked={() => openFileSelector()}
+							strava_connected={strava_connected}
+							onUploadClicked={() => {/* console.log('log'); */openFileSelector()}}
 						/>
 
 						<div className="flex flex-col gap-8 pt-20 pb-2 pr-4 text-center">
@@ -128,6 +129,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ }) => {
 					>
 						<div className={'w-full py-4 pl-8'}>
 							<SidebarContent state={state} dispatch={dispatch}
+								strava_connected={strava_connected}
 								onUploadClicked={() => openFileSelector()}
 							/>
 

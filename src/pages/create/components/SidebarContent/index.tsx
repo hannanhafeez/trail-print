@@ -1,4 +1,6 @@
-import React, { ChangeEvent, CSSProperties, Dispatch, FC, useCallback } from 'react'
+import React, { ChangeEvent, CSSProperties, Dispatch, FC, useCallback, useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router';
+
 import {
 	valueLabelAction,
 	LAYOUT, ORIENTATION, THEME, COLOR, VALUE_LABELS,
@@ -21,17 +23,90 @@ import { DragDropContext, Droppable, Draggable, DropResult, DraggingStyle, NotDr
 import { debounce } from '../../../../utils/helperFunctions'
 import { colorThemeData } from '../../../../constants/themeData'
 import ExportedImage from 'next-image-export-optimizer';
+import { API } from '../../../../constants/apiEndpoints';
+import { resourceUsage } from 'process';
+import { decode } from '@googlemaps/polyline-codec';
 
 export type SidebarContentProps = {
+	strava_connected?: boolean,
 	state: PageState,
 	dispatch: Dispatch<Action>,
 	onUploadClicked?: ()=>void,
 }
 
 const SidebarContent:FC<SidebarContentProps> = ({
+	strava_connected,
 	state, dispatch,
 	onUploadClicked,
 }) => {
+	const router = useRouter();
+	const [isLoading, setLoading] = useState(false);
+	const [stravaText, setStravaText] = useState('');
+
+	const primaryTextRef = useRef<HTMLInputElement>(null)
+	const secondaryTextRef = useRef<HTMLInputElement>(null)
+	const backgroundRef = useRef<HTMLInputElement>(null)
+	const activityRef = useRef<HTMLInputElement>(null)
+	const elevationRef = useRef<HTMLInputElement>(null)
+
+	useEffect(()=>{
+		if(
+			primaryTextRef.current &&
+			secondaryTextRef.current &&
+			backgroundRef.current &&
+			activityRef.current &&
+			elevationRef.current
+		){
+			primaryTextRef.current.value = state.colors.primaryText
+			secondaryTextRef.current.value = state.colors.secondaryText
+			backgroundRef.current.value = state.colors.background
+			activityRef.current.value = state.colors.activity
+			elevationRef.current.value = state.colors.elevation
+		}
+	},[state.mapStyle])
+
+	const onAddClicked = useCallback(async ()=>{
+		if(!stravaText)return;
+
+		const myHeaders = new Headers();
+		myHeaders.append("Content-Type", "application/json");
+
+		const raw = JSON.stringify({"str": stravaText});
+
+		const requestOptions = { method: 'POST', headers: myHeaders, body: raw };
+
+		setLoading(true);
+		try {
+			const response = await fetch(API.gpx_from_strava, requestOptions)
+			const {result} = await response.json()
+			// console.log({ result, ok: response.ok })
+			if (response.ok && result.map){
+				// console.log(decode(result?.map?.summary_polyline || ''))
+				dispatch({type:'ADD_TRAIL', payload:{
+					name: result.name || 'Unknown', type: 'strava',
+					lengthInKm: (result.distance || 0) /1000,
+					time: result.start_date || (new Date()).toISOString(),
+					mapDetail: {
+						type: 'Feature',
+						properties:{
+							name: result.name || 'Unknown',
+							time: result.start_date || (new Date()).toISOString(),
+						},
+						geometry:{
+							"type": "LineString",
+							coordinates: (decode(result?.map?.summary_polyline || '')).map((arr)=>arr.reverse())
+						}
+					}
+				}})
+			}
+		} catch (e:any) {
+			console.warn(e);
+		} finally {
+			setLoading(false)
+			setStravaText('')
+		}
+
+	}, [dispatch, stravaText])
 
 	const onColorChange = useCallback((colorField: COLOR, e: ChangeEvent<HTMLInputElement>) => {
 		debounce(() => dispatch({ type: colorField, payload: e.target.value }), 20)();
@@ -54,7 +129,7 @@ const SidebarContent:FC<SidebarContentProps> = ({
 
 	return (
 		<>
-			<MyAccordian defaultOpen title='Add Activities'>
+			<MyAccordian defaultOpen title={state.trails.length === 0 ? 'Add Activities' : 'Edit Activities'}>
 				<div className={css.sidebar_accordian_view}>
 					{
 						state.trails.length === 0
@@ -64,6 +139,15 @@ const SidebarContent:FC<SidebarContentProps> = ({
 						</p>
 						:
 						<div className='flex flex-col items-stretch gap-y-4'>
+							{
+								state.trails.length > 2
+								&&
+									<button className='self-center text-14 hover:text-red-500 -mt-4'
+										onClick={() => dispatch({ type: 'SET_TRAILS_ORDERED', payload: [] })}
+									>
+										Remove All
+									</button>
+							}
 							{
 								state.trails.map(({name, time, type, lengthInKm},ind)=>(
 									<div key={`${name}-${time}-${ind}`}
@@ -80,10 +164,10 @@ const SidebarContent:FC<SidebarContentProps> = ({
 													{name}
 												</span>
 												<span className='text-16'>
-													{(new Date(time)).toLocaleDateString()} . {lengthInKm}km
+													{(new Date(time)).toLocaleDateString()} . {lengthInKm ? `${lengthInKm.toFixed(2)}km` : '--'}
 												</span>
 											</div>
-											<button className='self-end text-14 hover:text-theme_blue'
+											<button className='self-end text-14 hover:text-theme_blue' disabled={isLoading}
 												onClick={()=>dispatch({type:'REMOVE_TRAIL', payload: ind})}
 											>
 												Remove
@@ -94,18 +178,35 @@ const SidebarContent:FC<SidebarContentProps> = ({
 							}
 						</div>
 					}
-					<MyButton title='Connect to'>
-						<svg width="82" height="18" viewBox="0 0 82 18" fill="currentColor">
-							<path d="M8.31 16.84C6.8489 16.8505 5.395 16.6346 4 16.2C2.73307 15.8093 1.56149 15.1588 0.559998 14.29L3.26 11.08C4.0324 11.6887 4.91041 12.1497 5.85 12.44C6.72495 12.7086 7.63474 12.8468 8.55 12.85C8.89216 12.8747 9.23522 12.8164 9.55 12.68C9.63873 12.6373 9.71381 12.5707 9.7668 12.4876C9.81979 12.4046 9.8486 12.3085 9.85 12.21C9.83788 12.0867 9.78968 11.9697 9.71142 11.8737C9.63315 11.7776 9.52831 11.7068 9.41 11.67C8.87844 11.4591 8.32502 11.3082 7.76 11.22C6.91333 11.0467 6.10333 10.8433 5.33 10.61C4.62766 10.4055 3.95524 10.1097 3.33 9.73C2.76823 9.38961 2.29256 8.92421 1.94 8.37C1.57972 7.76647 1.39931 7.07259 1.42 6.37C1.41418 5.68085 1.55746 4.9986 1.84 4.37C2.12309 3.74446 2.54351 3.19075 3.07 2.75C3.65964 2.26271 4.33913 1.89578 5.07 1.67C5.96061 1.39689 6.88857 1.26528 7.82 1.28C9.12536 1.23274 10.4303 1.38448 11.69 1.73C12.7772 2.05672 13.7944 2.58228 14.69 3.28L12.23 6.69C11.5392 6.18738 10.7683 5.80532 9.95 5.56C9.21803 5.33136 8.45677 5.2101 7.69 5.2C7.40295 5.17902 7.11568 5.23785 6.86 5.37C6.77844 5.4135 6.71023 5.47835 6.66268 5.55761C6.61512 5.63687 6.59 5.72757 6.59 5.82C6.6022 5.93657 6.64719 6.04729 6.71976 6.13932C6.79233 6.23136 6.8895 6.30094 7 6.34C7.51357 6.55301 8.05069 6.70408 8.6 6.79C9.49173 6.94309 10.3733 7.15014 11.24 7.41C11.9479 7.62683 12.6213 7.94334 13.24 8.35C13.7665 8.70617 14.2044 9.17825 14.52 9.73C14.8428 10.3244 15.0016 10.994 14.98 11.67C14.9914 12.4112 14.8269 13.1446 14.5 13.81C14.184 14.4432 13.7253 14.9943 13.16 15.42C12.5306 15.8787 11.8221 16.2177 11.07 16.42C10.1745 16.6901 9.24525 16.8315 8.31 16.84Z" />
-							<path d="M19.15 5.73H14.69V1.45H28.69V5.73H24.2V16.56H19.15V5.73Z" />
-							<path d="M29.36 1.45H36.69C37.8179 1.41624 38.9435 1.57173 40.02 1.91C40.8052 2.16809 41.5227 2.59861 42.12 3.17C42.5543 3.61403 42.8945 4.14124 43.12 4.72C43.3602 5.35905 43.4789 6.03735 43.47 6.72C43.5017 7.71391 43.222 8.69288 42.67 9.52C42.1139 10.3034 41.3623 10.9274 40.49 11.33L44.01 16.47H38.33L35.48 12.15H34.41V16.47H29.36V1.45ZM36.59 8.64C37.0931 8.66766 37.5916 8.53076 38.01 8.25C38.1782 8.1261 38.3136 7.96289 38.4042 7.77464C38.4949 7.58638 38.538 7.37879 38.53 7.17C38.5444 6.95894 38.5041 6.74773 38.413 6.55679C38.3219 6.36585 38.1831 6.20163 38.01 6.08C37.5904 5.82135 37.1023 5.69584 36.61 5.72H34.41V8.72H36.59V8.64Z" />
-							<path d="M73.3 10.06L76.6 16.56H81.44L73.3 0.5L65.17 16.56H70.01L73.3 10.06Z" />
-							<path d="M50.67 10.06L53.96 16.56H58.8L50.67 0.5L42.54 16.56H47.38L50.67 10.06Z" />
-							<path d="M61.99 7.95L58.7 1.45H53.86L61.99 17.5L70.12 1.45H65.28L61.99 7.95Z" />
-						</svg>
-					</MyButton>
+					{
+						strava_connected
+						?
+						<div className='flex items-stretch gap-x-2'>
+							<MyInput placeholder='Enter STRAVA link or ID' value={stravaText}  disabled={isLoading}
+								onChange={(e)=>setStravaText(e.currentTarget.value)}
+							/>
+							<button className='px-2 bg-theme_green text-white'  disabled={isLoading}
+								onClick={onAddClicked}
+							>
+								Add
+							</button>
+						</div>
+						:
+						<MyButton title='Connect to'
+							onClick={()=> router.push(API.strava_authorize)}
+						>
+							<svg width="82" height="18" viewBox="0 0 82 18" fill="currentColor">
+								<path d="M8.31 16.84C6.8489 16.8505 5.395 16.6346 4 16.2C2.73307 15.8093 1.56149 15.1588 0.559998 14.29L3.26 11.08C4.0324 11.6887 4.91041 12.1497 5.85 12.44C6.72495 12.7086 7.63474 12.8468 8.55 12.85C8.89216 12.8747 9.23522 12.8164 9.55 12.68C9.63873 12.6373 9.71381 12.5707 9.7668 12.4876C9.81979 12.4046 9.8486 12.3085 9.85 12.21C9.83788 12.0867 9.78968 11.9697 9.71142 11.8737C9.63315 11.7776 9.52831 11.7068 9.41 11.67C8.87844 11.4591 8.32502 11.3082 7.76 11.22C6.91333 11.0467 6.10333 10.8433 5.33 10.61C4.62766 10.4055 3.95524 10.1097 3.33 9.73C2.76823 9.38961 2.29256 8.92421 1.94 8.37C1.57972 7.76647 1.39931 7.07259 1.42 6.37C1.41418 5.68085 1.55746 4.9986 1.84 4.37C2.12309 3.74446 2.54351 3.19075 3.07 2.75C3.65964 2.26271 4.33913 1.89578 5.07 1.67C5.96061 1.39689 6.88857 1.26528 7.82 1.28C9.12536 1.23274 10.4303 1.38448 11.69 1.73C12.7772 2.05672 13.7944 2.58228 14.69 3.28L12.23 6.69C11.5392 6.18738 10.7683 5.80532 9.95 5.56C9.21803 5.33136 8.45677 5.2101 7.69 5.2C7.40295 5.17902 7.11568 5.23785 6.86 5.37C6.77844 5.4135 6.71023 5.47835 6.66268 5.55761C6.61512 5.63687 6.59 5.72757 6.59 5.82C6.6022 5.93657 6.64719 6.04729 6.71976 6.13932C6.79233 6.23136 6.8895 6.30094 7 6.34C7.51357 6.55301 8.05069 6.70408 8.6 6.79C9.49173 6.94309 10.3733 7.15014 11.24 7.41C11.9479 7.62683 12.6213 7.94334 13.24 8.35C13.7665 8.70617 14.2044 9.17825 14.52 9.73C14.8428 10.3244 15.0016 10.994 14.98 11.67C14.9914 12.4112 14.8269 13.1446 14.5 13.81C14.184 14.4432 13.7253 14.9943 13.16 15.42C12.5306 15.8787 11.8221 16.2177 11.07 16.42C10.1745 16.6901 9.24525 16.8315 8.31 16.84Z" />
+								<path d="M19.15 5.73H14.69V1.45H28.69V5.73H24.2V16.56H19.15V5.73Z" />
+								<path d="M29.36 1.45H36.69C37.8179 1.41624 38.9435 1.57173 40.02 1.91C40.8052 2.16809 41.5227 2.59861 42.12 3.17C42.5543 3.61403 42.8945 4.14124 43.12 4.72C43.3602 5.35905 43.4789 6.03735 43.47 6.72C43.5017 7.71391 43.222 8.69288 42.67 9.52C42.1139 10.3034 41.3623 10.9274 40.49 11.33L44.01 16.47H38.33L35.48 12.15H34.41V16.47H29.36V1.45ZM36.59 8.64C37.0931 8.66766 37.5916 8.53076 38.01 8.25C38.1782 8.1261 38.3136 7.96289 38.4042 7.77464C38.4949 7.58638 38.538 7.37879 38.53 7.17C38.5444 6.95894 38.5041 6.74773 38.413 6.55679C38.3219 6.36585 38.1831 6.20163 38.01 6.08C37.5904 5.82135 37.1023 5.69584 36.61 5.72H34.41V8.72H36.59V8.64Z" />
+								<path d="M73.3 10.06L76.6 16.56H81.44L73.3 0.5L65.17 16.56H70.01L73.3 10.06Z" />
+								<path d="M50.67 10.06L53.96 16.56H58.8L50.67 0.5L42.54 16.56H47.38L50.67 10.06Z" />
+								<path d="M61.99 7.95L58.7 1.45H53.86L61.99 17.5L70.12 1.45H65.28L61.99 7.95Z" />
+							</svg>
+						</MyButton>
+					}
 
-					<MyButton title='Upload GPX/KML files' onClick={onUploadClicked}/>
+					<MyButton title='Upload GPX/KML files' onClick={onUploadClicked} disabled={isLoading} />
 
 				</div>
 			</MyAccordian>
@@ -237,23 +338,23 @@ const SidebarContent:FC<SidebarContentProps> = ({
 			<MyAccordian title='Colors'>
 				<div className={css.sidebar_accordian_view}>
 					<div className={css.color_row}>
-						<div><input id='primaryText' defaultValue={state.colors.primaryText} type={'color'} onChange={(e) => onColorChange("primaryText", e)} /></div>
+						<div><input ref={primaryTextRef} id='primaryText' color={state.colors.primaryText} type={'color'} onChange={(e) => onColorChange("primaryText", e)} /></div>
 						<label htmlFor='primaryText'>Primary Text Color</label>
 					</div>
 					<div className={css.color_row}>
-						<div><input id='secondaryText' defaultValue={state.colors.secondaryText} type={'color'} onChange={(e) => onColorChange("secondaryText", e)} /></div>
+						<div><input ref={secondaryTextRef} id='secondaryText' color={state.colors.secondaryText} type={'color'} onChange={(e) => onColorChange("secondaryText", e)} /></div>
 						<label htmlFor='secondaryText'>Secondary Text Color</label>
 					</div>
 					<div className={css.color_row}>
-						<div><input id='background' defaultValue={state.colors.background} type={'color'} onChange={(e) => onColorChange("background", e)} /></div>
+						<div><input ref={backgroundRef} id='background' color={state.colors.background} type={'color'} onChange={(e) => onColorChange("background", e)} /></div>
 						<label htmlFor='background'>Background Color</label>
 					</div>
 					<div className={css.color_row}>
-						<div><input id='activity' defaultValue={state.colors.activity} type={'color'} onChange={(e) => onColorChange("activity", e)} /></div>
+						<div><input ref={activityRef} id='activity' color={state.colors.activity} type={'color'} onChange={(e) => onColorChange("activity", e)} /></div>
 						<label htmlFor='activity'>Activity Color</label>
 					</div>
 					<div className={css.color_row}>
-						<div><input id='elevation' defaultValue={state.colors.elevation} type={'color'} onChange={(e) => onColorChange("elevation", e)} /></div>
+						<div><input ref={elevationRef} id='elevation' color={state.colors.elevation} type={'color'} onChange={(e) => onColorChange("elevation", e)} /></div>
 						<label htmlFor='elevation'>Elevation Color</label>
 					</div>
 				</div>
@@ -286,7 +387,7 @@ const SidebarContent:FC<SidebarContentProps> = ({
 						<MyInput defaultValue={state.activityThickness} type={'number'} min={1} max={20} onChange={(e) => dispatch({ type: 'SET_ACTIVITY_THICKNESS', payload: Math.max(0, Math.min(20, e.target.valueAsNumber)) })}
 							className='w-auto flex-1'
 						/>
-						<span className={css.detail_label + ' flex-[2]'}>Activity Thinkness</span>
+						<span className={css.detail_label + ' flex-[2]'}>Activity Thickness</span>
 					</button>
 
 

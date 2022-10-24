@@ -1,9 +1,14 @@
-const isProductionEnv = process.env.NODE_ENV === 'production';
+export const isProductionEnv = process.env.NODE_ENV === 'production';
 // const localBaseUrl = 'http://192.168.18.67:8000/api'
 // const localBaseUrl = 'http://localhost:8000/api'
 
-const baseUrlLocal = isProductionEnv ? 'https://mobank-aa2f3.firebaseapp.com/api' : 'http://localhost:3000/api'
+export const baseUrl = isProductionEnv ? 'https://trailprints.netlify.app' : 'http://localhost:3000'
 
 export const API = {
-	
+	strava_authorize : '/api/strava-authorize',
+	strava_deauthorize : '/api/strava-deauthorize',
+	exchange_token: '/api/update-auth/exchange_token',
+	refresh_token: '/api/update-auth/refresh_token',
+
+	gpx_from_strava: '/api/gpx-from-strava',
 }

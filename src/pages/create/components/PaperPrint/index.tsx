@@ -47,17 +47,18 @@ const PaperPrint: FC<PaperPrintProps> = ({
             zoom: zoom,
             attributionControl: true,
         });
-        /*
+
         const setMapData = () =>{
-            setLng(parseFloat(map!.current!.getCenter().lng.toFixed(4)));
-            setLat(parseFloat(map!.current!.getCenter().lat.toFixed(4)));
-            setZoom(parseFloat(map!.current!.getZoom().toFixed(2)));
+            // setLng(parseFloat(map!.current!.getCenter().lng.toFixed(4)));
+            // setLat(parseFloat(map!.current!.getCenter().lat.toFixed(4)));
+            // setZoom(parseFloat(map!.current!.getZoom().toFixed(2)));
+            console.log('yolo')
         }
-        map.current.on('move', setMapData);
-        */
+        // map.current.on('load', setMapData);
+
 
         return () => {
-            // map.current?.off('move', setMapData)
+            // map.current?.off('load', setMapData)
         }
     });
 
@@ -66,7 +67,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
     }, [mapStyle,])
 
 
-    const { text: { title, subtitle }, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness } = state;
+    const { text: { title, subtitle }, theme, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness } = state;
     useEffect(() => {
         setTimeout(() => map.current?.resize(), 300);
     }, [title, subtitle, orientation, elevationProfile])
@@ -181,18 +182,18 @@ const PaperPrint: FC<PaperPrintProps> = ({
     }, [trails])
 
     useEffect(() => {
-        if (!map.current) return; // initialize map only once
+        // if (!map.current) return; // initialize map only once
         if (trails.length === 0) return;
 
         if (trails.length > 0) {
-            const layer = map.current.getLayer(id);
+            const layer = map.current?.getLayer(id);
             if (layer) {
-                map.current.removeLayer(id)
+                map.current?.removeLayer(id)
             }
         }
 
         try {
-            map.current.addLayer({
+            map.current?.addLayer({
                 'id': 'LineString',
                 'type': 'line',
                 'source': 'LineString',
@@ -210,7 +211,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
             console.warn(error)
         }
 
-    },[activity, activityThickness])
+    },[activity, activityThickness, trails.length])
 
 
     return (
