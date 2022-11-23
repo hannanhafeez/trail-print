@@ -135,6 +135,7 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 		case 'SET_TRAILS_ORDERED':
 			return { ...state, trails: action.payload};
 		case 'ADD_TRAIL':
+			console.log(state.trails)
 			return { ...state, trails: [action.payload, ...state.trails]};
 		case 'ADD_TRAILS':
 			return { ...state, trails: [...action.payload, ...state.trails]};

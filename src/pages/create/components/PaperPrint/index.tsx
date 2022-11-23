@@ -1,5 +1,5 @@
-import React, { FC, useRef, useEffect, useState } from 'react'
-import mapboxgl, { AnyLayer, AnySourceData, GeoJSONSourceOptions, LngLatBoundsLike, LngLatLike, Map } from 'mapbox-gl';
+import React, { FC, useRef, useEffect, useState, useMemo } from 'react'
+import mapboxgl, { AnySourceData, LngLatLike, Map } from 'mapbox-gl';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
@@ -8,9 +8,33 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import css from './paperprint.module.css';
 import { PageState, TRACKING_DATA } from '../../../../store/slices/createPageSlice';
 import { colorThemeData } from '../../../../constants/themeData';
-import { setTimeout } from 'timers';
 
-type MyDatum = { date: Date, stars: number }
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Filler,
+    Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import faker from 'faker';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Filler,
+    Legend
+);
+
+// type MyDatum = { date: Date, stars: number }
 
 export type PaperPrintProps = {
     state: PageState,
@@ -26,6 +50,9 @@ export type PaperPrintProps = {
 }
 
 const id = 'LineString';
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const graph_Port_ratio = 1131 / 80
+const graph_Land_ratio = 1624 / 80
 
 const PaperPrint: FC<PaperPrintProps> = ({
     state,
@@ -67,7 +94,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
     }, [mapStyle,])
 
 
-    const { text: { title, subtitle }, theme, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness } = state;
+    const { text: { title, subtitle }, theme, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
     useEffect(() => {
         setTimeout(() => map.current?.resize(), 300);
     }, [title, subtitle, orientation, elevationProfile])
@@ -213,6 +240,25 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
     },[activity, activityThickness, trails.length])
 
+    const elevationData = useMemo(()=>{
+        if (trails.length === 0) return [];
+        console.log('trails')
+
+        //@ts-ignore
+        const elevation = trails.reduce((acc, trail) => {
+            return [
+                    ...acc,
+                    //@ts-ignore
+                    ...((trail.mapDetail.geometry.coordinates) || [])
+                    //@ts-ignore
+                ].map(a => (a[2] || 0))
+        }
+            , [] as LngLatLike[])
+            //@ts-ignore
+
+        // console.log({elevation});
+        return elevation
+    }, [trails])
 
     return (
         <div className={[css.paper, state.orientation === 'landscape' ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
@@ -220,9 +266,41 @@ const PaperPrint: FC<PaperPrintProps> = ({
                 <div ref={mapContainer} className={`${css.mapbox_wrapper} map-container`}>
 
                 </div>
-                {state.elevationProfile &&
-                    <figure className={[css.graph].join(' ')} style={{ backgroundColor: elevation }} />
+
+                {elevationData.length > 0  &&
+                    <Line className={[css.graph].join(' ')}
+                            options={{
+                                aspectRatio: orientation === 'portrait' ? graph_Port_ratio : graph_Land_ratio  ,
+                                responsive: true,
+                                plugins: {
+                                    legend: { display: false, },
+                                    title: { display: false, },
+                                },
+
+                                scales:{
+                                    x: { display: false, },
+                                    y: { display: false, },
+                                }
+                            }}
+
+                            data={{
+                                labels,
+                                datasets: [
+                                    {
+                                        fill: true,
+                                        // data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+                                        data: elevationData,
+                                        // borderColor: colors.elevation,
+                                        backgroundColor: colors.elevation,
+                                        borderWidth: 0,
+                                        pointRadius: 0,
+                                    },
+                                ],
+                            }}
+                        />
                 }
+
+
 
                 {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
                     <div className={[css.bottom_container].join(' ')}>
