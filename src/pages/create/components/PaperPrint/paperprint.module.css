@@ -20,6 +20,11 @@
     /* background-color: rgb(53, 156, 221); */
 }
 
+.content_wrapper_rev{
+    @apply h-full w-full flex flex-col-reverse gap-y-6;
+    /* background-color: rgb(53, 156, 221); */
+}
+
 .mapbox_wrapper{
     @apply flex-1 rounded-lg;
 }
@@ -49,7 +54,7 @@
 
 .heading_container > p{
     @apply font-quicksand;
-    font-size: 2rem; line-height: 1.4;
+    font-size: 1.8rem; line-height: 1.4;
     letter-spacing: 0.8px;
     text-transform: uppercase;
     font-style: normal;
@@ -60,10 +65,15 @@
     @apply grid grid-rows-2 grid-flow-col;
 }
 
+.value_label_outer_ls{
+    @apply grid grid-rows-1 grid-flow-col;
+}
+
+
 .value_label_inner{
     @apply relative h-full grow flex flex-col gap-y-1 px-5 min-w-[145px];
 }
-.value_label_inner:nth-child(even){
+.value_label_outer .value_label_inner:nth-child(even){
     @apply py-3;
 }
 

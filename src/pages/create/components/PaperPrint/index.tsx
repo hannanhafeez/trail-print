@@ -91,16 +91,19 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
     useEffect(() => {
         map.current?.setStyle(mapStyle);
-    }, [mapStyle,])
+    }, [])
 
 
-    const { text: { title, subtitle }, theme, orientation, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
+    const { text: { title, subtitle }, theme, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
+    const isPortrait = orientation === 'portrait';
+
     useEffect(() => {
         setTimeout(() => map.current?.resize(), 300);
     }, [title, subtitle, orientation, elevationProfile])
 
     useEffect(() => {
         if (!map.current) return; // initialize map only once
+        const newMap = map.current?.setStyle(mapStyle);
 
         const src = map.current.getSource(id);
         const layer = map.current.getLayer(id);
@@ -206,7 +209,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
             console.warn(error)
         }
 
-    }, [trails])
+    }, [trails, mapStyle])
 
     useEffect(() => {
         // if (!map.current) return; // initialize map only once
@@ -257,12 +260,13 @@ const PaperPrint: FC<PaperPrintProps> = ({
             //@ts-ignore
 
         // console.log({elevation});
+        map.current?.resize();
         return elevation
     }, [trails])
 
     return (
-        <div className={[css.paper, state.orientation === 'landscape' ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
-            <div className={css.content_wrapper}>
+        <div className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
+            <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
                 <div ref={mapContainer} className={`${css.mapbox_wrapper} map-container`}>
 
                 </div>
@@ -291,7 +295,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                                         // data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
                                         data: elevationData,
                                         // borderColor: colors.elevation,
-                                        backgroundColor: colors.elevation,
+                                        backgroundColor: elevation,
                                         borderWidth: 0,
                                         pointRadius: 0,
                                     },
@@ -303,18 +307,23 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
 
                 {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
-                    <div className={[css.bottom_container].join(' ')}>
-                        <div className={[css.heading_container].join(' ')}>
+                    <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
+                        <div className={[css.heading_container, (layout === '3' || layout === '4') ? "items-center" : ''].join(' ')}>
                             {title && <h1 style={{ color: primaryText }}>{title}</h1>}
                             {subtitle && <p style={{ color: secondaryText }}>{subtitle}</p>}
                         </div>
 
-                        <div className={[css.value_label_outer].join(' ')}>
+                        <div className={[css[(isPortrait && (layout === '1' || layout === '2')) ? 'value_label_outer' :'value_label_outer_ls']].join(' ')}>
                             {
-                                valueLabels.map(({ id, value, label }) => (
+                                valueLabels.map(({ id, value, label }, ind) => (
                                     // (value || label) &&
-                                    <div key={id} className={[css.value_label_inner].join(' ')}>
-                                        <div style={{ backgroundColor: secondaryText }} className={css.value_label_divider}></div>
+                                    <div key={id} className={[
+                                            css.value_label_inner,
+                                            (!isPortrait && (layout === '3' || layout === '4')) ? 'flex-row-reverse items-baseline gap-2' : '',
+                                            (isPortrait && (layout === '3' || layout === '4')) ? 'text-center' : '',
+                                            ].join(' ')}
+                                    >
+                                        {!((layout === '3' || layout === '4') && ind === 0) && <div style={{ backgroundColor: secondaryText }} className={css.value_label_divider}></div>}
                                         {<h2 style={{ color: primaryText }}>{value}</h2>}
                                         {<p style={{ color: secondaryText }}>{label}</p>}
                                     </div>
