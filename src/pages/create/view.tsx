@@ -16,7 +16,8 @@ import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
 
-const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
+// const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
+import PaperPrint from './components/PaperPrint'
 
 export type CreatePageViewProps = {
 	strava_connected?: boolean,

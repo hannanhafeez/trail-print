@@ -36,6 +36,7 @@ export type PageState = {
 		subtitle: string,
 	},
 	trails: TRAIL[],
+	geoJson: any,
 	valueLabels: VALUE_LABELS,
 	orientation: ORIENTATION,
 	layout: LAYOUT,
@@ -51,7 +52,7 @@ export type PageState = {
 	useDashedLined: boolean,
 	endpoints: boolean,
 	activityThickness: number,
-	mapStyle: string | mapboxgl.Style
+	mapStyle: string
 }
 
 export const pageState: PageState = {
@@ -60,12 +61,13 @@ export const pageState: PageState = {
 		subtitle: 'Subtitle',
 	},
 	trails: [],
+	geoJson: {},
 	valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),
 	orientation: 'portrait',
 	layout: '1',
 	theme: '1',
 	colors: colorThemeData[0].colors,
-	elevationProfile: false,
+	elevationProfile: true,
 	useDashedLined: false,
 	endpoints: false,
 	activityThickness: 4,
@@ -96,7 +98,7 @@ type SET_THEME  = { type: 'SET_THEME', payload: {
 		activity: string,
 		elevation: string,
 	},
-	mapStyle?: string | mapboxgl.Style,
+	mapStyle?: string,
 },}
 
 type SET_COLOR  = { type: COLOR, payload: string,}

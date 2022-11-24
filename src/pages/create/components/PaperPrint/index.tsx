@@ -1,9 +1,10 @@
 import React, { FC, useRef, useEffect, useState, useMemo, useCallback } from 'react'
-import mapboxgl, { AnySourceData, LngLatLike, Map } from 'mapbox-gl';
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
+const MAP_TOKEN = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Map, { Layer, LngLatLike, MapRef, Source } from 'react-map-gl';
+import {bbox, lineString,} from '@turf/turf';
 
 import css from './paperprint.module.css';
 import { PageState, TRACKING_DATA } from '../../../../store/slices/createPageSlice';
@@ -21,7 +22,6 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import faker from 'faker';
 
 ChartJS.register(
     CategoryScale,
@@ -39,7 +39,7 @@ ChartJS.register(
 export type PaperPrintProps = {
     state: PageState,
     data?: TRACKING_DATA,
-    mapStyle?: string | mapboxgl.Style,
+    mapStyle?: string,
     colors: {
         primaryText: string,
         secondaryText: string,
@@ -59,48 +59,55 @@ const PaperPrint: FC<PaperPrintProps> = ({
     mapStyle = colorThemeData[0].mapStyle,
     colors: { activity, background, elevation, primaryText, secondaryText },
 }) => {
-    const { text: { title, subtitle }, theme, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
+    const { text: { title, subtitle }, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, activityThickness } = state;
     const isPortrait = orientation === 'portrait';
 
-    const mapContainer = useRef(null);
-    const map = useRef<Map | null>(null);
-    const [lng, setLng] = useState(-70.9001);
-    const [lat, setLat] = useState(42.5599);
-    const [zoom, setZoom] = useState(14);
+    const mapRef = useRef<MapRef>(null);
 
-    const addNewLayer = useCallback(() => {
-        if (trails.length === 0) return;
-
-        try {
-            map.current?.addLayer({
-                'id': 'LineString',
-                'type': 'line',
-                'source': 'LineString',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    "line-color": activity,
-                    "line-width": activityThickness
-                }
-            });
-
-        } catch (error) {
-            console.warn(error)
+    const fitToBounds = useCallback(() => {
+        if (trails.length == 0) return;
+        //@ts-ignore
+        const bounds = trails.reduce((acc, trail) => {
+            return trail.mapDetail.geometry.type === 'Point'
+                ? acc
+                : [
+                    ...acc,
+                    //@ts-ignore
+                    ...((trail.mapDetail.geometry.coordinates) || [])
+                    //@ts-ignore
+                ].map(a => ([a[0], a[1]]))
         }
-    }, [trails, activity, activityThickness])
+            , [] as LngLatLike[])
+            //@ts-ignore
+            .filter((a) => (!isNaN(a[0] && a[1])));
 
-    const addSourceAndLayers = ()=>{
-        console.log('addSourceAndLayers')
-        if (trails.length === 0) {
-            return
-        };
-        console.log('trails new')
+        // console.log({bounds});
 
-        try {
-            const geojson = {
-                'type': 'FeatureCollection',
+        const line = lineString(bounds);
+
+        const [minLng, minLat, maxLng, maxLat] = bbox(line);
+        console.table({minLng, minLat, maxLng, maxLat})
+
+        mapRef.current?.fitBounds(
+            [
+                [minLng, minLat],
+                [maxLng, maxLat]
+            ],
+            { minZoom:2, padding: 80, duration: 2000 }
+        );
+    }, [trails])
+
+    useEffect(()=>{
+        fitToBounds();
+    },[fitToBounds])
+
+    useEffect(()=>{
+        setTimeout(()=>mapRef.current?.resize(), 300)
+    },[title, subtitle, orientation, elevationProfile])
+
+    const geojson = useMemo(()=>{
+       return {
+            'type': 'FeatureCollection',
                 'features': trails.map(({ mapDetail }) => {
                     //@ts-ignore
                     const isPoint = mapDetail.geometry.type === 'Point';
@@ -132,83 +139,8 @@ const PaperPrint: FC<PaperPrintProps> = ({
                         }
                     }
                 })
-            };
-
-            console.log({geojson})
-
-            map.current?.addSource('LineString', {
-                'type': 'geojson',
-                //@ts-ignore
-                'data': geojson,
-            });
-
-            addNewLayer();
-
-        } catch (error) {
-            console.warn(error)
         }
-    }
-
-
-    useEffect(() => {
-        if (map.current) return; // initialize map only once
-        map.current = new mapboxgl.Map({
-            style: mapStyle,
-            container: mapContainer.current || '',
-            center: [lng, lat],
-            zoom: zoom,
-            attributionControl: true,
-        });
-
-        map.current?.on('styledata', addSourceAndLayers)
-    });
-
-
-    const fitToNewBounds = useCallback(() => {
-        if (trails.length==0) return;
-        //@ts-ignore
-        const bounds: LngLatLike[] = trails.reduce((acc, trail) => {
-            return trail.mapDetail.geometry.type === 'Point'
-                ?
-                acc
-                :
-                [
-                    ...acc,
-                    //@ts-ignore
-                    ...((trail.mapDetail.geometry.coordinates) || [])
-                    //@ts-ignore
-                ].map(a => ([a[0], a[1]]))
-        }
-            , [] as LngLatLike[])
-            //@ts-ignore
-            .filter((a) => (!isNaN(a[0] && a[1])));
-
-        console.log(bounds);
-
-        const lngLatBounds = new mapboxgl.LngLatBounds(
-            bounds[0],
-            bounds[0]
-        );
-
-        for (const coord of bounds) {
-            lngLatBounds.extend(coord);
-        }
-        map.current?.fitBounds(lngLatBounds, {
-            padding: 80
-        });
     }, [trails])
-
-    useEffect(() => {
-        setTimeout(() => {map.current?.resize(); fitToNewBounds();}, 300);
-    }, [title, subtitle, orientation, elevationProfile])
-
-    useEffect(() => {
-        map.current?.setStyle(mapStyle);
-    }, [mapStyle])
-
-    useEffect(()=>fitToNewBounds(), [fitToNewBounds])
-    useEffect(() => addSourceAndLayers(), [trails,])
-
 
     const elevationData = useMemo(()=>{
         if (trails.length === 0) return [];
@@ -226,18 +158,57 @@ const PaperPrint: FC<PaperPrintProps> = ({
             , [] as LngLatLike[])
             //@ts-ignore
 
-        // console.log({elevation});
-        map.current?.resize();
+        console.log({elevation});
+        mapRef.current?.resize();
         return elevation
     }, [trails])
 
     return (
         <div className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
             <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
-                <div ref={mapContainer} className={`${css.mapbox_wrapper} map-container`}>
-                </div>
 
-                {elevationData.length > 0  &&
+                <Map ref={mapRef}  mapboxAccessToken={MAP_TOKEN}
+                    initialViewState={{
+                        longitude: -70.90001, latitude: 42.5599,
+                        zoom: 14
+                    }}
+                    style={{ width: '100%', height: '100%' }}
+                    mapStyle={mapStyle}
+                >
+                    <Source id='my-geojson' type="geojson" data={geojson}>
+                        {
+                            /* {
+                                'id': 'LineString',
+                                'type': 'line',
+                                'source': 'LineString',
+                                'layout': {
+                                    'line-join': 'round',
+                                    'line-cap': 'round'
+                                },
+                                paint: {
+                                    "line-color": activity,
+                                    "line-width": activityThickness
+                                }
+                            } */
+                        }
+                        <Layer
+                            id={id}
+                            type='line'
+                            layout={{
+                                "line-join": "round",
+                                "line-cap": 'round',
+                            }}
+                            paint={{
+                                "line-color": activity,
+                                "line-width": activityThickness,
+                                // "line-dasharray"
+                                ...(useDashedLined &&{ "line-dasharray": [3, 3]}),
+                            }}
+                        />
+                    </Source>
+                </Map>
+
+                {elevationData.length > 0 && elevationProfile &&
                     <Line className={[css.graph].join(' ')}
                             options={{
                                 aspectRatio: orientation === 'portrait' ? graph_Port_ratio : graph_Land_ratio  ,
@@ -269,8 +240,6 @@ const PaperPrint: FC<PaperPrintProps> = ({
                             }}
                         />
                 }
-
-
 
                 {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
                     <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
@@ -304,7 +273,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
     )
 }
 
-const addLayerToMap = (
+/* const addLayerToMap = (
     map: Map, layerData: AnySourceData,
     {
         useDashedLined,
@@ -331,6 +300,6 @@ const addLayerToMap = (
     //     }
     // })
 
-}
+} */
 
 export default PaperPrint

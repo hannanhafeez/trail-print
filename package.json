@@ -14,10 +14,11 @@
     "@googlemaps/polyline-codec": "^1.0.28",
     "@headlessui/react": "^1.6.6",
     "@mapbox/togeojson": "^0.16.0",
+    "@turf/turf": "^6.5.0",
     "chart.js": "^4.0.1",
     "faker": "5.5.3",
     "iron-session": "^6.3.1",
-    "mapbox-gl": "^2.10.0",
+    "mapbox-gl": "^2.11.0",
     "next": "12.2.5",
     "next-image-export-optimizer": "^0.14.5",
     "react": "18.2.0",
@@ -25,6 +26,7 @@
     "react-chartjs-2": "^5.0.1",
     "react-charts": "^3.0.0-beta.50",
     "react-dom": "18.2.0",
+    "react-map-gl": "^7.0.19",
     "use-file-picker": "^1.5.1"
   },
   "devDependencies": {

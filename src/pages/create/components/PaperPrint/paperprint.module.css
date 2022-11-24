@@ -37,7 +37,7 @@
 
 
 .bottom_container{
-    @apply min-h-[80px] w-full flex;
+    @apply w-full flex;
 }
 
 .heading_container{
