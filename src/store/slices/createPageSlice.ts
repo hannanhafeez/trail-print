@@ -83,7 +83,7 @@ type SET_SUBTITLE   = { type: 'SET_SUBTITLE', payload: string,}
 
 type ADD_TRAIL = {type: 'ADD_TRAIL', payload: TRAIL}
 type REMOVE_TRAIL = {type: 'REMOVE_TRAIL', payload: number}
-type ADD_TRAILS = {type: 'ADD_TRAILS', payload: TRAIL[]}
+type ADD_TRAILS = {type: 'ADD_TRAILS', payload: {trails: TRAIL[], geojson: any}}
 type SET_TRAILS_ORDERED = {type: 'SET_TRAILS_ORDERED', payload: TRAIL[]}
 
 type SET_ORIENTATION  = { type: 'SET_ORIENTATION', payload: ORIENTATION,}
@@ -138,9 +138,9 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, trails: action.payload};
 		case 'ADD_TRAIL':
 			console.log(state.trails)
-			return { ...state, trails: [action.payload, ...state.trails]};
+			return { ...state, trails: [action.payload, ...state.trails], geoJson: action.payload.mapDetail};
 		case 'ADD_TRAILS':
-			return { ...state, trails: [...action.payload, ...state.trails]};
+			return { ...state, trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson};
 		case 'REMOVE_TRAIL':
 			return { ...state, trails: state.trails.filter((_, ind)=>ind !== action.payload)};
 

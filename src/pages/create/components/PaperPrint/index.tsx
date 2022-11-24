@@ -3,7 +3,7 @@ import React, { FC, useRef, useEffect, useState, useMemo, useCallback } from 're
 const MAP_TOKEN = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Map, { Layer, LngLatLike, MapRef, Source } from 'react-map-gl';
+import Map, { Layer, LngLatLike, MapRef, Source, } from 'react-map-gl';
 import {bbox, lineString,} from '@turf/turf';
 
 import css from './paperprint.module.css';
@@ -22,6 +22,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { Feature, GeoJsonProperties, Geometry } from 'geojson';
 
 ChartJS.register(
     CategoryScale,
@@ -59,7 +60,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
     mapStyle = colorThemeData[0].mapStyle,
     colors: { activity, background, elevation, primaryText, secondaryText },
 }) => {
-    const { text: { title, subtitle }, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, activityThickness } = state;
+    const { text: { title, subtitle }, /* geoJson, */ orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, activityThickness } = state;
     const isPortrait = orientation === 'portrait';
 
     const mapRef = useRef<MapRef>(null);
@@ -93,7 +94,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                 [minLng, minLat],
                 [maxLng, maxLat]
             ],
-            { minZoom:2, padding: 80, duration: 2000 }
+            { padding: 80, duration: 2000 }
         );
     }, [trails])
 
@@ -106,40 +107,40 @@ const PaperPrint: FC<PaperPrintProps> = ({
     },[title, subtitle, orientation, elevationProfile])
 
     const geojson = useMemo(()=>{
-       return {
+       return ({
             'type': 'FeatureCollection',
-                'features': trails.map(({ mapDetail }) => {
+            'features': trails.map(({ mapDetail }) => {
+                //@ts-ignore
+                const isPoint = mapDetail.geometry.type === 'Point';
+                //@ts-ignore
+                const is2D = Array.isArray(mapDetail.geometry.coordinates[0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0])
+                //@ts-ignore
+                // const is3D = Array.isArray(mapDetail.geometry.coordinates[0][0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0][0])
+                var newCoordinates;
+                if (isPoint) {
                     //@ts-ignore
-                    const isPoint = mapDetail.geometry.type === 'Point';
+                    newCoordinates = mapDetail.geometry.coordinates.slice(0, 2);
+                } else if (is2D) {
                     //@ts-ignore
-                    const is2D = Array.isArray(mapDetail.geometry.coordinates[0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0])
+                    newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.slice(0, 2));
+                }/* else if(is3D){
                     //@ts-ignore
-                    // const is3D = Array.isArray(mapDetail.geometry.coordinates[0][0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0][0])
-                    var newCoordinates;
-                    if (isPoint) {
+                    newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.map(coord2=>coord2.slice(0,2)));
+                } */else {
+                    //@ts-ignore
+                    newCoordinates = mapDetail.geometry.coordinates;
+                }
+                return {
+                    'type': 'Feature',
+                    'geometry': {
+                        'type': 'LineString',
+                        'properties': mapDetail.properties,
                         //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.slice(0, 2);
-                    } else if (is2D) {
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.slice(0, 2));
-                    }/* else if(is3D){
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.map(coord2=>coord2.slice(0,2)));
-                    } */else {
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates;
+                        'coordinates': newCoordinates,
                     }
-                    return {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'LineString',
-                            'properties': mapDetail.properties,
-                            //@ts-ignore
-                            'coordinates': newCoordinates,
-                        }
-                    }
-                })
-        }
+                }
+            })
+       } as unknown) as Feature<Geometry, GeoJsonProperties>
     }, [trails])
 
     const elevationData = useMemo(()=>{
@@ -167,7 +168,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
         <div className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
             <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
 
-                <Map ref={mapRef}  mapboxAccessToken={MAP_TOKEN}
+                <Map ref={mapRef} mapboxAccessToken={MAP_TOKEN}
                     initialViewState={{
                         longitude: -70.90001, latitude: 42.5599,
                         zoom: 14
@@ -176,32 +177,15 @@ const PaperPrint: FC<PaperPrintProps> = ({
                     mapStyle={mapStyle}
                 >
                     <Source id='my-geojson' type="geojson" data={geojson}>
-                        {
-                            /* {
-                                'id': 'LineString',
-                                'type': 'line',
-                                'source': 'LineString',
-                                'layout': {
-                                    'line-join': 'round',
-                                    'line-cap': 'round'
-                                },
-                                paint: {
-                                    "line-color": activity,
-                                    "line-width": activityThickness
-                                }
-                            } */
-                        }
                         <Layer
                             id={id}
                             type='line'
                             layout={{
-                                "line-join": "round",
-                                "line-cap": 'round',
+                                "line-join": "round", "line-cap": 'round',
                             }}
                             paint={{
                                 "line-color": activity,
                                 "line-width": activityThickness,
-                                // "line-dasharray"
                                 ...(useDashedLined &&{ "line-dasharray": [3, 3]}),
                             }}
                         />

@@ -45,15 +45,19 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 			console.log({ converted, extension });
 			dispatch({
 				type: 'ADD_TRAILS',
-				payload: (converted.features as GeoJSON.Feature[]).map((feature, ) => {
-								return {
-									name: feature.properties?.name ?? "Untitled",
-									time: feature.properties?.time ?? (new Date()).toISOString(),
-									lengthInKm: 0,
-									type: extension || 'gpx',
-									mapDetail: feature
-								}
-							}) as TRAIL[]
+				payload:{
+					geojson: converted,
+					trails: (converted.features as GeoJSON.Feature[]).map((feature, ) => {
+									return {
+										name: feature.properties?.name ?? "Untitled",
+										time: feature.properties?.time ?? (new Date()).toISOString(),
+										lengthInKm: 0,
+										type: extension || 'gpx',
+										mapDetail: feature
+									}
+								}) as TRAIL[]
+				}
+
 			})
 			// console.log(filesContent[0].content);
 		} catch (e: any) {
