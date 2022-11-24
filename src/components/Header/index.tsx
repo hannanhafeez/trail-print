@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import logoImg from '../../../public/assets/imgs/logo.png'
 
 export type HeaderProps = {
-    
+
 }
 
 const Header:FC<HeaderProps> = ({}) => {
@@ -35,7 +35,7 @@ const Header:FC<HeaderProps> = ({}) => {
                     </svg>
                 </button>
             </div>
-            
+
             {/* This `show` prop controls all nested `Transition.Child` components. */}
             <Transition show={isShowing}  className="sm:hidden">
                 {/* Background overlay */}
@@ -83,12 +83,12 @@ const NavLinks: FC = () =>{
                 </a>
             </Link>
 
-            <Link href={EVENTS}>
+            {/* <Link href={EVENTS}>
                 <a>
                     EVENTS
                     <TransitionSpan isShowing={router.pathname === EVENTS} />
                 </a>
-            </Link>
+            </Link> */}
 
             <Link href={HELP}>
                 <a>

@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect, useState, useMemo } from 'react'
+import React, { FC, useRef, useEffect, useState, useMemo, useCallback } from 'react'
 import mapboxgl, { AnySourceData, LngLatLike, Map } from 'mapbox-gl';
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
@@ -59,168 +59,17 @@ const PaperPrint: FC<PaperPrintProps> = ({
     mapStyle = colorThemeData[0].mapStyle,
     colors: { activity, background, elevation, primaryText, secondaryText },
 }) => {
+    const { text: { title, subtitle }, theme, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
+    const isPortrait = orientation === 'portrait';
+
     const mapContainer = useRef(null);
     const map = useRef<Map | null>(null);
     const [lng, setLng] = useState(-70.9001);
     const [lat, setLat] = useState(42.5599);
     const [zoom, setZoom] = useState(14);
 
-
-    useEffect(() => {
-        if (map.current) return; // initialize map only once
-        map.current = new mapboxgl.Map({
-            container: mapContainer.current || '',
-            center: [lng, lat],
-            zoom: zoom,
-            attributionControl: true,
-        });
-
-        const setMapData = () =>{
-            // setLng(parseFloat(map!.current!.getCenter().lng.toFixed(4)));
-            // setLat(parseFloat(map!.current!.getCenter().lat.toFixed(4)));
-            // setZoom(parseFloat(map!.current!.getZoom().toFixed(2)));
-            console.log('yolo')
-        }
-        // map.current.on('load', setMapData);
-
-
-        return () => {
-            // map.current?.off('load', setMapData)
-        }
-    });
-
-    useEffect(() => {
-        map.current?.setStyle(mapStyle);
-    }, [])
-
-
-    const { text: { title, subtitle }, theme, orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, endpoints, activityThickness, colors } = state;
-    const isPortrait = orientation === 'portrait';
-
-    useEffect(() => {
-        setTimeout(() => map.current?.resize(), 300);
-    }, [title, subtitle, orientation, elevationProfile])
-
-    useEffect(() => {
-        if (!map.current) return; // initialize map only once
-        const newMap = map.current?.setStyle(mapStyle);
-
-        const src = map.current.getSource(id);
-        const layer = map.current.getLayer(id);
-        if (layer) {
-            map.current.removeLayer(id)
-        }
-        if (src && map.current.isSourceLoaded(id)) {
-            map.current.removeSource(id)
-        }
-
+    const addNewLayer = useCallback(() => {
         if (trails.length === 0) return;
-        console.log('trails')
-
-        //@ts-ignore
-        const bounds: LngLatLike[] = trails.reduce((acc, trail) => {
-                return trail.mapDetail.geometry.type === 'Point'
-                ?
-                acc
-                :
-                [
-                    ...acc,
-                    //@ts-ignore
-                    ...((trail.mapDetail.geometry.coordinates) || [])
-                //@ts-ignore
-                ].map(a => ([a[0], a[1]]))
-                }
-                , [] as LngLatLike[])
-            //@ts-ignore
-            .filter((a)=> (!isNaN(a[0] && a[1])));
-
-        console.log(bounds);
-
-        const lngLatBounds = new mapboxgl.LngLatBounds(
-            bounds[0],
-            bounds[0]
-        );
-
-        for (const coord of bounds) {
-            lngLatBounds.extend(coord);
-        }
-        map.current.fitBounds(lngLatBounds, {
-            padding: 80
-        });
-
-        try {
-            const geojson = {
-                'type': 'FeatureCollection',
-                'features': trails.map(({mapDetail})=>{
-                    //@ts-ignore
-                    const isPoint = mapDetail.geometry.type === 'Point';
-                    //@ts-ignore
-                    const is2D = Array.isArray(mapDetail.geometry.coordinates[0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0])
-                    //@ts-ignore
-                    // const is3D = Array.isArray(mapDetail.geometry.coordinates[0][0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0][0])
-                    var newCoordinates;
-                    if(isPoint){
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.slice(0,2);
-                    }else if(is2D){
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.slice(0,2));
-                    }/* else if(is3D){
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.map(coord2=>coord2.slice(0,2)));
-                    } */else{
-                        //@ts-ignore
-                        newCoordinates = mapDetail.geometry.coordinates;
-                    }
-                    return {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'LineString',
-                            'properties': mapDetail.properties,
-                            //@ts-ignore
-                            'coordinates':  newCoordinates,
-                        }
-                    }
-                })
-            };
-
-            // console.log({geojson})
-
-            map.current.addSource('LineString', {
-                'type': 'geojson',
-                //@ts-ignore
-                'data': geojson
-            });
-
-            map.current.addLayer({
-                'id': 'LineString',
-                'type': 'line',
-                'source': 'LineString',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                paint: {
-                    "line-color": activity,
-                    "line-width": activityThickness
-                }
-            });
-        } catch (error) {
-            console.warn(error)
-        }
-
-    }, [trails, mapStyle])
-
-    useEffect(() => {
-        // if (!map.current) return; // initialize map only once
-        if (trails.length === 0) return;
-
-        if (trails.length > 0) {
-            const layer = map.current?.getLayer(id);
-            if (layer) {
-                map.current?.removeLayer(id)
-            }
-        }
 
         try {
             map.current?.addLayer({
@@ -240,8 +89,126 @@ const PaperPrint: FC<PaperPrintProps> = ({
         } catch (error) {
             console.warn(error)
         }
+    }, [trails, activity, activityThickness])
 
-    },[activity, activityThickness, trails.length])
+    const addSourceAndLayers = ()=>{
+        console.log('addSourceAndLayers')
+        if (trails.length === 0) {
+            return
+        };
+        console.log('trails new')
+
+        try {
+            const geojson = {
+                'type': 'FeatureCollection',
+                'features': trails.map(({ mapDetail }) => {
+                    //@ts-ignore
+                    const isPoint = mapDetail.geometry.type === 'Point';
+                    //@ts-ignore
+                    const is2D = Array.isArray(mapDetail.geometry.coordinates[0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0])
+                    //@ts-ignore
+                    // const is3D = Array.isArray(mapDetail.geometry.coordinates[0][0]) && !Array.isArray(mapDetail.geometry.coordinates[0][0][0])
+                    var newCoordinates;
+                    if (isPoint) {
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.slice(0, 2);
+                    } else if (is2D) {
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.slice(0, 2));
+                    }/* else if(is3D){
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates.map(coord => coord.map(coord2=>coord2.slice(0,2)));
+                    } */else {
+                        //@ts-ignore
+                        newCoordinates = mapDetail.geometry.coordinates;
+                    }
+                    return {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'LineString',
+                            'properties': mapDetail.properties,
+                            //@ts-ignore
+                            'coordinates': newCoordinates,
+                        }
+                    }
+                })
+            };
+
+            console.log({geojson})
+
+            map.current?.addSource('LineString', {
+                'type': 'geojson',
+                //@ts-ignore
+                'data': geojson,
+            });
+
+            addNewLayer();
+
+        } catch (error) {
+            console.warn(error)
+        }
+    }
+
+
+    useEffect(() => {
+        if (map.current) return; // initialize map only once
+        map.current = new mapboxgl.Map({
+            style: mapStyle,
+            container: mapContainer.current || '',
+            center: [lng, lat],
+            zoom: zoom,
+            attributionControl: true,
+        });
+
+        map.current?.on('styledata', addSourceAndLayers)
+    });
+
+
+    const fitToNewBounds = useCallback(() => {
+        if (trails.length==0) return;
+        //@ts-ignore
+        const bounds: LngLatLike[] = trails.reduce((acc, trail) => {
+            return trail.mapDetail.geometry.type === 'Point'
+                ?
+                acc
+                :
+                [
+                    ...acc,
+                    //@ts-ignore
+                    ...((trail.mapDetail.geometry.coordinates) || [])
+                    //@ts-ignore
+                ].map(a => ([a[0], a[1]]))
+        }
+            , [] as LngLatLike[])
+            //@ts-ignore
+            .filter((a) => (!isNaN(a[0] && a[1])));
+
+        console.log(bounds);
+
+        const lngLatBounds = new mapboxgl.LngLatBounds(
+            bounds[0],
+            bounds[0]
+        );
+
+        for (const coord of bounds) {
+            lngLatBounds.extend(coord);
+        }
+        map.current?.fitBounds(lngLatBounds, {
+            padding: 80
+        });
+    }, [trails])
+
+    useEffect(() => {
+        setTimeout(() => {map.current?.resize(); fitToNewBounds();}, 300);
+    }, [title, subtitle, orientation, elevationProfile])
+
+    useEffect(() => {
+        map.current?.setStyle(mapStyle);
+    }, [mapStyle])
+
+    useEffect(()=>fitToNewBounds(), [fitToNewBounds])
+    useEffect(() => addSourceAndLayers(), [trails,])
+
 
     const elevationData = useMemo(()=>{
         if (trails.length === 0) return [];
@@ -268,7 +235,6 @@ const PaperPrint: FC<PaperPrintProps> = ({
         <div className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
             <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
                 <div ref={mapContainer} className={`${css.mapbox_wrapper} map-container`}>
-
                 </div>
 
                 {elevationData.length > 0  &&

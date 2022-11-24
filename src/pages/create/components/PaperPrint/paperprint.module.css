@@ -26,7 +26,7 @@
 }
 
 .mapbox_wrapper{
-    @apply flex-1 rounded-lg;
+    @apply flex-1 rounded-lg shadow-md;
 }
 
 .graph{
