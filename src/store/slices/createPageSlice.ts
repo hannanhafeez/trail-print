@@ -140,7 +140,13 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			console.log(state.trails)
 			return { ...state, trails: [action.payload, ...state.trails], geoJson: action.payload.mapDetail};
 		case 'ADD_TRAILS':
-			return { ...state, trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson};
+			const oldLabel1 = state.valueLabels[0].label;
+			const newLabels = [...state.valueLabels];
+			if (oldLabel1 === 'Label 1' && action.payload.trails.length === 1){
+				newLabels[0].label = 'Distance';
+				newLabels[0].value = action.payload.trails[0].lengthInKm.toFixed(2) + ' km';
+			}
+			return { ...state, trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson, valueLabels: newLabels};
 		case 'REMOVE_TRAIL':
 			return { ...state, trails: state.trails.filter((_, ind)=>ind !== action.payload)};
 

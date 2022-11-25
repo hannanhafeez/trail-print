@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect, useState, useMemo, useCallback } from 'react'
+import React, { FC, useRef, useEffect, useState, useMemo, useCallback, useLayoutEffect } from 'react'
 
 const MAP_TOKEN = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
@@ -51,9 +51,8 @@ export type PaperPrintProps = {
 }
 
 const id = 'LineString';
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const graph_Port_ratio = 1131 / 80
-const graph_Land_ratio = 1624 / 80
+const INITIAL_MAP_STATE = { longitude: -70.90001, latitude: 42.5599, zoom: 14 }
+const graph_Port_ratio = (1131 / 80) , graph_Land_ratio = (1624 / 80);
 
 const PaperPrint: FC<PaperPrintProps> = ({
     state,
@@ -91,16 +90,16 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
         mapRef.current?.fitBounds(
             [
+                [maxLng, maxLat],
                 [minLng, minLat],
-                [maxLng, maxLat]
             ],
             { padding: 80, duration: 2000 }
         );
     }, [trails])
 
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         fitToBounds();
-    },[fitToBounds])
+    }, [trails])
 
     useEffect(()=>{
         setTimeout(()=>mapRef.current?.resize(), 300)
@@ -152,11 +151,11 @@ const PaperPrint: FC<PaperPrintProps> = ({
             return [
                     ...acc,
                     //@ts-ignore
-                    ...((trail.mapDetail.geometry.coordinates) || [])
+                ...((trail.mapDetail.geometry.coordinates) || []).map(a => (a[2] || 0))
                     //@ts-ignore
-                ].map(a => (a[2] || 0))
-        }
-            , [] as LngLatLike[])
+                ]
+            }
+            , [] as number[])
             //@ts-ignore
 
         console.log({elevation});
@@ -169,12 +168,11 @@ const PaperPrint: FC<PaperPrintProps> = ({
             <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
 
                 <Map ref={mapRef} mapboxAccessToken={MAP_TOKEN}
-                    initialViewState={{
-                        longitude: -70.90001, latitude: 42.5599,
-                        zoom: 14
-                    }}
+                    initialViewState={INITIAL_MAP_STATE}
                     style={{ width: '100%', height: '100%' }}
                     mapStyle={mapStyle}
+                    logoPosition={'top-left'}
+                    attributionControl={false}
                 >
                     <Source id='my-geojson' type="geojson" data={geojson}>
                         <Layer
@@ -189,6 +187,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                                 ...(useDashedLined &&{ "line-dasharray": [3, 3]}),
                             }}
                         />
+
                     </Source>
                 </Map>
 
@@ -203,22 +202,24 @@ const PaperPrint: FC<PaperPrintProps> = ({
                                 },
 
                                 scales:{
-                                    x: { display: false, },
-                                    y: { display: false, },
+                                    x: { display: false,},
+                                    y: {
+                                        display: false,
+                                        // min: Math.min(...elevationData), // max: Math.max(...elevationData),
+                                    },
                                 }
                             }}
 
                             data={{
-                                labels,
+                                labels: elevationData,
                                 datasets: [
                                     {
                                         fill: true,
-                                        // data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+                                        // data: [0, 5, 2],
                                         data: elevationData,
-                                        // borderColor: colors.elevation,
+                                        // data: elevationData.slice(0,2),
                                         backgroundColor: elevation,
-                                        borderWidth: 0,
-                                        pointRadius: 0,
+                                        borderWidth: 0, pointRadius: 0,
                                     },
                                 ],
                             }}

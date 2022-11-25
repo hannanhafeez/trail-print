@@ -16,8 +16,11 @@ import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
 
-// const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
-import PaperPrint from './components/PaperPrint'
+const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
+// import PaperPrint from './components/PaperPrint'
+
+import { Feature, Geometry, length, lineString } from '@turf/turf';
+import { Position } from 'geojson';
 
 export type CreatePageViewProps = {
 	strava_connected?: boolean,
@@ -47,11 +50,13 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 				type: 'ADD_TRAILS',
 				payload:{
 					geojson: converted,
-					trails: (converted.features as GeoJSON.Feature[]).map((feature, ) => {
+					trails: (converted.features as Feature<Geometry, any>[]).map((feature, ) => {
+									const line = lineString(feature.geometry.coordinates as Position[]);
+									const l = length(line, { units: 'kilometers' });
 									return {
 										name: feature.properties?.name ?? "Untitled",
-										time: feature.properties?.time ?? (new Date()).toISOString(),
-										lengthInKm: 0,
+										time: feature.properties?.time ?? '',
+										lengthInKm: l,
 										type: extension || 'gpx',
 										mapDetail: feature
 									}
