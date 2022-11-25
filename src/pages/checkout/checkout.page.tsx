@@ -6,8 +6,14 @@ import ExportedImage from "next-image-export-optimizer";
 
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
+import { useRouter } from "next/router";
+import { PREVIEW } from "../../constants/pageLinks";
 
 const CheckOut: FC = () => {
+	const router = useRouter();
+
+	const goBack = () => router.replace(PREVIEW);
+
 	return (
 		<div className="">
 			{/* Header */}
@@ -15,6 +21,12 @@ const CheckOut: FC = () => {
 			{/* Header End */}
 			<div className={`${css.my_container} mb-24`}>
 				<div className="flex flex-col items-center pt-[80px] pb-[60px] gap-9">
+					<button type='button' className={css.backButton} onClick={goBack}>
+						<div className={css.arrow}>
+							<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow" objectFit="cover" />
+						</div>
+						{/* Back to Edit */}
+					</button>
 					<h1 className="font-mulish font-bold text-[rgb(55,65,58,0.5)]">
 						2/2
 					</h1>

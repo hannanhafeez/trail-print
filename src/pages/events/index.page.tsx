@@ -1,11 +1,11 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { HOME } from '../../constants/pageLinks';
-import Events from './events.page';
+import EventsView from './events.page';
 
-export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Events({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
-       <Events/>
+       <EventsView/>
     );
 }
 

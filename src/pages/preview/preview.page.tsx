@@ -6,9 +6,19 @@ import ExportedImage from "next-image-export-optimizer";
 // import Image from "next/image";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
+import { useRouter } from "next/router";
+import { CHECKOUT, CREATE } from "../../constants/pageLinks";
 
 
-const Preview: FC = () => {
+const PreviewView: FC = () => {
+	const router = useRouter();
+
+	const goBack = () => router.replace(CREATE);
+
+	const goToCheckout = () => {
+		router.push(CHECKOUT);
+	}
+
 	return (
 
 		<div className="">
@@ -26,36 +36,38 @@ const Preview: FC = () => {
 					<div className="text-center">
 						<h2 className={css.heading_top}>
 							Your download will be Digital Print and $20.00.
-						
 						</h2>
-						
+
 						<h2 className={css.heading_top}>
-						Please make sure you’re happy with everything below…
+							Please make sure you’re happy with everything below…
 						</h2>
 					</div>
-					
+
 					<div className="flex flex-col flex-1 justify-center w-full xs:flex-row gap-6 pt-8">
 
-						<button className={css.choise_button}>
-						<div className={css.arrow}>
-							<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
-						</div>
+						<button type='button' className={css.choise_button}
+							onClick={goBack}
+						>
+							<div className={css.arrow}>
+								<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow" objectFit="cover" />
+							</div>
 							Back to Edit
-
-
 						</button>
-						<button className={css.choise_button}>
+
+						<button type='button' className={css.choise_button}
+							onClick={goToCheckout}
+						>
 							Order
-						<div className={css.arrow_back}>
-							<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow"  objectFit="cover"/>
-						</div>
+							<div className={css.arrow_back}>
+								<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow" objectFit="cover" />
+							</div>
 						</button>
 
 					</div>
 
 				</div>
 
-		<h1>Content to be filled latter</h1>
+				<h1>Content to be filled latter</h1>
 
 			</div>
 
@@ -68,5 +80,5 @@ const Preview: FC = () => {
 	);
 };;
 
-export default Preview;
+export default PreviewView;
 

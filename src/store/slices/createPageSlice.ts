@@ -30,17 +30,17 @@ export type TRAIL = {
 	mapDetail: Feature
 }
 
-export type PageState = {
+export interface PageState {
 	text: {
 		title: string,
 		subtitle: string,
-	},
-	trails: TRAIL[],
-	geoJson: any,
-	valueLabels: VALUE_LABELS,
-	orientation: ORIENTATION,
-	layout: LAYOUT,
-	theme: THEME,
+	};
+	trails: TRAIL[];
+	geoJson: any;
+	valueLabels: VALUE_LABELS;
+	orientation: ORIENTATION;
+	layout: LAYOUT;
+	theme: THEME;
 	colors: {
 		primaryText: string,
 		secondaryText: string,
@@ -48,11 +48,11 @@ export type PageState = {
 		activity: string,
 		elevation: string,
 	},
-	elevationProfile: boolean,
-	useDashedLined: boolean,
-	endpoints: boolean,
-	activityThickness: number,
-	mapStyle: string
+	elevationProfile: boolean;
+	useDashedLined: boolean;
+	endpoints: boolean;
+	activityThickness: number;
+	mapStyle: string;
 }
 
 export const pageState: PageState = {

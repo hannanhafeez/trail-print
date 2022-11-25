@@ -11,4 +11,6 @@ export const API = {
 	refresh_token: '/api/update-auth/refresh_token',
 
 	gpx_from_strava: '/api/gpx-from-strava',
+	session_state: '/api/session-state',
+	reset_session_state: '/api/reset-session-state',
 }

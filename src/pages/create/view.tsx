@@ -1,4 +1,4 @@
-import { FC, Suspense, useEffect, useReducer, useState, } from 'react';
+import { FC, Suspense, useCallback, useEffect, useReducer, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -11,7 +11,7 @@ import Header from '../../components/Header'
 import css from './create.module.css'
 import MyButton from '../../components/MyButton'
 
-import { createReducer, pageState, TRAIL } from '../../store/slices/createPageSlice'
+import { createReducer, PageState, pageState, TRAIL } from '../../store/slices/createPageSlice'
 import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
@@ -21,14 +21,20 @@ const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false
 
 import { Feature, Geometry, length, lineString } from '@turf/turf';
 import { Position } from 'geojson';
+import { useRouter } from 'next/router';
+import { PREVIEW } from '../../constants/pageLinks';
+import axios from 'axios';
+import { API } from '../../constants/apiEndpoints';
 
 export type CreatePageViewProps = {
 	strava_connected?: boolean,
+	initialState?: PageState,
 }
 
-const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
+const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialState }) => {
+	const router = useRouter()
 	const [showSidebar, setShowSidebar] = useState(false);
-	const [state, dispatch] = useReducer(createReducer, pageState)
+	const [state, dispatch] = useReducer(createReducer, initialState || pageState)
 
 	const [openFileSelector, { filesContent, loading }] = useFilePicker({
 		accept: ['.gpx', '.kml'],
@@ -71,6 +77,31 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 
 	}, [filesContent])
 
+	const goToPreview = useCallback(async ()=>{
+		const data = JSON.stringify({
+			"stateStr": JSON.stringify(state)
+			// "action": "reset"
+		});
+
+		var config = {
+			method: 'post',
+			url: API.session_state,
+			// url: API.reset_session_state,
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data: data
+		};
+
+		try {
+			const response = await axios(config);
+			console.log(JSON.stringify(response.data));
+		} catch (error) {
+			console.log(error);
+		}
+
+		router.push(PREVIEW)
+	},[state, router])
 
 	return (
 		<>
@@ -99,7 +130,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 							<h2 className={css.total_label}>
 								Total: $20.00
 							</h2>
-							<MyButton title='Preview & Order' className='py-2 text-[22px]' />
+							<MyButton type='button' onClick={goToPreview} title='Preview & Order' className='py-2 text-[22px]' />
 						</div>
 					</div>
 
@@ -107,7 +138,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 						onClick={() => setShowSidebar(old => !old)}
 					>
 						<div className='relative w-5 h-5 animate-pulse'>
-							<ExportedImage src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain' />
+							<ExportedImage unoptimized src={'/assets/svg/arrow1.svg'} alt={'Right arrow'} layout='fill' objectFit='contain' />
 						</div>
 					</MyButton>
 				</section>
@@ -147,7 +178,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 								<h2 className={css.total_label}>
 									Total: $20.00
 								</h2>
-								<MyButton title='Preview & Order' className='py-2 text-[22px]' />
+								<MyButton type='button' onClick={goToPreview} title='Preview & Order' className='py-2 text-[22px]' />
 							</div>
 						</div>
 

@@ -1,3 +1,4 @@
+import { PageState } from './../store/slices/createPageSlice';
 // lib/withSession.ts
 
 import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
@@ -15,6 +16,7 @@ declare module "iron-session" {
 			refresh_token: string;
 			access_token: string;
 		};
+		reducerState?: PageState;
 	}
 }
 

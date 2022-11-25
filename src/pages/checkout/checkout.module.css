@@ -5,7 +5,14 @@
 }
 
 .heading_styles{
-@apply  font-mulish font-medium text-center text-[20px]  sm:text-[28px] text-[#22588D] md:text-[32px] lg:text-[36px];
+    @apply  font-mulish font-medium text-center text-[20px]  sm:text-[28px] text-[#22588D] md:text-[32px] lg:text-[36px];
+}
+
+.backButton{
+    @apply absolute -mt-2 self-start p-2 bg-theme_green;
+}
+.arrow {
+   @apply relative w-4 h-4;
 }
 
 .input_style{

@@ -25,16 +25,16 @@ const TestimonialSection:FC<TestimonialSectionProps> = ({}) => {
                     className='p-2'
                     />
             </button>
-            
+
             <button className='z-10 absolute right-4 top-[50%] translate-y-[-50%] h-7 aspect-square bg-[#ffffff33] p-1'
                 onClick={() => onBtnPressed('R')}
             >
                 <ExportedImage unoptimized alt='left button' src={'/assets/svg/arrow1.svg'} layout='fill' objectFit='contain'
                     className='p-2'
-                    />
+                />
             </button>
             <div ref={ref} className={css.scrollContainer}>
-                
+
                 {
                     testimonials.map(({subtitle, person, content},ind)=>(
                         <div key={`${ind}-${person}`} className={css.testimonial_card}>

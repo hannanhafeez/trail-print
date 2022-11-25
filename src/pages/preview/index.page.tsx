@@ -1,11 +1,10 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import Preview from './preview.page';
+import PreviewView from './preview.page';
 
-export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Preview({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
-       <Preview/>
-
+       <PreviewView/>
     );
 }
 
@@ -13,7 +12,7 @@ export default function About({}: InferGetServerSidePropsType<typeof getServerSi
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: {
-            
+
         }
     }
 }

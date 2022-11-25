@@ -1,10 +1,11 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import EventDetail from './event_detail.page';
+import { HOME } from '../../constants/pageLinks';
+import EventDetailView from './event_detail.page';
 
-export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function EventDetail({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
-       <EventDetail/>
+       <EventDetailView/>
 
     );
 }
@@ -12,8 +13,9 @@ export default function About({}: InferGetServerSidePropsType<typeof getServerSi
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
-        props: {
-            
+        redirect: {
+            destination: HOME,
+            permanent: false
         }
     }
 }

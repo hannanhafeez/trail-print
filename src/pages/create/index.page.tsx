@@ -1,15 +1,33 @@
 // import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { InferGetServerSidePropsType } from 'next';
+import { useMemo } from 'react';
 import { withSessionSsr } from '../../lib/withSession'
+import { PageState } from '../../store/slices/createPageSlice';
+import { isPageState } from '../api/session-state.api';
 import CreatePageView from './view'
 
-export default function CreatePage({ strava_connected } : InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function CreatePage({ strava_connected, initialState } : InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const initialStateJson = useMemo(()=>{
+        if (initialState === undefined || initialState === '' || typeof (initialState) === 'object') return undefined;
+        try {
+            const stateJson = JSON.parse(initialState);
+            if (typeof (stateJson) !== 'object') {
+                return
+            }
+            if (isPageState(stateJson)) {
+                return stateJson as PageState
+            }
+        } catch (e) {
+            console.warn("Error saving state:", e)
+        }
+    },[initialState])
+
     return (
-        <CreatePageView strava_connected={strava_connected}/>
+        <CreatePageView strava_connected={strava_connected} initialState={initialStateJson}/>
     )
 }
 
-import { decode, encode } from "@googlemaps/polyline-codec";
+// import { decode, encode } from "@googlemaps/polyline-codec";
 
 export const getServerSideProps = withSessionSsr(async function ({ req }) {
     const {session} = req;
@@ -44,10 +62,11 @@ export const getServerSideProps = withSessionSsr(async function ({ req }) {
     // console.log(decode('_|tlEkuq|LBFiBgElIzRrCqB{DoJI?CF@P'))
 
 
-    console.log({userInfo: session.userInfo})
+    console.log({userInfo: session.userInfo, sessionState: session.reducerState})
     return {
         props: {
-            strava_connected: !!session.userInfo?.refresh_token
+            strava_connected: !!session.userInfo?.refresh_token,
+            initialState: JSON.stringify(session.reducerState ?? ''),
         }
     }
 })

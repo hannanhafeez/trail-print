@@ -8,7 +8,7 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 
 
-const Events: FC = () => {
+const EventsView: FC = () => {
 	return (
 		<div className="relative">
 			{/* Header */}
@@ -17,7 +17,7 @@ const Events: FC = () => {
 
 			<div className={css.img}>
 				<ExportedImage alt='ben' src={'/assets/imgs/Mask.png'} layout='fill' objectFit='cover'
-					
+
 				/>
 			</div>
 
@@ -37,12 +37,12 @@ const Events: FC = () => {
 			</section>
 
 			<div className={`${css.my_container}`}>
-			
+
 			<section className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-y-20 md:gap-x-8 pb-[60px] md:pb-[120px]">
-			
+
 				<div className={css.wrapper}>
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
@@ -51,7 +51,7 @@ const Events: FC = () => {
 				</div>
 				<div className={css.wrapper}>
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
@@ -60,7 +60,7 @@ const Events: FC = () => {
 				</div>
 				<div className={css.wrapper}>
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
@@ -69,7 +69,7 @@ const Events: FC = () => {
 				</div>
 				<div className={css.wrapper}>
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/png/ph.png'} layout='fill' objectFit='cover'/>
 							</div>
@@ -78,7 +78,7 @@ const Events: FC = () => {
 				</div>
 				<div className="flex flex-col items-center gap-[30px]">
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
 							</div>
@@ -87,16 +87,16 @@ const Events: FC = () => {
 				</div>
 				<div className="flex flex-col items-center gap-[30px]">
 					<div className={css.image_container}>
-						
+
 							<div className={css.country_image}>
 								<ExportedImage alt='lendon' src={'/assets/svg/dots.svg'} layout='fill' objectFit='cover'/>
 							</div>
 					</div>
 						<h1 className= {css.font_wrapper_soon}>Great British Divide</h1>
 				</div>
-		
 
-			
+
+
 			</section>
 
 			</div>
@@ -125,5 +125,5 @@ const Events: FC = () => {
 	);
 };;
 
-export default Events;
+export default EventsView;
 

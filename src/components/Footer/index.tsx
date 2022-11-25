@@ -28,11 +28,11 @@ const Footer: FC<FooterProps> = ({}) => {
 
                         <div className="flex items-center gap-6 pt-16">
                             <div className={css.master_card}>
-                                <ExportedImage alt='svg' src={'/assets/svg/Master.svg'} layout='fill' objectFit='contain'
+                                <ExportedImage unoptimized alt='svg' src={'/assets/svg/Master.svg'} layout='fill' objectFit='contain'
                                 />
                             </div>
                             <div className={css.visa_card}>
-                                <ExportedImage alt='svg' src={'/assets/svg/Visa.svg'} layout='fill' objectFit='contain'
+                                <ExportedImage unoptimized alt='svg' src={'/assets/svg/Visa.svg'} layout='fill' objectFit='contain'
 
                                 />
                             </div>
@@ -40,10 +40,10 @@ const Footer: FC<FooterProps> = ({}) => {
 
                         <div className="flex items-center gap-6 pb-20 pt-10">
                             <div className={css.master_card}>
-                                <ExportedImage alt='svg' src={'/assets/svg/Strava.svg'} layout='fill' objectFit='contain'/>
+                                <ExportedImage unoptimized alt='svg' src={'/assets/svg/Strava.svg'} layout='fill' objectFit='contain'/>
                             </div>
                             <div className={css.visa_card}>
-                                <ExportedImage alt='svg' src={'/assets/svg/map.svg'} layout='fill' objectFit='contain'/>
+                                <ExportedImage unoptimized alt='svg' src={'/assets/svg/map.svg'} layout='fill' objectFit='contain'/>
                             </div>
                         </div>
                     </div>
@@ -58,17 +58,17 @@ const Footer: FC<FooterProps> = ({}) => {
                         <div className="flex  gap-3 m-0 p-0">
                             <Link href="#">
                                 <a className={css.social_img}>
-                                    <ExportedImage alt='svg' src={'/assets/svg/Group.svg'} layout='fill' objectFit='contain'/>
+                                    <ExportedImage unoptimized alt='svg' src={'/assets/svg/Group.svg'} layout='fill' objectFit='contain'/>
                                 </a>
                             </Link>
                             <Link href="#">
                                 <a className={css.social_img}>
-                                    <ExportedImage alt='svg' src={'/assets/svg/facebook.svg'} layout='fill' objectFit='contain'/>
+                                    <ExportedImage unoptimized alt='svg' src={'/assets/svg/facebook.svg'} layout='fill' objectFit='contain'/>
                                 </a>
                             </Link>
                             <Link href="#">
                                 <a className={css.social_img}>
-                                    <ExportedImage alt='svg' src={'/assets/svg/twitter.svg'} layout='fill' objectFit='contain'/>
+                                    <ExportedImage unoptimized alt='svg' src={'/assets/svg/twitter.svg'} layout='fill' objectFit='contain'/>
                                 </a>
                             </Link>
                         </div>
