@@ -237,7 +237,8 @@ const PaperPrint: FC<PaperPrintProps> = ({
                             {
                                 valueLabels.map(({ id, value, label }, ind) => (
                                     // (value || label) &&
-                                    <div key={id} className={[
+                                    <div key={id}
+                                        className={[
                                             css.value_label_inner,
                                             (!isPortrait && (layout === '3' || layout === '4')) ? 'flex-row-reverse items-baseline gap-2' : '',
                                             (isPortrait && (layout === '3' || layout === '4')) ? 'text-center' : '',

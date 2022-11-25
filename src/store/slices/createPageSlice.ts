@@ -135,7 +135,7 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			return { ...state, text: {...state.text, subtitle: action.payload}};
 
 		case 'SET_TRAILS_ORDERED':
-			return { ...state, trails: action.payload};
+			return { ...state, trails: action.payload, valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })), };
 		case 'ADD_TRAIL':
 			console.log(state.trails)
 			return { ...state, trails: [action.payload, ...state.trails], geoJson: action.payload.mapDetail};
@@ -146,12 +146,16 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 				newLabels[0].label = 'Distance';
 				newLabels[0].value = action.payload.trails[0].lengthInKm.toFixed(2) + ' km';
 			}
-			return { ...state, trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson, valueLabels: newLabels};
+			return { ...state,
+						trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson,
+						valueLabels: newLabels
+					};
 		case 'REMOVE_TRAIL':
-			return { ...state, trails: state.trails.filter((_, ind)=>ind !== action.payload)};
+			const newTrails = state.trails.filter((_, ind)=>ind !== action.payload);
+			return { ...state, trails: newTrails, valueLabels: newTrails.length>0 ? state.valueLabels : vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),};
 
 		case 'SET_VALUE_LABELS_ORDERED':
-			return { ...state, valueLabels: action.payload};
+			return { ...state, valueLabels: action.payload,};
 
 		case 'SET_VALUE_LABELS':
 			const id = state.valueLabels.findIndex((v)=>v.id===action.payload.id);
