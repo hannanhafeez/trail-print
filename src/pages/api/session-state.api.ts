@@ -45,6 +45,7 @@ export default withSessionRoute(async function handler(req: NextApiRequest, res:
 				req.session.reducerState = stateJson;
 				await req.session.save();
 				res.status(200).json({ success: true, message: 'State saved successfully.' });
+				return
 			}
 			res.status(400).json({ success: false, message: 'Bad request.' });
 		} catch (e) {
