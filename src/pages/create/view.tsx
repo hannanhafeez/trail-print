@@ -12,9 +12,10 @@ import css from './create.module.css'
 import MyButton from '../../components/MyButton'
 
 import { createReducer, PageState, pageState, TRAIL } from '../../store/slices/createPageSlice'
-import SidebarContent from './components/SidebarContent';
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
+const SidebarContent = dynamic(() => import('./components/SidebarContent'), { ssr: false, });
+// import SidebarContent from './components/SidebarContent';
 
 const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
 // import PaperPrint from './components/PaperPrint'
@@ -42,7 +43,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialStat
 	});
 
 	useEffect(() => {
-		console.log(filesContent)
+		// console.log(filesContent)
 		if (filesContent.length === 0) return;
 
 		try {
@@ -84,12 +85,9 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialStat
 		});
 
 		var config = {
-			method: 'post',
-			url: API.session_state,
+			method: 'post', url: API.session_state,
 			// url: API.reset_session_state,
-			headers: {
-				'Content-Type': 'application/json'
-			},
+			headers: { 'Content-Type': 'application/json' },
 			data: data
 		};
 

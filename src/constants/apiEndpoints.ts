@@ -2,7 +2,7 @@ export const isProductionEnv = process.env.NODE_ENV === 'production';
 // const localBaseUrl = 'http://192.168.18.67:8000/api'
 // const localBaseUrl = 'http://localhost:8000/api'
 
-export const baseUrl = isProductionEnv ? 'https://trailprints.netlify.app' : 'http://localhost:3000'
+export const baseUrl = isProductionEnv ? 'https://sportprints.co:3000' : 'http://localhost:3000'
 
 export const API = {
 	strava_authorize : '/api/strava-authorize',

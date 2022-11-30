@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import PreviewView from './preview.page';
+import PreviewView from './preview';
 
 export default function Preview({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 

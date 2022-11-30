@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import Help from './help.page';
+import Help from './help';
 
 export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
@@ -13,7 +13,7 @@ export default function About({}: InferGetServerSidePropsType<typeof getServerSi
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: {
-            
+
         }
     }
 }

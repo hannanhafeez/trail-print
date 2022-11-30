@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
-import CheckOut from './checkout.page';
+import CheckOut from './checkout';
 
 export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
@@ -13,7 +13,7 @@ export default function About({}: InferGetServerSidePropsType<typeof getServerSi
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     return {
         props: {
-            
+
         }
     }
 }

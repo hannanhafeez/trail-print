@@ -36,7 +36,7 @@ export interface PageState {
 		subtitle: string,
 	};
 	trails: TRAIL[];
-	geoJson: any;
+	geoJson?: any;
 	valueLabels: VALUE_LABELS;
 	orientation: ORIENTATION;
 	layout: LAYOUT;
@@ -136,9 +136,21 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 
 		case 'SET_TRAILS_ORDERED':
 			return { ...state, trails: action.payload, valueLabels: vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })), };
-		case 'ADD_TRAIL':
-			console.log(state.trails)
-			return { ...state, trails: [action.payload, ...state.trails], geoJson: action.payload.mapDetail};
+		case 'ADD_TRAIL':{
+			// console.log(state.trails)
+			const oldLabel1 = state.valueLabels[0].label;
+			const newLabels = [...state.valueLabels];
+			if (oldLabel1 === 'Label 1' && action.payload.lengthInKm) {
+				newLabels[0].label = 'Distance';
+				newLabels[0].value = action.payload.lengthInKm.toFixed(2) + ' km';
+			}
+			return {
+				...state,
+				trails: [action.payload, ...state.trails],
+				valueLabels: newLabels,
+				geoJson: action.payload.mapDetail
+			};
+		}
 		case 'ADD_TRAILS':
 			const oldLabel1 = state.valueLabels[0].label;
 			const newLabels = [...state.valueLabels];
@@ -152,7 +164,12 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 					};
 		case 'REMOVE_TRAIL':
 			const newTrails = state.trails.filter((_, ind)=>ind !== action.payload);
-			return { ...state, trails: newTrails, valueLabels: newTrails.length>0 ? state.valueLabels : vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),};
+			return {
+				...state,
+				trails: newTrails,
+				valueLabels: newTrails.length>0 ? state.valueLabels : vl_ids.map((id, ind) => ({ id: id, value: `Value ${ind + 1}`, label: `Label ${ind + 1}` })),
+				geoJson: newTrails.length > 0 ? state.geoJson : {},
+			};
 
 		case 'SET_VALUE_LABELS_ORDERED':
 			return { ...state, valueLabels: action.payload,};

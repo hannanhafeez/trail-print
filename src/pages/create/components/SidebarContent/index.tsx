@@ -83,13 +83,13 @@ const SidebarContent:FC<SidebarContentProps> = ({
 			if (response.ok && result.map){
 				// console.log(decode(result?.map?.summary_polyline || ''))
 				dispatch({type:'ADD_TRAIL', payload:{
-					name: result.name || 'Unknown', type: 'strava',
+					name: result.name || 'Untitled', type: 'strava',
 					lengthInKm: (result.distance || 0) /1000,
 					time: result.start_date || (new Date()).toISOString(),
 					mapDetail: {
 						type: 'Feature',
 						properties:{
-							name: result.name || 'Unknown',
+							name: result.name || 'Untitled',
 							time: result.start_date || (new Date()).toISOString(),
 						},
 						geometry:{

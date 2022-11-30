@@ -86,7 +86,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
         const line = lineString(bounds);
 
         const [minLng, minLat, maxLng, maxLat] = bbox(line);
-        console.table({minLng, minLat, maxLng, maxLat})
+        // console.table({minLng, minLat, maxLng, maxLat})
 
         mapRef.current?.fitBounds(
             [
@@ -158,7 +158,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
             , [] as number[])
             //@ts-ignore
 
-        console.log({elevation});
+        // console.log({elevation});
         mapRef.current?.resize();
         return elevation
     }, [trails])

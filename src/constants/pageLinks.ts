@@ -1,4 +1,4 @@
-export const HOME =  "/home"
+export const HOME =  "/"
 export const CREATE =  "/create"
 export const PREVIEW =  "/preview"
 export const CHECKOUT =  "/checkout"
