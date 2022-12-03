@@ -148,7 +148,11 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 				...state,
 				trails: [action.payload, ...state.trails],
 				valueLabels: newLabels,
-				geoJson: action.payload.mapDetail
+				geoJson: action.payload.mapDetail,
+				text: {
+					...state.text,
+					title: action.payload.name || state.text.title
+				}
 			};
 		}
 		case 'ADD_TRAILS':
@@ -160,7 +164,11 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 			}
 			return { ...state,
 						trails: [...action.payload.trails, ...state.trails], geoJson: action.payload.geojson,
-						valueLabels: newLabels
+						valueLabels: newLabels,
+						text: {
+							...state.text,
+							title: action.payload.trails[0]?.name || state.text.title
+						}
 					};
 		case 'REMOVE_TRAIL':
 			const newTrails = state.trails.filter((_, ind)=>ind !== action.payload);

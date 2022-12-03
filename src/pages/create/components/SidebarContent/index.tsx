@@ -81,7 +81,7 @@ const SidebarContent:FC<SidebarContentProps> = ({
 			const {result} = await response.json()
 			// console.log({ result, ok: response.ok })
 			if (response.ok && result.map){
-				// console.log(decode(result?.map?.summary_polyline || ''))
+				console.log(decode(result?.map?.summary_polyline || ''))
 				dispatch({type:'ADD_TRAIL', payload:{
 					name: result.name || 'Untitled', type: 'strava',
 					lengthInKm: (result.distance || 0) /1000,

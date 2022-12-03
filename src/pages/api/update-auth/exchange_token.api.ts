@@ -21,6 +21,7 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 		try {
 			const authTokenRes = await fetch(authTokenUrl, {method: 'POST'})
 			const authTokenJson = await authTokenRes.json()
+			console.log({authTokenJson})
 			req.session.userInfo = {
 				code: code as string,
 				expires_at: authTokenJson.expires_at as number,
