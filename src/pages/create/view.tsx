@@ -1,4 +1,4 @@
-import { FC, Suspense, useCallback, useEffect, useReducer, useState, } from 'react';
+import { FC, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -101,13 +101,20 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialStat
 		router.push(PREVIEW)
 	},[state, router])
 
+	const parentRef = useRef<HTMLDivElement>(null);
+
+	const scale = useMemo(()=>{
+		
+		return 1;
+	},[state.orientation])
+
 	return (
 		<>
 			<div className='flex flex-col min-h-screen'>
 				<Header />
 
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
-					<div className={css.main_view}>
+					<div ref={parentRef} className={css.main_view}>
 						{/* <Suspense fallback={<Loader size={64} />}> */}
 						<PaperPrint
 							state={state}
