@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect, useState, useMemo, useCallback, useLayoutEffect } from 'react'
+import React, { FC, useRef, useEffect, useMemo, useCallback, useLayoutEffect } from 'react'
 
 const MAP_TOKEN = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
@@ -16,10 +16,10 @@ import {
     LinearScale,
     PointElement,
     LineElement,
-    Title,
-    Tooltip,
     Filler,
-    Legend,
+    // Title,
+    // Tooltip,
+    // Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Feature, GeoJsonProperties, Geometry } from 'geojson';
@@ -30,13 +30,11 @@ ChartJS.register(
     LinearScale,
     PointElement,
     LineElement,
-    Title,
-    Tooltip,
     Filler,
-    Legend
+    // Title,
+    // Tooltip,
+    // Legend
 );
-
-// type MyDatum = { date: Date, stars: number }
 
 export type PaperPrintProps = {
     state: PageState,
@@ -198,6 +196,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                             />
                         </Source>
                     </Map>
+
                     {elevationData.length > 0 && elevationProfile &&
                         <Line className={[css.graph].join(' ')}
                                 options={{
@@ -230,6 +229,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                                 }}
                             />
                     }
+                    
                     {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
                         <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
                             <div className={[css.heading_container, (layout === '3' || layout === '4') ? "items-center" : ''].join(' ')}>
@@ -262,33 +262,5 @@ const PaperPrint: FC<PaperPrintProps> = ({
     )
 }
 
-/* const addLayerToMap = (
-    map: Map, layerData: AnySourceData,
-    {
-        useDashedLined,
-        endpoints,
-        activity,
-        activityThickness,
-    }:
-    {
-        useDashedLined: boolean,
-        endpoints: boolean,
-        activity: string,
-        activityThickness: number
-    }
-) => {
-    // map.addLayer({
-    //     type: 'line',
-    //     layout: {
-    //         "line-join": 'round',
-    //         "line-cap": 'round',
-    //     },
-    //     paint: {
-    //         "line-color": activity,
-    //         "line-width": activityThickness
-    //     }
-    // })
-
-} */
 
 export default PaperPrint

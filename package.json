@@ -31,6 +31,7 @@
     "use-file-picker": "^1.5.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^13.0.6",
     "@types/faker": "5.5.9",
     "@types/geojson": "^7946.0.10",
     "@types/mapbox-gl": "^2.7.5",
