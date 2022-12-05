@@ -23,6 +23,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Feature, GeoJsonProperties, Geometry } from 'geojson';
+import useChildScaleToFitParent from '../../../../hooks/useChildScaleToFitParent';
 
 ChartJS.register(
     CategoryScale,
@@ -163,97 +164,96 @@ const PaperPrint: FC<PaperPrintProps> = ({
         return elevation
     }, [trails])
 
+    const parentRef = useRef<HTMLDivElement>(null);
+    const childRef = useRef<HTMLDivElement>(null);
+
+    const {scale} = useChildScaleToFitParent(parentRef, childRef, state.orientation==='portrait', 300);
+
     return (
-        <div className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background }}>
-            <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
-
-                <Map ref={mapRef} mapboxAccessToken={MAP_TOKEN}
-                    initialViewState={INITIAL_MAP_STATE}
-                    style={{ width: '100%', height: '100%' }}
-                    mapStyle={mapStyle}
-                    logoPosition={'top-left'}
-                    attributionControl={false}
-                >
-                    <Source id='my-geojson' type="geojson" data={geojson}>
-                        <Layer
-                            id={id}
-                            type='line'
-                            layout={{
-                                "line-join": "round", "line-cap": 'round',
-                            }}
-                            paint={{
-                                "line-color": activity,
-                                "line-width": activityThickness,
-                                ...(useDashedLined &&{ "line-dasharray": [3, 3]}),
-                            }}
-                        />
-
-                    </Source>
-                </Map>
-
-                {elevationData.length > 0 && elevationProfile &&
-                    <Line className={[css.graph].join(' ')}
-                            options={{
-                                aspectRatio: orientation === 'portrait' ? graph_Port_ratio : graph_Land_ratio  ,
-                                responsive: true,
-                                plugins: {
-                                    legend: { display: false, },
-                                    title: { display: false, },
-                                },
-
-                                scales:{
-                                    x: { display: false,},
-                                    y: {
-                                        display: false,
-                                        // min: Math.min(...elevationData), // max: Math.max(...elevationData),
+        <div ref={parentRef} className={['absolute inset-0 flex items-center justify-center overflow-hidden',].join(' ')}>
+            <div ref={childRef} className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background, transform: `scale(${scale})` }}>
+                <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
+                    <Map ref={mapRef} mapboxAccessToken={MAP_TOKEN}
+                        initialViewState={INITIAL_MAP_STATE}
+                        style={{ width: '100%', height: '100%' }}
+                        mapStyle={mapStyle}
+                        logoPosition={'top-left'}
+                        attributionControl={false}
+                    >
+                        <Source id='my-geojson' type="geojson" data={geojson}>
+                            <Layer
+                                id={id}
+                                type='line'
+                                layout={{
+                                    "line-join": "round", "line-cap": 'round',
+                                }}
+                                paint={{
+                                    "line-color": activity,
+                                    "line-width": activityThickness,
+                                    ...(useDashedLined &&{ "line-dasharray": [3, 3]}),
+                                }}
+                            />
+                        </Source>
+                    </Map>
+                    {elevationData.length > 0 && elevationProfile &&
+                        <Line className={[css.graph].join(' ')}
+                                options={{
+                                    aspectRatio: orientation === 'portrait' ? graph_Port_ratio : graph_Land_ratio  ,
+                                    responsive: true,
+                                    plugins: {
+                                        legend: { display: false, },
+                                        title: { display: false, },
                                     },
+                                    scales:{
+                                        x: { display: false,},
+                                        y: {
+                                            display: false,
+                                            // min: Math.min(...elevationData), // max: Math.max(...elevationData),
+                                        },
+                                    }
+                                }}
+                                data={{
+                                    labels: elevationData,
+                                    datasets: [
+                                        {
+                                            fill: true,
+                                            // data: [0, 5, 2],
+                                            data: elevationData,
+                                            // data: elevationData.slice(0,2),
+                                            backgroundColor: elevation,
+                                            borderWidth: 0, pointRadius: 0,
+                                        },
+                                    ],
+                                }}
+                            />
+                    }
+                    {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
+                        <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
+                            <div className={[css.heading_container, (layout === '3' || layout === '4') ? "items-center" : ''].join(' ')}>
+                                {title && <h1 style={{ color: primaryText }}>{title}</h1>}
+                                {subtitle && <p style={{ color: secondaryText }}>{subtitle}</p>}
+                            </div>
+                            <div className={[css[(isPortrait && (layout === '1' || layout === '2')) ? 'value_label_outer' :'value_label_outer_ls']].join(' ')}>
+                                {
+                                    valueLabels.map(({ id, value, label }, ind) => (
+                                        // (value || label) &&
+                                        <div key={id}
+                                            className={[
+                                                css.value_label_inner,
+                                                (!isPortrait && (layout === '3' || layout === '4')) ? 'flex-row-reverse items-baseline gap-2' : '',
+                                                (isPortrait && (layout === '3' || layout === '4')) ? 'text-center' : '',
+                                                ].join(' ')}
+                                        >
+                                            {!((layout === '3' || layout === '4') && ind === 0) && <div style={{ backgroundColor: secondaryText }} className={css.value_label_divider}></div>}
+                                            {<h2 style={{ color: primaryText }}>{value}</h2>}
+                                            {<p style={{ color: secondaryText }}>{label}</p>}
+                                        </div>
+                                    ))
                                 }
-                            }}
-
-                            data={{
-                                labels: elevationData,
-                                datasets: [
-                                    {
-                                        fill: true,
-                                        // data: [0, 5, 2],
-                                        data: elevationData,
-                                        // data: elevationData.slice(0,2),
-                                        backgroundColor: elevation,
-                                        borderWidth: 0, pointRadius: 0,
-                                    },
-                                ],
-                            }}
-                        />
-                }
-
-                {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
-                    <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
-                        <div className={[css.heading_container, (layout === '3' || layout === '4') ? "items-center" : ''].join(' ')}>
-                            {title && <h1 style={{ color: primaryText }}>{title}</h1>}
-                            {subtitle && <p style={{ color: secondaryText }}>{subtitle}</p>}
+                            </div>
                         </div>
-
-                        <div className={[css[(isPortrait && (layout === '1' || layout === '2')) ? 'value_label_outer' :'value_label_outer_ls']].join(' ')}>
-                            {
-                                valueLabels.map(({ id, value, label }, ind) => (
-                                    // (value || label) &&
-                                    <div key={id}
-                                        className={[
-                                            css.value_label_inner,
-                                            (!isPortrait && (layout === '3' || layout === '4')) ? 'flex-row-reverse items-baseline gap-2' : '',
-                                            (isPortrait && (layout === '3' || layout === '4')) ? 'text-center' : '',
-                                            ].join(' ')}
-                                    >
-                                        {!((layout === '3' || layout === '4') && ind === 0) && <div style={{ backgroundColor: secondaryText }} className={css.value_label_divider}></div>}
-                                        {<h2 style={{ color: primaryText }}>{value}</h2>}
-                                        {<p style={{ color: secondaryText }}>{label}</p>}
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                }
-
+                    }
+                </div>
             </div>
         </div>
     )

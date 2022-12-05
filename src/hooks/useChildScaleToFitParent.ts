@@ -1,20 +1,27 @@
 import { RefObject, useEffect, useLayoutEffect, useState } from "react";
 import { debounce } from "../utils/helperFunctions";
 
-
 const { log, group, groupEnd } = console;
 
-const consoleIt = (func: Function, ...options: any) =>
-	true && func(...options);
+const consoleIt = (func: Function, ...options: any) => false && func(...options);
 
-const RATIO_TOLERANCE = 0.05;
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+const RATIO_TOLERANCE = 0.06;
+const RATIO_TOLERANCE_MOB = 0.03;
 
 const useChildScaleToFitParent = (
 	parentRef: RefObject<HTMLElement>,
 	childRef: RefObject<HTMLElement>,
-	isPortrait?: boolean
+	isPortrait?: boolean,
+	delay?: number,
 ) => {
 	const [scale, setScale] = useState(1);
+
+	const TOLERANCE = isMobile ? RATIO_TOLERANCE_MOB : RATIO_TOLERANCE;
+	consoleIt(log, {TOLERANCE})
+
+	const animationDelay = delay || 0
 
 	const setMaxScale = (num: number) => setScale(Math.min(num, 1));
 
@@ -38,26 +45,26 @@ const useChildScaleToFitParent = (
 			consoleIt(log, { isPPortrait, isCPortrait });
 
 			if (isPPortrait && !isCPortrait) {
-				const wRatio = parentW / childW - RATIO_TOLERANCE;
+				const wRatio = parentW / childW - TOLERANCE;
 				consoleIt(log, { wRatio });
 				setMaxScale(wRatio);
 			}
 
 			if (isPPortrait && isCPortrait) {
-				const wRatio = parentW / childW - RATIO_TOLERANCE;
-				const hRatio = parentH / childH - RATIO_TOLERANCE;
+				const wRatio = parentW / childW - TOLERANCE;
+				const hRatio = parentH / childH - TOLERANCE;
 
-				if (childH * (wRatio + RATIO_TOLERANCE) >= parentH) setMaxScale(hRatio);
+				if (childH * (wRatio + TOLERANCE) >= parentH) setMaxScale(hRatio);
 				else setMaxScale(wRatio);
 			} else if (!isPPortrait && isCPortrait) {
-				const hRatio = parentH / childH - RATIO_TOLERANCE;
+				const hRatio = parentH / childH - TOLERANCE;
 				consoleIt(log, { hRatio });
 				setMaxScale(hRatio);
 			} else if (!isPPortrait && !isCPortrait) {
-				const hRatio = parentH / childH - RATIO_TOLERANCE;
-				const wRatio = parentW / childW - RATIO_TOLERANCE;
+				const hRatio = parentH / childH - TOLERANCE;
+				const wRatio = parentW / childW - TOLERANCE;
 
-				if (childW * (hRatio + RATIO_TOLERANCE) >= parentW) setMaxScale(wRatio);
+				if (childW * (hRatio + TOLERANCE) >= parentW) setMaxScale(wRatio);
 				else setMaxScale(hRatio);
 			}
 
@@ -65,16 +72,16 @@ const useChildScaleToFitParent = (
 
 			return { parentH, parentW, childH, childW, isPPortrait, isCPortrait, };
 		};
-		getSizes();
-		// setInterval(getSizes, 350);
+
+		consoleIt(log, "Rerendered")
+
+		if(animationDelay === 0) getSizes();
+		else setInterval(getSizes, animationDelay);
+
+
 		window.addEventListener("resize", debounce(getSizes, 500));
 		return () => window.removeEventListener("resize", debounce(getSizes, 500));
-	}, [isPortrait]);
-
-	/* useLayoutEffect(()=>{
-		setInterval(getSizes, 300);
-	},[isPortrait]) */
-
+	}, [TOLERANCE, animationDelay, childRef, isPortrait, parentRef]);
 
 	return { scale, };
 };
