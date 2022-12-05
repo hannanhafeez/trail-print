@@ -1,4 +1,4 @@
-import { FC, ReactElement, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, } from 'react';
+import { FC, useCallback, useEffect, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -11,7 +11,7 @@ import Header from '../../components/Header'
 import css from './create.module.css'
 import MyButton from '../../components/MyButton'
 
-import { createReducer, PageState, pageState, TRAIL } from '../../store/slices/createPageSlice'
+import { TRAIL } from '../../store/slices/createPageSlice'
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
 const SidebarContent = dynamic(() => import('./components/SidebarContent'), { ssr: false, });
@@ -24,8 +24,6 @@ import { Feature, Geometry, length, lineString } from '@turf/turf';
 import { Position } from 'geojson';
 import { useRouter } from 'next/router';
 import { PREVIEW } from '../../constants/pageLinks';
-import axios from 'axios';
-import { API } from '../../constants/apiEndpoints';
 import { usePaperContext } from '../../store/context/PaperContext';
 import { ViewState } from 'react-map-gl';
 

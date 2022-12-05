@@ -1,16 +1,23 @@
 // import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { InferGetServerSidePropsType } from 'next';
-import { ReactElement, useMemo } from 'react';
+import Head from 'next/head';
+import { ReactElement } from 'react';
+import { WEBSITE_NAME } from '../../constants/metadata';
 import { withSessionSsr } from '../../lib/withSession'
 import { PaperContextWrapper } from '../../store/context/PaperContext';
-import { PageState } from '../../store/slices/createPageSlice';
-import { isPageState } from '../api/session-state.api';
 import CreatePageView from './view'
 
 export default function CreatePage({ strava_connected } : InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
-        <CreatePageView strava_connected={strava_connected}/>
+        <>
+            <Head>
+                <title>{`${WEBSITE_NAME} - Create`}</title>
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <meta property="og:title" content={`${WEBSITE_NAME} - Create`} key="title" />
+            </Head>
+            <CreatePageView strava_connected={strava_connected}/>
+        </>
     )
 }
 

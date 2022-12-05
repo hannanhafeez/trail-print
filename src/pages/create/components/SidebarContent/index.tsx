@@ -24,7 +24,6 @@ import { debounce } from '../../../../utils/helperFunctions'
 import { colorThemeData } from '../../../../constants/themeData'
 import ExportedImage from 'next-image-export-optimizer';
 import { API } from '../../../../constants/apiEndpoints';
-import { resourceUsage } from 'process';
 import { decode } from '@googlemaps/polyline-codec';
 
 export type SidebarContentProps = {
