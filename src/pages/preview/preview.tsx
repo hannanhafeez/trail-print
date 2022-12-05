@@ -1,4 +1,3 @@
-
 import React, { FC, Fragment, useRef, useState } from "react";
 
 import css from "./preview.module.css";
@@ -8,10 +7,16 @@ import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import { useRouter } from "next/router";
 import { CHECKOUT, CREATE } from "../../constants/pageLinks";
+import { usePaperContext } from "../../store/context/PaperContext";
+import dynamic from "next/dynamic";
+
+const PaperPrint = dynamic(() => import('../../components/PaperPrint'), { ssr: false, });
 
 
 const PreviewView: FC = () => {
 	const router = useRouter();
+
+	const { pageState: state } = usePaperContext();
 
 	const goBack = () => router.replace(CREATE);
 
@@ -65,9 +70,17 @@ const PreviewView: FC = () => {
 
 					</div>
 
+					<div
+						className={`self-center relative w-full aspect-square ${state.orientation === 'portrait' ? 'max-w-[1191px] aspect-[0.7072446556]' : 'max-w-[1648px] aspect-[1/0.7072446556]'}`}
+					>
+						<PaperPrint
+							state={state}
+							mapInteractive={false}
+							mapTransitionDuration={0}
+						/>
+					</div>
 				</div>
 
-				<h1>Content to be filled latter</h1>
 
 			</div>
 

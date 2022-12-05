@@ -5,7 +5,7 @@ const { log, group, groupEnd } = console;
 
 const consoleIt = (func: Function, ...options: any) => false && func(...options);
 
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const isMobile = /iPhone|iPad|iPod|Android/i.test(global.navigator?.userAgent || '');
 
 const RATIO_TOLERANCE = 0.06;
 const RATIO_TOLERANCE_MOB = 0.03;

@@ -1,4 +1,4 @@
-import { FC, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, } from 'react';
+import { FC, ReactElement, Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -17,7 +17,7 @@ import { Transition } from '@headlessui/react';
 const SidebarContent = dynamic(() => import('./components/SidebarContent'), { ssr: false, });
 // import SidebarContent from './components/SidebarContent';
 
-const PaperPrint = dynamic(() => import('./components/PaperPrint'), { ssr: false, });
+const PaperPrint = dynamic(() => import('../../components/PaperPrint'), { ssr: false, });
 // import PaperPrint from './components/PaperPrint'
 
 import { Feature, Geometry, length, lineString } from '@turf/turf';
@@ -26,16 +26,17 @@ import { useRouter } from 'next/router';
 import { PREVIEW } from '../../constants/pageLinks';
 import axios from 'axios';
 import { API } from '../../constants/apiEndpoints';
+import { usePaperContext } from '../../store/context/PaperContext';
+import { ViewState } from 'react-map-gl';
 
 export type CreatePageViewProps = {
 	strava_connected?: boolean,
-	initialState?: PageState,
 }
 
-const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialState }) => {
+const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 	const router = useRouter()
 	const [showSidebar, setShowSidebar] = useState(false);
-	const [state, dispatch] = useReducer(createReducer, initialState || pageState)
+	const {pageState: state, dispatch} = usePaperContext()
 
 	const [openFileSelector, { filesContent, loading }] = useFilePicker({
 		accept: ['.gpx', '.kml'],
@@ -78,28 +79,14 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialStat
 
 	}, [filesContent])
 
+	const handleLatestViewState = (viewState: ViewState) =>{
+		// console.log({ state: viewState })
+		dispatch({type: 'SET_VIEW_STATE', payload: viewState})
+	}
+
 	const goToPreview = useCallback(async ()=>{
-		const data = JSON.stringify({
-			"stateStr": JSON.stringify(state)
-			// "action": "reset"
-		});
-
-		var config = {
-			method: 'post', url: API.session_state,
-			// url: API.reset_session_state,
-			headers: { 'Content-Type': 'application/json' },
-			data: data
-		};
-
-		try {
-			const response = await axios(config);
-			console.log(JSON.stringify(response.data));
-		} catch (error) {
-			console.log(error);
-		}
-
 		router.push(PREVIEW)
-	},[state, router])
+	},[router])
 
 	return (
 		<>
@@ -111,8 +98,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected, initialStat
 						{/* <Suspense fallback={<Loader size={64} />}> */}
 						<PaperPrint
 							state={state}
-							colors={state.colors}
-							mapStyle={state.mapStyle}
+							handleLatestViewState={handleLatestViewState}
 						/>
 						{/* </Suspense> */}
 					</div>

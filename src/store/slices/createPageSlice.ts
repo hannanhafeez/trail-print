@@ -1,5 +1,6 @@
 import { Feature } from "geojson";
 import mapboxgl from "mapbox-gl";
+import { ViewState } from "react-map-gl";
 import { colorThemeData } from "../../constants/themeData";
 
 export type TRACKING_DATA = { time?: string, value: number }[];
@@ -53,6 +54,7 @@ export interface PageState {
 	endpoints: boolean;
 	activityThickness: number;
 	mapStyle: string;
+	viewState?: ViewState;
 }
 
 export const pageState: PageState = {
@@ -106,6 +108,7 @@ type TOGGLE_ELEVATION_PROFILE  = { type: 'TOGGLE_ELEVATION_PROFILE', payload?: u
 type TOGGLE_DASHED_LINES  = { type: 'TOGGLE_DASHED_LINES', payload?: undefined,}
 type TOGGLE_ENDPOINTS  = { type: 'TOGGLE_ENDPOINTS', payload?: undefined,}
 type SET_ACTIVITY_THICKNESS  = { type: 'SET_ACTIVITY_THICKNESS', payload: number,}
+type SET_VIEW_STATE  = { type: 'SET_VIEW_STATE', payload: ViewState,}
 
 
 export type Action =  SET_TITLE
@@ -123,7 +126,8 @@ export type Action =  SET_TITLE
 					| ADD_TRAIL
 					| REMOVE_TRAIL
 					| ADD_TRAILS
-					| SET_TRAILS_ORDERED;
+					| SET_TRAILS_ORDERED
+					| SET_VIEW_STATE;
 
 /* Actions */
 
@@ -224,6 +228,9 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 
 		case "SET_ACTIVITY_THICKNESS":
 			return { ...state, activityThickness: Math.max(1, action.payload) };
+
+		case "SET_VIEW_STATE":
+			return { ...state, viewState: action.payload};
 
 		default:
 			return state;

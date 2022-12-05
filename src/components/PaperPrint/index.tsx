@@ -3,12 +3,12 @@ import React, { FC, useRef, useEffect, useState, useMemo, useCallback, useLayout
 const MAP_TOKEN = process.env.NEXT_PUBLIC_MAP_TOKEN as string;
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import Map, { Layer, LngLatLike, MapRef, Source, } from 'react-map-gl';
+import Map, { Layer, LngLatLike, MapRef, Source, ViewState, } from 'react-map-gl';
 import {bbox, lineString,} from '@turf/turf';
 
 import css from './paperprint.module.css';
-import { PageState, TRACKING_DATA } from '../../../../store/slices/createPageSlice';
-import { colorThemeData } from '../../../../constants/themeData';
+import { PageState, TRACKING_DATA } from '../../store/slices/createPageSlice';
+import { colorThemeData } from '../../constants/themeData';
 
 import {
     Chart as ChartJS,
@@ -23,7 +23,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { Feature, GeoJsonProperties, Geometry } from 'geojson';
-import useChildScaleToFitParent from '../../../../hooks/useChildScaleToFitParent';
+import useChildScaleToFitParent from '../../hooks/useChildScaleToFitParent';
 
 ChartJS.register(
     CategoryScale,
@@ -41,14 +41,9 @@ ChartJS.register(
 export type PaperPrintProps = {
     state: PageState,
     data?: TRACKING_DATA,
-    mapStyle?: string,
-    colors: {
-        primaryText: string,
-        secondaryText: string,
-        background: string,
-        activity: string,
-        elevation: string,
-    }
+    mapInteractive?: boolean,
+    mapTransitionDuration?: number,
+    handleLatestViewState?: (viewState:ViewState)=>void,
 }
 
 const id = 'LineString';
@@ -56,10 +51,12 @@ const INITIAL_MAP_STATE = { longitude: -70.90001, latitude: 42.5599, zoom: 14 }
 const graph_Port_ratio = (1131 / 80) , graph_Land_ratio = (1624 / 80);
 
 const PaperPrint: FC<PaperPrintProps> = ({
-    state,
-    mapStyle = colorThemeData[0].mapStyle,
-    colors: { activity, background, elevation, primaryText, secondaryText },
+    state, mapInteractive = true,
+    mapTransitionDuration = 2000,
+    handleLatestViewState,
 }) => {
+    const { activity, background, elevation, primaryText, secondaryText } = state.colors;
+    const mapStyle = state.mapStyle || colorThemeData[0].mapStyle;
     const { text: { title, subtitle }, /* geoJson, */ orientation, layout, elevationProfile, valueLabels, trails, useDashedLined, activityThickness } = state;
     const isPortrait = orientation === 'portrait';
 
@@ -89,14 +86,16 @@ const PaperPrint: FC<PaperPrintProps> = ({
         const [minLng, minLat, maxLng, maxLat] = bbox(line);
         // console.table({minLng, minLat, maxLng, maxLat})
 
-        mapRef.current?.fitBounds(
+        const some = mapRef.current?.fitBounds(
             [
                 [maxLng, maxLat],
                 [minLng, minLat],
             ],
-            { padding: 80, duration: 2000 }
+            { padding: 80, duration: mapTransitionDuration }
         );
-    }, [trails])
+    }, [trails, mapRef.current])
+
+    // useEffect(()=>{setInterval(fitToBounds, 1000)},[])
 
     useLayoutEffect(()=>{
         fitToBounds();
@@ -169,16 +168,20 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
     const {scale} = useChildScaleToFitParent(parentRef, childRef, state.orientation==='portrait', 300);
 
+
     return (
         <div ref={parentRef} className={['absolute inset-0 flex items-center justify-center overflow-hidden',].join(' ')}>
             <div ref={childRef} className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background, transform: `scale(${scale})` }}>
                 <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
-                    <Map ref={mapRef} mapboxAccessToken={MAP_TOKEN}
-                        initialViewState={INITIAL_MAP_STATE}
+                    <Map interactive={mapInteractive} ref={mapRef} mapboxAccessToken={MAP_TOKEN}
+                        initialViewState={state.viewState || INITIAL_MAP_STATE}
                         style={{ width: '100%', height: '100%' }}
                         mapStyle={mapStyle}
                         logoPosition={'top-left'}
                         attributionControl={false}
+                        onZoomEnd={(e)=>handleLatestViewState?.(e.viewState)}
+                        onDragEnd={(e)=>handleLatestViewState?.(e.viewState)}
+                        onPitchEnd={(e) => handleLatestViewState?.(e.viewState)}
                     >
                         <Source id='my-geojson' type="geojson" data={geojson}>
                             <Layer
