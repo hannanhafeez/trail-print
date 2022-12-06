@@ -29,6 +29,7 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 				access_token: authTokenJson.access_token as string,
 			}
 			await req.session.save();
+			console.log("AFTER SAVE:",{userInfo: req.session.userInfo})
 		} catch (e) {
 			console.warn(e)
 			res.redirect(307, baseUrl + '/create?noAuth=true');

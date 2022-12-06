@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState, } from 'react';
+import { FC, Suspense, useCallback, useEffect, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -14,11 +14,15 @@ import MyButton from '../../components/MyButton'
 import { TRAIL } from '../../store/slices/createPageSlice'
 import { Transition } from '@headlessui/react';
 // import Loader from '../../components/Loader';
-const SidebarContent = dynamic(() => import('./components/SidebarContent'), { ssr: false, });
-// import SidebarContent from './components/SidebarContent';
+import {LoadingSidebar, LoadingMap} from './loading';
+const SidebarContent = dynamic(async() => {
+	return import('./components/SidebarContent')
+}, { ssr: false, loading: ()=><LoadingSidebar/> });
 
-const PaperPrint = dynamic(() => import('../../components/PaperPrint'), { ssr: false, });
-// import PaperPrint from './components/PaperPrint'
+const PaperPrint = dynamic(() => {
+	return import('../../components/PaperPrint');
+}, { ssr: false, loading: () => <LoadingMap /> });
+
 
 import { Feature, Geometry, length, lineString } from '@turf/turf';
 import { Position } from 'geojson';
@@ -93,12 +97,10 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 
 				<section className={[css.my_container, " flex-1 self-stretch flex flex-col md:flex-row gap-4"].join(' ')}>
 					<div className={css.main_view}>
-						{/* <Suspense fallback={<Loader size={64} />}> */}
 						<PaperPrint
 							state={state}
 							handleLatestViewState={handleLatestViewState}
 						/>
-						{/* </Suspense> */}
 					</div>
 
 					{/* Static Sidebar */}
@@ -131,7 +133,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 				<Transition show={showSidebar}
 					className={`z-20 fixed md:hidden inset-0 overflow-y-auto`}
 				>
-					<Transition.Child onClick={() => setShowSidebar(false)}
+					<Transition.Child unmount={false}  onClick={() => setShowSidebar(false)}
 						className={`fixed inset-0 bg-[#00000040]`}
 						enter={`transition-opacity ease-linear duration-400`}
 						enterFrom={`opacity-0`}

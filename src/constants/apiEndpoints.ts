@@ -3,6 +3,7 @@ export const isProductionEnv = process.env.NODE_ENV === 'production';
 // const localBaseUrl = 'http://localhost:8000/api'
 
 export const baseUrl = isProductionEnv ? 'http://sportprints.co' : 'http://localhost:3000'
+// export const baseUrl = isProductionEnv ? 'http://localhost:3000' : 'http://localhost:3000'
 
 export const API = {
 	strava_authorize : '/api/strava-authorize',

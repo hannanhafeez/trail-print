@@ -30,6 +30,7 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 				access_token: authTokenJson.access_token as string,
 			}
 			await req.session.save();
+			console.log("AFTER SAVE:", { userInfo: req.session.userInfo })
 			res.json({ success: true, message: 'Token refresh successfull!' });
 		} catch (e: any) {
 			console.warn(e)

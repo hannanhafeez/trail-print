@@ -1,9 +1,11 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head';
+import { ReactElement } from 'react';
 import { WEBSITE_NAME } from '../../constants/metadata';
+import { PaperContextWrapper } from '../../store/context/PaperContext';
 import CheckOut from './checkout';
 
-export default function About({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Checkout({}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
     return (
         <>
@@ -16,6 +18,13 @@ export default function About({}: InferGetServerSidePropsType<typeof getServerSi
         </>
     );
 }
+
+// Custom Layout to wrap the page within the User and company providers
+Checkout.getLayout = function getLayout(page: ReactElement) {
+    return (
+        <PaperContextWrapper>{page}</PaperContextWrapper>
+    );
+};
 
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
