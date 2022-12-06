@@ -55,6 +55,7 @@ export interface PageState {
 	activityThickness: number;
 	mapStyle: string;
 	viewState?: ViewState;
+	exportImage?: string;
 }
 
 export const pageState: PageState = {
@@ -74,6 +75,8 @@ export const pageState: PageState = {
 	endpoints: false,
 	activityThickness: 4,
 	mapStyle: colorThemeData[0].mapStyle,
+	viewState: undefined,
+	exportImage: undefined,
 }
 
 /* Actions */
@@ -109,6 +112,8 @@ type TOGGLE_DASHED_LINES  = { type: 'TOGGLE_DASHED_LINES', payload?: undefined,}
 type TOGGLE_ENDPOINTS  = { type: 'TOGGLE_ENDPOINTS', payload?: undefined,}
 type SET_ACTIVITY_THICKNESS  = { type: 'SET_ACTIVITY_THICKNESS', payload: number,}
 type SET_VIEW_STATE  = { type: 'SET_VIEW_STATE', payload: ViewState,}
+type SET_EXPORT_IMAGE = { type: 'SET_EXPORT_IMAGE', payload: string,}
+type RESET_EXPORT_IMAGE = { type: 'RESET_EXPORT_IMAGE',}
 
 
 export type Action =  SET_TITLE
@@ -127,7 +132,9 @@ export type Action =  SET_TITLE
 					| REMOVE_TRAIL
 					| ADD_TRAILS
 					| SET_TRAILS_ORDERED
-					| SET_VIEW_STATE;
+					| SET_VIEW_STATE
+					| SET_EXPORT_IMAGE
+					| RESET_EXPORT_IMAGE;
 
 /* Actions */
 
@@ -231,6 +238,11 @@ export const createReducer = (state: PageState, action: Action): PageState => {
 
 		case "SET_VIEW_STATE":
 			return { ...state, viewState: action.payload};
+
+		case "SET_EXPORT_IMAGE":
+			return {...state, exportImage: action.payload}
+		case "RESET_EXPORT_IMAGE":
+			return {...state, exportImage: undefined}
 
 		default:
 			return state;

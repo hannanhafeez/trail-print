@@ -1,4 +1,4 @@
-import { FC, Suspense, useCallback, useEffect, useState, } from 'react';
+import { FC, useCallback, useEffect, useState, } from 'react';
 import dynamic from 'next/dynamic';
 import { useFilePicker } from 'use-file-picker';
 
@@ -31,19 +31,27 @@ import { PREVIEW } from '../../constants/pageLinks';
 import { usePaperContext } from '../../store/context/PaperContext';
 import { ViewState } from 'react-map-gl';
 
+import {toPng} from 'html-to-image'
+
 export type CreatePageViewProps = {
 	strava_connected?: boolean,
 }
 
 const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 	const router = useRouter()
+	const [loading, setLoading] = useState(false);
 	const [showSidebar, setShowSidebar] = useState(false);
 	const {pageState: state, dispatch} = usePaperContext()
 
-	const [openFileSelector, { filesContent, loading }] = useFilePicker({
+	const [openFileSelector, { filesContent }] = useFilePicker({
 		accept: ['.gpx', '.kml'],
 		readFilesContent: true,
 	});
+
+	useEffect(() => {
+		// console.log(filesContent)
+		dispatch({type: 'RESET_EXPORT_IMAGE'})
+	}, [])
 
 	useEffect(() => {
 		// console.log(filesContent)
@@ -87,6 +95,33 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 	}
 
 	const goToPreview = useCallback(async ()=>{
+		setLoading(true)
+
+		const mapElement = document.getElementById('custom-map');
+		if (!mapElement) return;
+
+		const initialScale = mapElement?.style.getPropertyValue('transform');
+
+		const divEle = document.createElement('div');
+		divEle.append(mapElement.cloneNode());
+
+		// (divEle.lastElementChild as HTMLElement).style.
+
+		mapElement.style.setProperty('transition-duration', '0ms');
+		mapElement.style.setProperty('transform', 'scale(1)');
+		console.log({ divEle, mapElement, initialScale });
+
+		// await (new Promise(resolve => setTimeout(() => resolve(true), 350)));
+
+		const data = await toPng(mapElement, {});
+		// console.log(data);
+		mapElement.style.removeProperty('transition-duration');
+		mapElement.style.setProperty('transform', initialScale || "scale(1)");
+
+		dispatch({type: 'SET_EXPORT_IMAGE', payload:data})
+
+		setLoading(false)
+
 		router.push(PREVIEW)
 	},[router])
 
@@ -169,6 +204,12 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 					</Transition.Child>
 
 				</Transition>
+
+				{loading &&
+					<div className='z-[1000] absolute inset-0 bg-white bg-opacity-75'>
+						<LoadingMap />
+					</div>
+				}
 			</div>
 		</>
 	)

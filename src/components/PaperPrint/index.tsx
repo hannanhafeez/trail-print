@@ -169,9 +169,9 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
     return (
         <div ref={parentRef} className={['absolute inset-0 flex items-center justify-center overflow-hidden',].join(' ')}>
-            <div ref={childRef} className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background, transform: `scale(${scale})` }}>
+            <div ref={childRef} id={"custom-map"} className={[css.paper, !isPortrait ? css.paper_landscape : ''].join(' ')} style={{ backgroundColor: background, transform: `scale(${scale})` }}>
                 <div className={(layout === '2' || layout === '4') ? css.content_wrapper_rev : css.content_wrapper}>
-                    <Map interactive={mapInteractive} ref={mapRef} mapboxAccessToken={MAP_TOKEN}
+                    <Map preserveDrawingBuffer={true} interactive={mapInteractive} ref={mapRef} mapboxAccessToken={MAP_TOKEN}
                         initialViewState={state.viewState || INITIAL_MAP_STATE}
                         style={{ width: '100%', height: '100%' }}
                         mapStyle={mapStyle}
@@ -229,7 +229,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                                 }}
                             />
                     }
-                    
+
                     {(title || subtitle || valueLabels.some(({ value, label }) => !!value || !!label)) &&
                         <div className={[css.bottom_container, (layout === '3' || layout === '4') ? "flex-col items-center gap-4" : ''].join(' ')}>
                             <div className={[css.heading_container, (layout === '3' || layout === '4') ? "items-center" : ''].join(' ')}>

@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useRef, useState } from "react";
+import React, { FC, useEffect, } from "react";
 
 import css from "./preview.module.css";
 import ExportedImage from "next-image-export-optimizer";
@@ -6,9 +6,10 @@ import ExportedImage from "next-image-export-optimizer";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import { useRouter } from "next/router";
-import { CHECKOUT, CREATE } from "../../constants/pageLinks";
+import {  CHECKOUT, CREATE } from "../../constants/pageLinks";
 import { usePaperContext } from "../../store/context/PaperContext";
 import dynamic from "next/dynamic";
+
 
 const PaperPrint = dynamic(() => import('../../components/PaperPrint'), { ssr: false, });
 
@@ -17,6 +18,10 @@ const PreviewView: FC = () => {
 	const router = useRouter();
 
 	const { pageState: state } = usePaperContext();
+
+	useEffect(()=>{
+		if (!state.exportImage || state.exportImage.length < 1000){router.replace(CREATE);}
+	},[])
 
 	const goBack = () => router.replace(CREATE);
 
@@ -78,6 +83,9 @@ const PreviewView: FC = () => {
 							mapInteractive={false}
 							mapTransitionDuration={0}
 						/>
+						{/* {state.exportImage &&
+							<Image alt="Exported Print" src={state.exportImage} layout='fill' objectFit="contain"/>
+						} */}
 					</div>
 				</div>
 

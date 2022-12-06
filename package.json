@@ -18,6 +18,8 @@
     "axios": "^1.2.0",
     "chart.js": "^4.0.1",
     "faker": "5.5.3",
+    "html-to-image": "^1.11.1",
+    "html2canvas": "^1.4.1",
     "iron-session": "^6.3.1",
     "mapbox-gl": "^2.11.0",
     "next": "12.2.5",
