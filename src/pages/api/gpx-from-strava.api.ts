@@ -3,10 +3,12 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { API } from '../../constants/apiEndpoints';
 import { withSessionRoute } from '../../lib/withSession'
 
+import cookie from 'cookie';
 
-export default withSessionRoute(async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-	const { session: {user: userInfo},  body, method } = req;
+	const {  body, method } = req;
+	const userInfo = JSON.parse(cookie.parse(req.headers?.cookie || 'null').user || 'null');
 
 	if(method !== 'POST'){
 		res.status(500).json({ message: 'Invalid request.' })
@@ -17,7 +19,8 @@ export default withSessionRoute(async function handler(req: NextApiRequest, res:
 		res.status(400).json({ message: 'Bad request.' })
 		return;
 	}
-	console.log(userInfo)
+
+	console.log({userInfo})
 
 	if (!userInfo){
 		res.status(500).json({message: 'Not connected to STRAVA.'})
@@ -68,5 +71,4 @@ export default withSessionRoute(async function handler(req: NextApiRequest, res:
 	}
 
 	res.status(500).json({ message: 'No data found!' })
-
-})
+}

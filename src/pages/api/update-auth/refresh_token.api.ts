@@ -3,15 +3,18 @@ import { baseUrl } from '../../../constants/apiEndpoints';
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withSessionRoute } from "../../../lib/withSession";
 
+import cookie from 'cookie';
+
 type Data = {
   success: boolean,
   message: string,
   detail?: any,
 };
 
-export default withSessionRoute(async function handler( req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler( req: NextApiRequest, res: NextApiResponse<Data>) {
 
-	const {user: userInfo} = req.session;
+	console.log(req.cookies.user);
+	const userInfo = JSON.parse(cookie.parse(req.headers?.cookie || 'null').user || 'null');
 
 	if (userInfo && userInfo.refresh_token){
 		const authTokenUrl = 'https://www.strava.com/api/v3/oauth/token?'
@@ -23,14 +26,24 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 		try {
 			const authTokenRes = await fetch(authTokenUrl, {method: 'POST'})
 			const authTokenJson = await authTokenRes.json()
-			req.session.user = {
+			const user = {
 				code: req.session.user!.code,
 				expires_at: authTokenJson.expires_at as number,
 				refresh_token: authTokenJson.refresh_token as string,
 				access_token: authTokenJson.access_token as string,
 			}
-			await req.session.save();
-			console.log("AFTER SAVE:", { userInfo: req.session.user })
+			res.setHeader(
+				"Set-Cookie",
+				cookie.serialize('user', JSON.stringify(user), {
+					httpOnly: true,
+					secure: false,
+					maxAge: (60 * 60) * 24 * 30 * 12, 		// 1 hour * 24 * 30 * 12, (30 days) * 12
+					sameSite: 'lax',
+					path: '/'
+				})
+			)
+			// await req.session.save();
+			console.log("AFTER SAVE:", { userInfo: user })
 			res.json({ success: true, message: 'Token refresh successfull!' });
 		} catch (e: any) {
 			console.warn(e)
@@ -39,4 +52,4 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 	} else{
 		res.json({success: false, message: 'Token refresh failed!', detail: "Not connected to STRAVA."});
 	}
-});
+};
