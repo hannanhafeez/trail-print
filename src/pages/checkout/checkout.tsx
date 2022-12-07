@@ -47,7 +47,7 @@ const CheckOut: FC = () => {
 
 		try{
 			const imageUploadResponse = await axios(config);
-			console.log('Image upload response', imageUploadResponse.data)
+			// * console.log('Image upload response', imageUploadResponse.data)
 
 			if (imageUploadResponse.data.success == 1 && imageUploadResponse.data.result.image_path){
 				// Already has name, email, phone and quantity
@@ -55,9 +55,9 @@ const CheckOut: FC = () => {
 				formData.append('amount', ((parseInt(formData.get('quantity')?.toString() || '1')) * 20).toString())
 				formData.append('image_link', imageUploadResponse.data.result.image_path);
 
-				console.group('FormData')
-				formData.forEach((v, k) => console.log({ [k]: v }))
-				console.groupEnd()
+				/* console.group('FormData')
+					formData.forEach((v, k) => console.log({ [k]: v }))
+				console.groupEnd() */
 
 				const orderRequest = {
 					url: API.admin_add_order,
@@ -65,7 +65,7 @@ const CheckOut: FC = () => {
 				};
 
 				const response = await axios(orderRequest);
-				console.log('Order add response', response.data)
+				// * console.log('Order add response', response.data)
 
 				if(response.data.success == 1){
 					setSubmitted(true);
