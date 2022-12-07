@@ -101,7 +101,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
 
     useEffect(()=>{
         setTimeout(()=>mapRef.current?.resize(), 300)
-    },[title, subtitle, orientation, elevationProfile])
+    }, [title, subtitle, valueLabels, orientation, elevationProfile])
 
     const geojson = useMemo(()=>{
        return ({
@@ -239,7 +239,7 @@ const PaperPrint: FC<PaperPrintProps> = ({
                             <div className={[css[(isPortrait && (layout === '1' || layout === '2')) ? 'value_label_outer' :'value_label_outer_ls']].join(' ')}>
                                 {
                                     valueLabels.map(({ id, value, label }, ind) => (
-                                        // (value || label) &&
+                                        (value && label) &&
                                         <div key={id}
                                             className={[
                                                 css.value_label_inner,

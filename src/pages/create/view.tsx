@@ -94,7 +94,7 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 		dispatch({type: 'SET_VIEW_STATE', payload: viewState})
 	}
 
-	const goToPreview = useCallback(async ()=>{
+	const goToPreview = async ()=>{
 		setLoading(true)
 
 		const mapElement = document.getElementById('custom-map');
@@ -114,16 +114,18 @@ const CreatePageView: FC<CreatePageViewProps> = ({ strava_connected }) => {
 		// await (new Promise(resolve => setTimeout(() => resolve(true), 350)));
 
 		const data = await toPng(mapElement, {});
+		dispatch({type: 'SET_EXPORT_IMAGE', payload:data})
 		// console.log(data);
 		mapElement.style.removeProperty('transition-duration');
 		mapElement.style.setProperty('transform', initialScale || "scale(1)");
 
-		dispatch({type: 'SET_EXPORT_IMAGE', payload:data})
 
 		setLoading(false)
 
+		await (new Promise(resolve => setTimeout(() => resolve(true), 350)));
+
 		router.push(PREVIEW)
-	},[router])
+	}
 
 	return (
 		<>

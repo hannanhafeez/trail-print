@@ -6,7 +6,7 @@ import { withSessionRoute } from '../../lib/withSession'
 
 export default withSessionRoute(async function handler(req: NextApiRequest, res: NextApiResponse) {
 
-	const { session: {userInfo},  body, method } = req;
+	const { session: {user: userInfo},  body, method } = req;
 
 	if(method !== 'POST'){
 		res.status(500).json({ message: 'Invalid request.' })

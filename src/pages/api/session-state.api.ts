@@ -24,34 +24,10 @@ export function isPageState(obj: any): obj is PageState{
 export default withSessionRoute(async function handler(req: NextApiRequest, res: NextApiResponse) {
 
 	if(req.method === 'GET'){
-		res.status(200).json({state: req.session.reducerState});
+		res.status(200).json({state: req.session});
 		return
-	}
-
-	if(req.method === 'POST'){
-		const stateStr = req.body.stateStr;
-		console.log(req.body)
-		if(stateStr === undefined || stateStr === '' || typeof(stateStr) === 'object'){
-			res.status(400).json({ success: false, message: 'Bad request.' });
-			return
-		}
-		try {
-			const stateJson = JSON.parse(stateStr);
-			if(typeof(stateJson)!=='object'){
-				res.status(400).json({ success: false, message: 'Bad request.' });
-				return
-			}
-			if (isPageState(stateJson)){
-				req.session.reducerState = stateJson;
-				await req.session.save();
-				res.status(200).json({ success: true, message: 'State saved successfully.' });
-				return
-			}
-			res.status(400).json({ success: false, message: 'Bad request.' });
-		} catch (e) {
-			console.warn("Error saving state:", e)
-			res.status(500).json({ success: false, message: 'An unknown error occured.' });
-		}
+	}else{
+		res.status(500).json({ message: 'Invalid request.' })
 	}
 
 })

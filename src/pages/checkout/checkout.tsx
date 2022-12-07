@@ -9,40 +9,89 @@ import Header from "../../components/Header";
 import { useRouter } from "next/router";
 import { CREATE, PREVIEW } from "../../constants/pageLinks";
 import { usePaperContext } from "../../store/context/PaperContext";
+import { LoadingMap } from "../create/loading";
+import axios from "axios";
+import { API } from "../../constants/apiEndpoints";
 
 const CheckOut: FC = () => {
 	const router = useRouter();
 	const [quantity, setQuantity] = useState(1);
+	const [loading, setLoading] = useState(false);
+	const [isSubmitted, setSubmitted] = useState(false);
+
 
 	const { pageState: {exportImage} } = usePaperContext();
+	const imageString = exportImage?.split(',').slice(1)[0] || ''
 
 	useEffect(()=>{
-		if (!exportImage || exportImage.length < 1000) { router.replace(CREATE); }
+		if (!imageString || imageString.length < 1000) { router.replace(CREATE); }
 	},[])
 
 	const goBack = () => router.replace(PREVIEW);
 
-	const onSubmit: FormEventHandler = (e) => {
+	const onSubmit: FormEventHandler = async (e) => {
 		e.preventDefault();
+		// console.log(imageString)
+
+		if (!imageString || imageString.length < 1000) { return }
+		setLoading(true);
 
 		// * Upload Image here and get a link.
+		const imageFormData = new FormData();
+		imageFormData.append('image', imageString);
 
-		// Already has name, email, phone and quantity
-		const formData = new FormData(e.target as HTMLFormElement);
-		formData.append('amount', ((parseInt(formData.get('quantity')?.toString() || '1')) * 20).toString())
-		formData.append('image_link', '');
+		const config = {
+			url: API.admin_image_upload,
+			method: 'post', data: imageFormData
+		};
 
-		console.group('FormData')
-		const data = {}
-		formData.forEach((v,k)=>console.log({[k]:v}))
-		console.groupEnd()
+		try{
+			const imageUploadResponse = await axios(config);
+			console.log('Image upload response', imageUploadResponse.data)
+
+			if (imageUploadResponse.data.success == 1 && imageUploadResponse.data.result.image_path){
+				// Already has name, email, phone and quantity
+				const formData = new FormData(e.target as HTMLFormElement);
+				formData.append('amount', ((parseInt(formData.get('quantity')?.toString() || '1')) * 20).toString())
+				formData.append('image_link', imageUploadResponse.data.result.image_path);
+
+				console.group('FormData')
+				formData.forEach((v, k) => console.log({ [k]: v }))
+				console.groupEnd()
+
+				const orderRequest = {
+					url: API.admin_add_order,
+					method: 'post', data: formData
+				};
+
+				const response = await axios(orderRequest);
+				console.log('Order add response', response.data)
+
+				if(response.data.success == 1){
+					setSubmitted(true);
+				}else{
+					alert('An unknown error occured. Please try again!')
+				}
+			}else{
+				alert('An unknown error occured. Please try again!')
+			}
+		}catch(e){
+			console.warn(e)
+			alert('An unknown error occured. Please try again!')
+		}
+		setLoading(false);
+	}
+
+	if(isSubmitted){
+		return <SuccessView/>
 	}
 
 	return (
-		<div className="">
+		<div className="relative">
 			{/* Header */}
 			<Header />
 			{/* Header End */}
+
 			<form onSubmit={onSubmit}>
 				<div className={`${css.my_container} mb-24`}>
 					<div className="flex flex-col items-center pt-[80px] pb-[60px] gap-9">
@@ -72,7 +121,7 @@ const CheckOut: FC = () => {
 								<div className="flex flex-col w-full gap-[30px]">
 									<div className={css.input_wrapper}>
 										{/* <label htmlFor="" className="">Name*</label> */}
-										<input
+										<input required
 											type="text"
 											name="name"
 											id="name"
@@ -82,7 +131,7 @@ const CheckOut: FC = () => {
 									</div>
 									<div className={css.input_wrapper}>
 										{/* <label htmlFor="" className="">Name*</label> */}
-										<input
+										<input required
 											type="email"
 											name="email"
 											id="email"
@@ -92,7 +141,7 @@ const CheckOut: FC = () => {
 									</div>
 									<div className={css.input_wrapper}>
 										{/* <label htmlFor="" className="">Name*</label> */}
-										<input
+										<input required
 											type="phone"
 											name="phone"
 											id="phone"
@@ -113,7 +162,7 @@ const CheckOut: FC = () => {
 								{/* <h1 className={css.form_heading}>DISCOUNT VOUCHER</h1>
 
 								<div className={css.input_wrapper}>
-									<input
+									<input required
 										type="text"
 										name=""
 										id=""
@@ -172,7 +221,7 @@ const CheckOut: FC = () => {
 
 								<div className="flex items-center gap-2 mt-11">
 									<label htmlFor="" className="font-quicksand text-[19px] ">Quantity : </label>
-									<input type="number" name="quantity" id="quantity"
+									<input required type="number" name="quantity" id="quantity"
 										value={quantity}
 										className={`${css.input_style_card} flex-1 border-b`}
 										onChange={(e)=>{
@@ -197,8 +246,65 @@ const CheckOut: FC = () => {
 			{/* Footer */}
 			<Footer />
 			{/*Footer End  */}
+			{loading &&
+				<div className='z-[1000] absolute inset-0 bg-white bg-opacity-75'>
+					<div className="min-h-screen min-w-screen sticky top-0 flex items-center justify-center">
+						<LoadingMap />
+					</div>
+				</div>
+			}
 		</div>
 	);
 };
 
 export default CheckOut;
+
+const SuccessView = () => {
+	const router = useRouter();
+	return (
+		<>
+			<Header />
+			<div className={css.my_container}>
+				<div className="flex flex-col items-center pt-[80px] pb-[80px] gap-9">
+
+					<h1 className="font-mulish font-bold text-[rgb(55,65,58,0.5)]">2/2</h1>
+
+					<div className="text-center">
+						<h2 className={css.heading_top}>
+							🙌🏻 🙌🏻 🙌🏻
+						</h2>
+						<h2 className={css.heading_top}>
+							Your custom digital print is on its way.
+						</h2>
+						<h2 className={css.heading_top}>
+							You&apos;ll receive it via email shortly.
+						</h2>
+
+					</div>
+
+					<div className="flex flex-col flex-1 justify-center w-full xs:flex-row gap-6 pt-8">
+
+						<button type='button' className={css.choise_button}
+							onClick={()=>router.replace(CREATE)}
+						>
+							<div className={css.arrow}>
+								<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow" objectFit="cover" />
+							</div>
+							Back to Create
+						</button>
+
+						{/* <button type='button' className={css.choise_button}
+						>
+							Order
+							<div className={css.arrow_back}>
+								<ExportedImage src={'/assets/svg/arrow2.svg'} layout="fill" alt="arrow" objectFit="cover" />
+							</div>
+						</button> */}
+
+					</div>
+
+				</div>
+			</div>
+		</>
+	)
+}

@@ -8,15 +8,15 @@ import {
 	NextApiHandler,
 } from "next";
 
+
 declare module "iron-session" {
 	interface IronSessionData {
-		userInfo?: {
+		user?: {
 			code: string;
 			expires_at: number;
 			refresh_token: string;
 			access_token: string;
 		};
-		reducerState?: PageState;
 	}
 }
 
@@ -26,7 +26,7 @@ const sessionOptions = {
 	// secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
 	cookieOptions: {
 		secure: process.env.NODE_ENV === "production",
-		maxAge: (60 * 60) * 24 * 30 * 12 , 		// 1 hour * 24 * 30 * 12, (30 days) * 12
+		// maxAge: (60 * 60) * 24 * 30 * 12 , 		// 1 hour * 24 * 30 * 12, (30 days) * 12
 	},
 };
 

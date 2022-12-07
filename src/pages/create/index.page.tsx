@@ -34,22 +34,22 @@ CreatePage.getLayout = function getLayout(page: ReactElement) {
 export const getServerSideProps = withSessionSsr(async function ({ req }) {
     const {session} = req;
     const epochSecondsNow = Math.round((new Date()).getTime()/1000);
-    const difference = (session.userInfo?.expires_at || 0) - epochSecondsNow;
+    const difference = (session.user?.expires_at || 0) - epochSecondsNow;
     console.log({epochSecondsNow, difference});
 
-    if(session.userInfo && (difference <= 0)) // if difference is less than 5 minutes
+    if(session.user && (difference <= 0)) // if difference is less than 5 minutes
     {
         const authTokenUrl = 'https://www.strava.com/api/v3/oauth/token?'
             + `&client_id=${process.env.STRAVA_CLIENT_ID}`
             + `&client_secret=${process.env.STRAVA_CLIENT_SECRET}`
             + `&grant_type=refresh_token`
-            + `&refresh_token=${session.userInfo.refresh_token}`
+            + `&refresh_token=${session.user.refresh_token}`
 
         try {
             const authTokenRes = await fetch(authTokenUrl, { method: 'POST' })
             const authTokenJson = await authTokenRes.json()
-            req.session.userInfo = {
-                code: req.session.userInfo!.code,
+            req.session.user = {
+                code: req.session.user!.code,
                 expires_at: authTokenJson.expires_at as number,
                 refresh_token: authTokenJson.refresh_token as string,
                 access_token: authTokenJson.access_token as string,
@@ -64,10 +64,10 @@ export const getServerSideProps = withSessionSsr(async function ({ req }) {
     // console.log(decode('_|tlEkuq|LBFiBgElIzRrCqB{DoJI?CF@P'))
 
 
-    console.log({userInfo: session.userInfo})
+    console.log({userInfo: session.user})
     return {
         props: {
-            strava_connected: !!session.userInfo?.refresh_token,
+            strava_connected: !!session.user?.refresh_token,
         }
     }
 })

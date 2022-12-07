@@ -1,5 +1,23 @@
 @import "../../../styles/common.css";
 
+
+.heading_top{
+  @apply font-mulish font-medium text-[20px]  md:text-[24px] lg:text-[36px] text-[#22588D] ;
+}
+
+.choise_button{
+  @apply flex justify-between items-center w-full md:w-[400px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[20px]  md:text-[24px] ;
+}
+
+.choise_button{
+  @apply flex justify-between items-center w-full md:w-[300px] px-8 py-4  bg-theme_green  font-quicksand font-semibold text-white text-[16px] sm:text-[20px]  md:text-[24px] ;
+}
+.arrow_back{
+  @apply relative w-6 h-4 rotate-180;
+
+}
+
+
 .form_wrapper{
     @apply px-4 sm:px-8 py-8 md:px-[150px] md:py-[100px] text-center bg-[#FAFCF8];
 }

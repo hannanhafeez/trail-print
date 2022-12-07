@@ -11,7 +11,7 @@ type Data = {
 
 export default withSessionRoute(async function handler( req: NextApiRequest, res: NextApiResponse<Data>) {
 
-	const {userInfo} = req.session;
+	const {user: userInfo} = req.session;
 
 	if (userInfo && userInfo.refresh_token){
 		const authTokenUrl = 'https://www.strava.com/api/v3/oauth/token?'
@@ -23,14 +23,14 @@ export default withSessionRoute(async function handler( req: NextApiRequest, res
 		try {
 			const authTokenRes = await fetch(authTokenUrl, {method: 'POST'})
 			const authTokenJson = await authTokenRes.json()
-			req.session.userInfo = {
-				code: req.session.userInfo!.code,
+			req.session.user = {
+				code: req.session.user!.code,
 				expires_at: authTokenJson.expires_at as number,
 				refresh_token: authTokenJson.refresh_token as string,
 				access_token: authTokenJson.access_token as string,
 			}
 			await req.session.save();
-			console.log("AFTER SAVE:", { userInfo: req.session.userInfo })
+			console.log("AFTER SAVE:", { userInfo: req.session.user })
 			res.json({ success: true, message: 'Token refresh successfull!' });
 		} catch (e: any) {
 			console.warn(e)
